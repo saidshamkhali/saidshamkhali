@@ -1,1 +1,1 @@
-<IMG SRC="jesus-christ-homer.gif" width="600" height="600" />
+<IMG SRC="jesus-christ-homer.gif" width="1080" height="720" />
