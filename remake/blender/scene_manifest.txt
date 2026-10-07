@@ -34,7 +34,7 @@ clockface  toon  #F4F2EA  shadow 0.850
 floor  toon  #86C5E3  shadow 0.840
 gold  toon  #FFC81E  shadow 0.720
 hair  toon  #3B2015  shadow 0.800
-halo  toon  #DCE6EE  shadow 0.850
+halo  toon  #C4CDD4  shadow 0.850
 lips  toon  #C8608C  shadow 0.720
 metal  toon  #C6C8CC  shadow 0.720
 mouth  toon  #6E1222  shadow 0.800
@@ -48,105 +48,87 @@ white  toon  #FFFFFF  shadow 0.800
 worm  toon  #B4AFC0  shadow 0.720
 
 [actions]
-J_hand_LAction  fcurves 1  keys 42  frames 1.0-42.0
-J_hand_RAction  fcurves 1  keys 42  frames 1.0-42.0
+J_hand_LAction.001  fcurves 1  keys 42  frames 1.0-42.0
+J_hand_RAction.001  fcurves 1  keys 42  frames 1.0-42.0
 Jesus_RigAction  fcurves 66  keys 2752  frames 1.0-42.0
-bell_l_swingAction  fcurves 1  keys 42  frames 1.0-42.0
-bell_r_swingAction  fcurves 1  keys 42  frames 1.0-42.0
-clock_br_rattleAction.001  fcurves 2  keys 84  frames 1.0-42.0
-clock_c_rattleAction.001  fcurves 2  keys 84  frames 1.0-42.0
-clock_tl_rattleAction.001  fcurves 2  keys 84  frames 1.0-42.0
-lips_l_corner0Action.001  fcurves 3  keys 126  frames 1.0-42.0
-lips_l_corner1Action.001  fcurves 3  keys 126  frames 1.0-42.0
-lips_l_innerAction.001  fcurves 1  keys 42  frames 1.0-42.0
-lips_l_lowerAction.001  fcurves 1  keys 42  frames 1.0-42.0
-lips_l_swivelAction.001  fcurves 1  keys 42  frames 1.0-42.0
-lips_l_upperAction.001  fcurves 1  keys 42  frames 1.0-42.0
-lips_r_corner0Action.001  fcurves 3  keys 126  frames 1.0-42.0
-lips_r_corner1Action.001  fcurves 3  keys 126  frames 1.0-42.0
-lips_r_innerAction.001  fcurves 1  keys 42  frames 1.0-42.0
-lips_r_lowerAction.001  fcurves 1  keys 42  frames 1.0-42.0
-lips_r_swivelAction.001  fcurves 1  keys 42  frames 1.0-42.0
-lips_r_upperAction.001  fcurves 1  keys 42  frames 1.0-42.0
-toaster_b_hoverAction.001  fcurves 1  keys 42  frames 1.0-42.0
-toaster_b_toast.001Action.001  fcurves 1  keys 42  frames 1.0-42.0
-toaster_b_toastAction.001  fcurves 1  keys 42  frames 1.0-42.0
-toaster_b_wingAction  fcurves 1  keys 42  frames 1.0-42.0
-toaster_l_hoverAction.001  fcurves 1  keys 42  frames 1.0-42.0
-toaster_l_toast.001Action.001  fcurves 1  keys 42  frames 1.0-42.0
-toaster_l_toastAction.001  fcurves 1  keys 42  frames 1.0-42.0
-toaster_l_wingAction  fcurves 1  keys 42  frames 1.0-42.0
-toaster_s_hoverAction.001  fcurves 1  keys 42  frames 1.0-42.0
-toaster_s_toast.001Action.001  fcurves 1  keys 42  frames 1.0-42.0
-toaster_s_toastAction.001  fcurves 1  keys 42  frames 1.0-42.0
-toaster_s_wingAction  fcurves 1  keys 42  frames 1.0-42.0
-toaster_tr_hoverAction.001  fcurves 1  keys 42  frames 1.0-42.0
-toaster_tr_toast.001Action.001  fcurves 1  keys 42  frames 1.0-42.0
-toaster_tr_toastAction.001  fcurves 1  keys 42  frames 1.0-42.0
-toaster_tr_wingAction  fcurves 1  keys 42  frames 1.0-42.0
-worm_b_seg0Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg10Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg11Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg12Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg13Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg14Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg15Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg16Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg17Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg18Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg19Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg1Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg20Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg2Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg3Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg4Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg5Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg6Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg7Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg8Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg9Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg0Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg10Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg11Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg12Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg13Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg14Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg15Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg16Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg17Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg18Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg19Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg1Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg20Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg2Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg3Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg4Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg5Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg6Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg7Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg8Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg9Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg0Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg10Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg11Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg12Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg13Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg14Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg15Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg16Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg17Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg18Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg19Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg1Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg20Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg2Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg3Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg4Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg5Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg6Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg7Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg8Action.001  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg9Action.001  fcurves 3  keys 126  frames 1.0-42.0
+bell_l_swingAction.002  fcurves 1  keys 42  frames 1.0-42.0
+bell_r_swingAction.002  fcurves 1  keys 42  frames 1.0-42.0
+clock_br_hour_pivotAction.001  fcurves 1  keys 42  frames 1.0-42.0
+clock_br_minute_pivotAction.001  fcurves 1  keys 42  frames 1.0-42.0
+clock_br_rattleAction.003  fcurves 2  keys 84  frames 1.0-42.0
+clock_c_hour_pivotAction.001  fcurves 1  keys 42  frames 1.0-42.0
+clock_c_minute_pivotAction.001  fcurves 1  keys 42  frames 1.0-42.0
+clock_c_rattleAction.003  fcurves 2  keys 84  frames 1.0-42.0
+clock_tl_hour_pivotAction.001  fcurves 1  keys 42  frames 1.0-42.0
+clock_tl_minute_pivotAction.001  fcurves 1  keys 42  frames 1.0-42.0
+clock_tl_rattleAction.003  fcurves 2  keys 84  frames 1.0-42.0
+lips_l_corner0Action.003  fcurves 3  keys 126  frames 1.0-42.0
+lips_l_corner1Action.003  fcurves 3  keys 126  frames 1.0-42.0
+lips_l_innerAction.003  fcurves 1  keys 42  frames 1.0-42.0
+lips_l_lowerAction.003  fcurves 1  keys 42  frames 1.0-42.0
+lips_l_swivelAction.003  fcurves 1  keys 42  frames 1.0-42.0
+lips_l_upperAction.003  fcurves 1  keys 42  frames 1.0-42.0
+lips_r_corner0Action.003  fcurves 3  keys 126  frames 1.0-42.0
+lips_r_corner1Action.003  fcurves 3  keys 126  frames 1.0-42.0
+lips_r_innerAction.003  fcurves 1  keys 42  frames 1.0-42.0
+lips_r_lowerAction.003  fcurves 1  keys 42  frames 1.0-42.0
+lips_r_swivelAction.003  fcurves 1  keys 42  frames 1.0-42.0
+lips_r_upperAction.003  fcurves 1  keys 42  frames 1.0-42.0
+toaster_b_hoverAction.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_b_toast.001Action.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_b_toastAction.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_b_wingAction.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_l_hoverAction.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_l_toast.001Action.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_l_toastAction.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_l_wingAction.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_s_hoverAction.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_s_toast.001Action.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_s_toastAction.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_s_wingAction.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_tr_hoverAction.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_tr_toast.001Action.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_tr_toastAction.007  fcurves 1  keys 42  frames 1.0-42.0
+toaster_tr_wingAction.007  fcurves 1  keys 42  frames 1.0-42.0
+worm_b_seg0Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_b_seg10Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_b_seg11Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_b_seg12Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_b_seg1Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_b_seg2Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_b_seg3Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_b_seg4Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_b_seg5Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_b_seg6Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_b_seg7Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_b_seg8Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_b_seg9Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_l_seg0Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_l_seg10Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_l_seg11Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_l_seg12Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_l_seg1Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_l_seg2Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_l_seg3Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_l_seg4Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_l_seg5Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_l_seg6Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_l_seg7Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_l_seg8Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_l_seg9Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_r_seg0Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_r_seg10Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_r_seg11Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_r_seg12Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_r_seg1Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_r_seg2Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_r_seg3Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_r_seg4Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_r_seg5Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_r_seg6Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_r_seg7Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_r_seg8Action.004  fcurves 3  keys 126  frames 1.0-42.0
+worm_r_seg9Action.004  fcurves 3  keys 126  frames 1.0-42.0
 
 == Scene Collection (2 objects)
 Camera  CAMERA
@@ -156,7 +138,7 @@ Sun  LIGHT
   loc 0.0000 0.0000 0.0000  rot_deg 41.1743 0.0000 -30.9638  scale 1.0000 1.0000 1.0000
   light SUN energy 3.0000 color #FFFFFF angle_deg 6.0000
 
-== Scene Collection/Figure (32 objects)
+== Scene Collection/Figure (33 objects)
 J_beard_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_beard_L verts 414 faces 412
@@ -235,7 +217,7 @@ J_hair  MESH  parent=Jesus_Rig
   modifier Subsurf SUBSURF levels=1 render_levels=2
   modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
 J_halo  MESH  parent=Jesus_Rig
-  loc 0.0000 0.0000 2.2000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 2.2000  rot_deg -12.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Torus verts 576 faces 576
   materials halo, Outline
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
@@ -247,7 +229,7 @@ J_hand_L  MESH  parent=Jesus_Rig
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
   modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
-  shape_key_action J_hand_LAction
+  shape_key_action J_hand_LAction.001
 J_hand_R  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_hand_R verts 1492 faces 1584 shape_keys 2
@@ -255,7 +237,7 @@ J_hand_R  MESH  parent=Jesus_Rig
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
   modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
-  shape_key_action J_hand_RAction
+  shape_key_action J_hand_RAction.001
 J_leg_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_leg_L verts 142 faces 160
@@ -291,6 +273,13 @@ J_lip  MESH  parent=Jesus_Rig
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
   modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+J_locks  MESH  parent=Jesus_Rig
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh J_locks verts 4228 faces 4368
+  materials hair, Outline
+  modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
+  modifier Subsurf SUBSURF levels=1 render_levels=2
+  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
 J_moustache_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_moustache_L verts 632 faces 648
@@ -382,425 +371,449 @@ Jesus_Rig  ARMATURE
 
 == Scene Collection/Props/bell_l (5 objects)
 bell_l  EMPTY
-  loc -2.2315 -1.0301 0.0000  rot_deg 0.0000 0.0000 8.5436  scale 0.4527 0.4527 0.4527
+  loc -2.2678 -0.8064 0.0000  rot_deg 0.0000 0.0000 8.6242  scale 0.2836 0.2836 0.2836
   empty PLAIN_AXES size 0.2000
 bell_l_bell  MESH  parent=bell_l_swing
   loc 0.0000 0.0000 0.1200  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh bell.001 verts 522 faces 560
   materials gold, Outline
-  modifier Outline SOLIDIFY thickness=0.02791 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04513 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 bell_l_clapper  MESH  parent=bell_l_swing
   loc 0.0000 0.0000 0.1600  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.051 verts 482 faces 512
   materials clock, Outline
-  modifier Outline SOLIDIFY thickness=0.0279 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04512 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 bell_l_handle  MESH  parent=bell_l_swing
   loc 0.0000 0.0000 0.1200  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh handle.001 verts 322 faces 360
   materials black, Outline
-  modifier Outline SOLIDIFY thickness=0.02791 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04513 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 bell_l_swing  EMPTY  parent=bell_l
-  loc 0.0000 0.0000 1.2000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.6000  rot_deg 0.0000 18.7980 0.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action bell_l_swingAction
+  action bell_l_swingAction.002
 
 == Scene Collection/Props/bell_r (5 objects)
 bell_r  EMPTY
-  loc 1.5775 0.8500 0.0000  rot_deg 0.0000 0.0000 -5.3854  scale 0.6440 0.6440 0.6440
+  loc 1.6041 1.2114 0.0000  rot_deg 0.0000 0.0000 -5.3587  scale 0.4378 0.4378 0.4378
   empty PLAIN_AXES size 0.2000
 bell_r_bell  MESH  parent=bell_r_swing
   loc 0.0000 0.0000 0.1200  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh bell verts 522 faces 560
   materials gold, Outline
-  modifier Outline SOLIDIFY thickness=0.02174 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.03261 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 bell_r_clapper  MESH  parent=bell_r_swing
   loc 0.0000 0.0000 0.1600  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.026 verts 482 faces 512
   materials clock, Outline
-  modifier Outline SOLIDIFY thickness=0.02173 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.03259 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 bell_r_handle  MESH  parent=bell_r_swing
   loc 0.0000 0.0000 0.1200  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh handle verts 322 faces 360
   materials black, Outline
-  modifier Outline SOLIDIFY thickness=0.02174 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.03261 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 bell_r_swing  EMPTY  parent=bell_r
-  loc 0.0000 0.0000 1.2000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.6000  rot_deg 0.0000 0.3640 0.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action bell_r_swingAction
+  action bell_r_swingAction.002
 
-== Scene Collection/Props/clock_br (12 objects)
+== Scene Collection/Props/clock_br (14 objects)
 clock_br  EMPTY
-  loc 2.2936 -1.9632 0.0000  rot_deg 0.0000 0.0000 -9.1627  scale 0.4009 0.4009 0.4009
+  loc 2.2289 -1.8956 0.0000  rot_deg 0.0000 0.0000 -9.1394  scale 0.2798 0.2798 0.2798
   empty PLAIN_AXES size 0.2000
 clock_br_body  MESH  parent=clock_br_rattle
   loc 0.0000 0.0000 0.5000  rot_deg 90.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder.010 verts 64 faces 34
   materials metal, Outline
   modifier Bevel BEVEL width=0.033 segments=3 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02975 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04282 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_br_chime_l  MESH  parent=clock_br_rattle
   loc -0.2800 0.0000 0.9000  rot_deg 0.0000 -38.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.029 verts 482 faces 512
   materials gold, Outline
-  modifier Outline SOLIDIFY thickness=0.0297 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04272 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_br_chime_r  MESH  parent=clock_br_rattle
   loc 0.2800 0.0000 0.9000  rot_deg 0.0000 38.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.030 verts 482 faces 512
   materials gold, Outline
-  modifier Outline SOLIDIFY thickness=0.02961 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04268 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_br_face  MESH  parent=clock_br_rattle
   loc 0.0000 -0.1100 0.5000  rot_deg 90.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder.011 verts 64 faces 34
   materials clockface, Outline
   modifier Bevel BEVEL width=0.003 segments=3 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02967 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04274 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_br_hammer  MESH  parent=clock_br_rattle
   loc 0.0000 0.0000 0.9700  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cube.026 verts 8 faces 6
-  materials clock, Outline
-  modifier Outline SOLIDIFY thickness=0.02964 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-clock_br_hour  MESH  parent=clock_br_rattle
-  loc 0.0000 -0.1280 0.6200  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube.024 verts 8 faces 6
+  materials clock, Outline
+  modifier Outline SOLIDIFY thickness=0.04268 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+clock_br_hour  MESH  parent=clock_br_hour_pivot
+  loc 0.0000 -0.1280 0.6200  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Cube.025 verts 8 faces 6
   materials black
+clock_br_hour_pivot  EMPTY  parent=clock_br_rattle
+  loc 0.0000 -0.1280 0.5000  rot_deg 0.0000 -10.1360 0.0000  scale 1.0000 1.0000 1.0000
+  empty PLAIN_AXES size 0.2000
+  action clock_br_hour_pivotAction.001
 clock_br_leg_l  MESH  parent=clock_br_rattle
   loc -0.2500 0.0000 0.0800  rot_deg 0.0000 -25.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder.013 verts 64 faces 34
   materials clock, Outline
   modifier Bevel BEVEL width=0.0075 segments=3 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02989 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04295 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_br_leg_r  MESH  parent=clock_br_rattle
   loc 0.2500 0.0000 0.0800  rot_deg 0.0000 25.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder.014 verts 64 faces 34
   materials clock, Outline
   modifier Bevel BEVEL width=0.0075 segments=3 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.0298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-clock_br_minute  MESH  parent=clock_br_rattle
-  loc -0.0850 -0.1280 0.3520  rot_deg 0.0000 30.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cube.025 verts 8 faces 6
+  modifier Outline SOLIDIFY thickness=0.04291 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+clock_br_minute  MESH  parent=clock_br_minute_pivot
+  loc 0.0000 -0.1280 0.6600  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Cube.026 verts 8 faces 6
   materials black
+clock_br_minute_pivot  EMPTY  parent=clock_br_rattle
+  loc 0.0000 -0.1280 0.5000  rot_deg 0.0000 225.9280 0.0000  scale 1.0000 1.0000 1.0000
+  empty PLAIN_AXES size 0.2000
+  action clock_br_minute_pivotAction.001
 clock_br_pin  MESH  parent=clock_br_rattle
   loc 0.0000 -0.1330 0.5000  rot_deg 90.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder.012 verts 64 faces 34
   materials black
   modifier Bevel BEVEL width=0.003 segments=3 limit_method=ANGLE harden_normals=False
 clock_br_rattle  EMPTY  parent=clock_br
-  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 -14.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.0362  rot_deg 0.0000 8.6880 0.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action clock_br_rattleAction.001
+  action clock_br_rattleAction.003
 
-== Scene Collection/Props/clock_c (12 objects)
+== Scene Collection/Props/clock_c (14 objects)
 clock_c  EMPTY
-  loc -1.3811 -1.0602 0.0000  rot_deg 0.0000 0.0000 5.3228  scale 0.6130 0.6130 0.6130
+  loc -1.4248 -0.8622 0.0000  rot_deg 0.0000 0.0000 5.2709  scale 0.4022 0.4022 0.4022
   empty PLAIN_AXES size 0.2000
 clock_c_body  MESH  parent=clock_c_rattle
   loc 0.0000 0.0000 0.5000  rot_deg 90.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder.005 verts 64 faces 34
   materials metal, Outline
   modifier Bevel BEVEL width=0.033 segments=3 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02047 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.03163 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_c_chime_l  MESH  parent=clock_c_rattle
   loc -0.2800 0.0000 0.9000  rot_deg 0.0000 -38.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.027 verts 482 faces 512
   materials gold, Outline
-  modifier Outline SOLIDIFY thickness=0.02035 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.03149 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_c_chime_r  MESH  parent=clock_c_rattle
   loc 0.2800 0.0000 0.9000  rot_deg 0.0000 38.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.028 verts 482 faces 512
   materials gold, Outline
-  modifier Outline SOLIDIFY thickness=0.02038 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.03156 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_c_face  MESH  parent=clock_c_rattle
   loc 0.0000 -0.1100 0.5000  rot_deg 90.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder.006 verts 64 faces 34
   materials clockface, Outline
   modifier Bevel BEVEL width=0.003 segments=3 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02039 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.03155 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_c_hammer  MESH  parent=clock_c_rattle
   loc 0.0000 0.0000 0.9700  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cube.019 verts 8 faces 6
-  materials clock, Outline
-  modifier Outline SOLIDIFY thickness=0.02035 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-clock_c_hour  MESH  parent=clock_c_rattle
-  loc 0.0000 -0.1280 0.6200  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube.017 verts 8 faces 6
+  materials clock, Outline
+  modifier Outline SOLIDIFY thickness=0.03151 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+clock_c_hour  MESH  parent=clock_c_hour_pivot
+  loc 0.0000 -0.1280 0.6200  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Cube.018 verts 8 faces 6
   materials black
+clock_c_hour_pivot  EMPTY  parent=clock_c_rattle
+  loc 0.0000 -0.1280 0.5000  rot_deg 0.0000 -12.9220 0.0000  scale 1.0000 1.0000 1.0000
+  empty PLAIN_AXES size 0.2000
+  action clock_c_hour_pivotAction.001
 clock_c_leg_l  MESH  parent=clock_c_rattle
   loc -0.2500 0.0000 0.0800  rot_deg 0.0000 -25.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder.008 verts 64 faces 34
   materials clock, Outline
   modifier Bevel BEVEL width=0.0075 segments=3 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02057 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0317 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_c_leg_r  MESH  parent=clock_c_rattle
   loc 0.2500 0.0000 0.0800  rot_deg 0.0000 25.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder.009 verts 64 faces 34
   materials clock, Outline
   modifier Bevel BEVEL width=0.0075 segments=3 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.0206 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-clock_c_minute  MESH  parent=clock_c_rattle
-  loc -0.0850 -0.1280 0.3520  rot_deg 0.0000 30.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cube.018 verts 8 faces 6
+  modifier Outline SOLIDIFY thickness=0.03176 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+clock_c_minute  MESH  parent=clock_c_minute_pivot
+  loc 0.0000 -0.1280 0.6600  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Cube.019 verts 8 faces 6
   materials black
+clock_c_minute_pivot  EMPTY  parent=clock_c_rattle
+  loc 0.0000 -0.1280 0.5000  rot_deg 0.0000 230.3060 0.0000  scale 1.0000 1.0000 1.0000
+  empty PLAIN_AXES size 0.2000
+  action clock_c_minute_pivotAction.001
 clock_c_pin  MESH  parent=clock_c_rattle
   loc 0.0000 -0.1330 0.5000  rot_deg 90.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder.007 verts 64 faces 34
   materials black
   modifier Bevel BEVEL width=0.003 segments=3 limit_method=ANGLE harden_normals=False
 clock_c_rattle  EMPTY  parent=clock_c
-  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.0461  rot_deg 0.0000 11.0760 0.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action clock_c_rattleAction.001
+  action clock_c_rattleAction.003
 
-== Scene Collection/Props/clock_tl (12 objects)
+== Scene Collection/Props/clock_tl (14 objects)
 clock_tl  EMPTY
-  loc -3.4119 8.5496 0.0000  rot_deg 0.0000 0.0000 8.1319  scale 0.6587 0.6587 0.6587
+  loc -3.4815 8.8057 0.0000  rot_deg 0.0000 0.0000 8.1319  scale 0.4702 0.4702 0.4702
   empty PLAIN_AXES size 0.2000
 clock_tl_body  MESH  parent=clock_tl_rattle
   loc 0.0000 0.0000 0.5000  rot_deg 90.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder verts 64 faces 34
   materials metal, Outline
   modifier Bevel BEVEL width=0.033 segments=3 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02968 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04202 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_tl_chime_l  MESH  parent=clock_tl_rattle
   loc -0.2800 0.0000 0.9000  rot_deg 0.0000 -38.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere verts 482 faces 512
   materials gold, Outline
-  modifier Outline SOLIDIFY thickness=0.02956 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04189 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_tl_chime_r  MESH  parent=clock_tl_rattle
   loc 0.2800 0.0000 0.9000  rot_deg 0.0000 38.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.001 verts 482 faces 512
   materials gold, Outline
-  modifier Outline SOLIDIFY thickness=0.02958 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04192 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_tl_face  MESH  parent=clock_tl_rattle
   loc 0.0000 -0.1100 0.5000  rot_deg 90.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder.001 verts 64 faces 34
   materials clockface, Outline
   modifier Bevel BEVEL width=0.003 segments=3 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.0296 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04194 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_tl_hammer  MESH  parent=clock_tl_rattle
   loc 0.0000 0.0000 0.9700  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cube.002 verts 8 faces 6
-  materials clock, Outline
-  modifier Outline SOLIDIFY thickness=0.02955 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-clock_tl_hour  MESH  parent=clock_tl_rattle
-  loc 0.0000 -0.1280 0.6200  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube verts 8 faces 6
+  materials clock, Outline
+  modifier Outline SOLIDIFY thickness=0.04189 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+clock_tl_hour  MESH  parent=clock_tl_hour_pivot
+  loc 0.0000 -0.1280 0.6200  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Cube.001 verts 8 faces 6
   materials black
+clock_tl_hour_pivot  EMPTY  parent=clock_tl_rattle
+  loc 0.0000 -0.1280 0.5000  rot_deg 0.0000 13.2020 0.0000  scale 1.0000 1.0000 1.0000
+  empty PLAIN_AXES size 0.2000
+  action clock_tl_hour_pivotAction.001
 clock_tl_leg_l  MESH  parent=clock_tl_rattle
   loc -0.2500 0.0000 0.0800  rot_deg 0.0000 -25.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder.003 verts 64 faces 34
   materials clock, Outline
   modifier Bevel BEVEL width=0.0075 segments=3 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02979 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04213 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 clock_tl_leg_r  MESH  parent=clock_tl_rattle
   loc 0.2500 0.0000 0.0800  rot_deg 0.0000 25.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder.004 verts 64 faces 34
   materials clock, Outline
   modifier Bevel BEVEL width=0.0075 segments=3 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02981 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-clock_tl_minute  MESH  parent=clock_tl_rattle
-  loc -0.0850 -0.1280 0.3520  rot_deg 0.0000 30.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cube.001 verts 8 faces 6
+  modifier Outline SOLIDIFY thickness=0.04215 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+clock_tl_minute  MESH  parent=clock_tl_minute_pivot
+  loc 0.0000 -0.1280 0.6600  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Cube.002 verts 8 faces 6
   materials black
+clock_tl_minute_pivot  EMPTY  parent=clock_tl_rattle
+  loc 0.0000 -0.1280 0.5000  rot_deg 0.0000 189.2540 0.0000  scale 1.0000 1.0000 1.0000
+  empty PLAIN_AXES size 0.2000
+  action clock_tl_minute_pivotAction.001
 clock_tl_pin  MESH  parent=clock_tl_rattle
   loc 0.0000 -0.1330 0.5000  rot_deg 90.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cylinder.002 verts 64 faces 34
   materials black
   modifier Bevel BEVEL width=0.003 segments=3 limit_method=ANGLE harden_normals=False
 clock_tl_rattle  EMPTY  parent=clock_tl
-  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 -14.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.0472  rot_deg 0.0000 -11.3160 0.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action clock_tl_rattleAction.001
+  action clock_tl_rattleAction.003
 
 == Scene Collection/Props/lips_l (16 objects)
 lips_l  EMPTY
-  loc -1.5683 1.3369 0.0000  rot_deg 0.0000 0.0000 -2.7827  scale 0.9259 0.9259 0.9259
+  loc -1.5838 1.3952 0.0000  rot_deg 0.0000 0.0000 -2.7521  scale 0.7371 0.7371 0.7371
   empty PLAIN_AXES size 0.2000
 lips_l_corner0  MESH  parent=lips_l_swivel
   loc -0.4300 0.0700 0.3900  rot_deg 0.0000 0.0000 0.0000  scale 0.1500 0.1500 0.1500
   mesh Sphere.022 verts 482 faces 512
   materials lips, Outline
-  modifier Outline SOLIDIFY thickness=0.01549 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action lips_l_corner0Action.001
+  modifier Outline SOLIDIFY thickness=0.01953 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action lips_l_corner0Action.003
 lips_l_corner1  MESH  parent=lips_l_swivel
   loc 0.4300 0.0700 0.3900  rot_deg 0.0000 0.0000 0.0000  scale 0.1500 0.1500 0.1500
   mesh Sphere.023 verts 482 faces 512
   materials lips, Outline
-  modifier Outline SOLIDIFY thickness=0.01546 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action lips_l_corner1Action.001
+  modifier Outline SOLIDIFY thickness=0.0195 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action lips_l_corner1Action.003
 lips_l_inner  MESH  parent=lips_l_swivel
   loc 0.0000 0.0200 0.3900  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.058 verts 482 faces 512
+  mesh Sphere.052 verts 482 faces 512
   materials mouth
-  action lips_l_innerAction.001
+  action lips_l_innerAction.003
 lips_l_lower  EMPTY  parent=lips_l_swivel
   loc 0.0000 0.0700 0.3900  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action lips_l_lowerAction.001
+  action lips_l_lowerAction.003
 lips_l_lower.001  MESH  parent=lips_l_lower
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh lower verts 776 faces 792
   materials lips, Outline
-  modifier Outline SOLIDIFY thickness=0.01553 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01957 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_l_swivel  EMPTY  parent=lips_l
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action lips_l_swivelAction.001
+  action lips_l_swivelAction.003
 lips_l_tongue  MESH  parent=lips_l_lower
   loc 0.0300 -0.1000 0.3520  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.057 verts 482 faces 512
+  mesh Sphere.050 verts 482 faces 512
   materials tongue, Outline
-  modifier Outline SOLIDIFY thickness=0.01536 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0194 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_l_tooth0  MESH  parent=lips_l_upper
   loc -0.2167 -0.1094 0.3830  rot_deg 0.0000 0.0000 -7.5946  scale 1.0000 1.0000 1.0000
   mesh Cube.011 verts 8 faces 6
   materials white, Outline
   modifier Bevel BEVEL width=0.014 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.01536 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01939 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_l_tooth1  MESH  parent=lips_l_upper
   loc -0.1300 -0.1450 0.3830  rot_deg 0.0000 0.0000 -4.5739  scale 1.0000 1.0000 1.0000
   mesh Cube.029 verts 8 faces 6
   materials white, Outline
   modifier Bevel BEVEL width=0.014 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.01533 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01936 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_l_tooth2  MESH  parent=lips_l_upper
   loc -0.0433 -0.1628 0.3830  rot_deg 0.0000 0.0000 -1.5275  scale 1.0000 1.0000 1.0000
   mesh Cube.030 verts 8 faces 6
   materials white, Outline
   modifier Bevel BEVEL width=0.014 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.01531 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01935 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_l_tooth3  MESH  parent=lips_l_upper
   loc 0.0433 -0.1628 0.3830  rot_deg 0.0000 0.0000 1.5275  scale 1.0000 1.0000 1.0000
   mesh Cube.031 verts 8 faces 6
   materials white, Outline
   modifier Bevel BEVEL width=0.014 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.01531 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01934 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_l_tooth4  MESH  parent=lips_l_upper
   loc 0.1300 -0.1450 0.3830  rot_deg 0.0000 0.0000 4.5739  scale 1.0000 1.0000 1.0000
   mesh Cube.032 verts 8 faces 6
   materials white, Outline
   modifier Bevel BEVEL width=0.014 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.01532 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01935 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_l_tooth5  MESH  parent=lips_l_upper
   loc 0.2167 -0.1094 0.3830  rot_deg 0.0000 0.0000 7.5946  scale 1.0000 1.0000 1.0000
   mesh Cube.033 verts 8 faces 6
   materials white, Outline
   modifier Bevel BEVEL width=0.014 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.01534 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01938 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_l_upper  EMPTY  parent=lips_l_swivel
   loc 0.0000 0.0700 0.3900  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action lips_l_upperAction.001
+  action lips_l_upperAction.003
 lips_l_upper.001  MESH  parent=lips_l_upper
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh upper verts 776 faces 792
   materials lips, Outline
-  modifier Outline SOLIDIFY thickness=0.01553 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01957 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 
 == Scene Collection/Props/lips_r (16 objects)
 lips_r  EMPTY
-  loc 2.6763 0.9095 0.0000  rot_deg 0.0000 0.0000 -16.9465  scale 1.1056 1.1056 1.1056
+  loc 2.7110 1.2918 0.0000  rot_deg 0.0000 0.0000 -16.9024  scale 0.6312 0.6312 0.6312
   empty PLAIN_AXES size 0.2000
 lips_r_corner0  MESH  parent=lips_r_swivel
-  loc -0.4300 0.0700 0.3900  rot_deg 0.0000 0.0000 0.0000  scale 0.8143 0.8143 0.8143
+  loc -0.4300 0.0700 0.3900  rot_deg 0.0000 0.0000 0.0000  scale 0.6353 0.6353 0.6353
   mesh Sphere.024 verts 482 faces 512
   materials lips, Outline
-  modifier Outline SOLIDIFY thickness=0.01293 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action lips_r_corner0Action.001
+  modifier Outline SOLIDIFY thickness=0.02292 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action lips_r_corner0Action.003
 lips_r_corner1  MESH  parent=lips_r_swivel
-  loc 0.4300 0.0700 0.3900  rot_deg 0.0000 0.0000 0.0000  scale 0.8143 0.8143 0.8143
+  loc 0.4300 0.0700 0.3900  rot_deg 0.0000 0.0000 0.0000  scale 0.6353 0.6353 0.6353
   mesh Sphere.025 verts 482 faces 512
   materials lips, Outline
-  modifier Outline SOLIDIFY thickness=0.01233 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action lips_r_corner1Action.001
+  modifier Outline SOLIDIFY thickness=0.02238 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action lips_r_corner1Action.003
 lips_r_inner  MESH  parent=lips_r_swivel
-  loc 0.0000 0.0200 0.3900  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 7.2524
-  mesh Sphere.060 verts 482 faces 512
+  loc 0.0000 0.0200 0.3900  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 5.5680
+  mesh Sphere.054 verts 482 faces 512
   materials mouth
-  action lips_r_innerAction.001
+  action lips_r_innerAction.003
 lips_r_lower  EMPTY  parent=lips_r_swivel
-  loc 0.0000 0.0700 0.3900  rot_deg 31.2620 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0700 0.3900  rot_deg 29.6920 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action lips_r_lowerAction.001
+  action lips_r_lowerAction.003
 lips_r_lower.001  MESH  parent=lips_r_lower
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh lower.001 verts 776 faces 792
   materials lips, Outline
-  modifier Outline SOLIDIFY thickness=0.01277 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0228 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_r_swivel  EMPTY  parent=lips_r
-  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 -51.2751  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 -43.8274  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action lips_r_swivelAction.001
+  action lips_r_swivelAction.003
 lips_r_tongue  MESH  parent=lips_r_lower
   loc 0.0300 -0.1000 0.3520  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.059 verts 482 faces 512
+  mesh Sphere.053 verts 482 faces 512
   materials tongue, Outline
-  modifier Outline SOLIDIFY thickness=0.01263 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.02261 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_r_tooth0  MESH  parent=lips_r_upper
   loc -0.2167 -0.1094 0.3830  rot_deg 0.0000 0.0000 -7.5946  scale 1.0000 1.0000 1.0000
   mesh Cube.016 verts 8 faces 6
   materials white, Outline
   modifier Bevel BEVEL width=0.014 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.01273 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.02271 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_r_tooth1  MESH  parent=lips_r_upper
   loc -0.1300 -0.1450 0.3830  rot_deg 0.0000 0.0000 -4.5739  scale 1.0000 1.0000 1.0000
   mesh Cube.035 verts 8 faces 6
   materials white, Outline
   modifier Bevel BEVEL width=0.014 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.01265 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.02264 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_r_tooth2  MESH  parent=lips_r_upper
   loc -0.0433 -0.1628 0.3830  rot_deg 0.0000 0.0000 -1.5275  scale 1.0000 1.0000 1.0000
   mesh Cube.036 verts 8 faces 6
   materials white, Outline
   modifier Bevel BEVEL width=0.014 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.01259 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.02257 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_r_tooth3  MESH  parent=lips_r_upper
   loc 0.0433 -0.1628 0.3830  rot_deg 0.0000 0.0000 1.5275  scale 1.0000 1.0000 1.0000
   mesh Cube.037 verts 8 faces 6
   materials white, Outline
   modifier Bevel BEVEL width=0.014 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.01253 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.02252 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_r_tooth4  MESH  parent=lips_r_upper
   loc 0.1300 -0.1450 0.3830  rot_deg 0.0000 0.0000 4.5739  scale 1.0000 1.0000 1.0000
   mesh Cube.038 verts 8 faces 6
   materials white, Outline
   modifier Bevel BEVEL width=0.014 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.01247 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.02247 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_r_tooth5  MESH  parent=lips_r_upper
   loc 0.2167 -0.1094 0.3830  rot_deg 0.0000 0.0000 7.5946  scale 1.0000 1.0000 1.0000
   mesh Cube.039 verts 8 faces 6
   materials white, Outline
   modifier Bevel BEVEL width=0.014 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.01242 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.02243 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 lips_r_upper  EMPTY  parent=lips_r_swivel
-  loc 0.0000 0.0700 0.3900  rot_deg -39.0775 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0700 0.3900  rot_deg -35.4020 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action lips_r_upperAction.001
+  action lips_r_upperAction.003
 lips_r_upper.001  MESH  parent=lips_r_upper
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh upper.001 verts 776 faces 792
   materials lips, Outline
-  modifier Outline SOLIDIFY thickness=0.01262 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.02262 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 
 == Scene Collection/Props/toaster_b (11 objects)
 toaster_b  EMPTY
-  loc 1.1993 -1.8342 0.0000  rot_deg 0.0000 0.0000 -45.2565  scale 0.5321 0.5321 0.5321
+  loc 1.2205 -1.6478 0.0000  rot_deg 0.0000 0.0000 -61.2283  scale 0.3848 0.3848 0.3848
   empty PLAIN_AXES size 0.2000
 toaster_b_body  MESH  parent=toaster_b_hover
   loc 0.0000 0.0000 0.4000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube.020 verts 8 faces 6
   materials metal, Outline
   modifier Bevel BEVEL width=0.13 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02252 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.03156 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 toaster_b_hover  EMPTY  parent=toaster_b
-  loc 0.0000 0.0000 0.1800  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.1721  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action toaster_b_hoverAction.001
+  action toaster_b_hoverAction.007
 toaster_b_lever  MESH  parent=toaster_b_hover
   loc 0.0000 -0.5000 0.5300  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube.022 verts 8 faces 6
   materials black, Outline
   modifier Bevel BEVEL width=0.02 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02223 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.03135 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 toaster_b_lever_slot  MESH  parent=toaster_b_hover
   loc 0.0000 -0.4760 0.4000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube.021 verts 8 faces 6
@@ -815,50 +828,50 @@ toaster_b_slot.001  MESH  parent=toaster_b_hover
   mesh Cube.040 verts 8 faces 6
   materials slot
 toaster_b_toast  MESH  parent=toaster_b_hover
-  loc 0.0000 0.0000 0.3000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.4000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh toast.006 verts 80 faces 42
   materials toast, Outline
   modifier Bevel BEVEL width=0.012 segments=3 limit_method=ANGLE harden_normals=True
-  modifier Outline SOLIDIFY thickness=0.02255 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action toaster_b_toastAction.001
+  modifier Outline SOLIDIFY thickness=0.03156 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action toaster_b_toastAction.007
 toaster_b_toast.001  MESH  parent=toaster_b_hover
-  loc 0.0000 0.0000 0.3000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.4000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh toast.007 verts 80 faces 42
   materials toast, Outline
   modifier Bevel BEVEL width=0.012 segments=3 limit_method=ANGLE harden_normals=True
-  modifier Outline SOLIDIFY thickness=0.02255 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action toaster_b_toast.001Action.001
+  modifier Outline SOLIDIFY thickness=0.03156 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action toaster_b_toast.001Action.007
 toaster_b_wing  EMPTY  parent=toaster_b_hover
-  loc 0.2600 0.0000 0.4800  rot_deg 0.0000 -4.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.2600 0.2800 0.5000  rot_deg 0.0000 -20.1840 56.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action toaster_b_wingAction
+  action toaster_b_wingAction.007
 toaster_b_wing.001  MESH  parent=toaster_b_wing
-  loc 0.2400 0.0000 0.4800  rot_deg -58.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.2400 0.2800 0.5000  rot_deg -14.0000 0.0000 56.0000  scale 1.0000 1.0000 1.0000
   mesh wing.003 verts 128 faces 66
   materials white, Outline
   modifier Bevel BEVEL width=0.01 segments=3 limit_method=ANGLE harden_normals=True
-  modifier Outline SOLIDIFY thickness=0.02238 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.03147 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 
 == Scene Collection/Props/toaster_l (11 objects)
 toaster_l  EMPTY
-  loc -2.8048 1.0813 0.0000  rot_deg 0.0000 0.0000 -31.1567  scale 0.5921 0.5921 0.5921
+  loc -2.7814 1.2921 0.0000  rot_deg 0.0000 0.0000 -47.1326  scale 0.4697 0.4697 0.4697
   empty PLAIN_AXES size 0.2000
 toaster_l_body  MESH  parent=toaster_l_hover
   loc 0.0000 0.0000 0.4000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube.012 verts 8 faces 6
   materials metal, Outline
   modifier Bevel BEVEL width=0.13 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02382 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.03039 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 toaster_l_hover  EMPTY  parent=toaster_l
-  loc 0.0000 0.0000 0.1800  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.1824  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action toaster_l_hoverAction.001
+  action toaster_l_hoverAction.007
 toaster_l_lever  MESH  parent=toaster_l_hover
   loc 0.0000 -0.5000 0.5300  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube.014 verts 8 faces 6
   materials black, Outline
   modifier Bevel BEVEL width=0.02 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02347 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0301 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 toaster_l_lever_slot  MESH  parent=toaster_l_hover
   loc 0.0000 -0.4760 0.4000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube.013 verts 8 faces 6
@@ -873,50 +886,50 @@ toaster_l_slot.001  MESH  parent=toaster_l_hover
   mesh Cube.034 verts 8 faces 6
   materials slot
 toaster_l_toast  MESH  parent=toaster_l_hover
-  loc 0.0000 0.0000 0.3588  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.3978  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh toast.004 verts 80 faces 42
   materials toast, Outline
   modifier Bevel BEVEL width=0.012 segments=3 limit_method=ANGLE harden_normals=True
-  modifier Outline SOLIDIFY thickness=0.02382 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action toaster_l_toastAction.001
+  modifier Outline SOLIDIFY thickness=0.03039 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action toaster_l_toastAction.007
 toaster_l_toast.001  MESH  parent=toaster_l_hover
-  loc 0.0000 0.0000 0.3771  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.3978  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh toast.005 verts 80 faces 42
   materials toast, Outline
   modifier Bevel BEVEL width=0.012 segments=3 limit_method=ANGLE harden_normals=True
-  modifier Outline SOLIDIFY thickness=0.02382 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action toaster_l_toast.001Action.001
+  modifier Outline SOLIDIFY thickness=0.03039 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action toaster_l_toast.001Action.007
 toaster_l_wing  EMPTY  parent=toaster_l_hover
-  loc 0.2600 0.0000 0.4800  rot_deg 0.0000 -4.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.2600 0.2800 0.5000  rot_deg 0.0000 -1.7520 56.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action toaster_l_wingAction
+  action toaster_l_wingAction.007
 toaster_l_wing.001  MESH  parent=toaster_l_wing
-  loc 0.2400 0.0000 0.4800  rot_deg -58.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.2400 0.2800 0.5000  rot_deg -14.0000 0.0000 56.0000  scale 1.0000 1.0000 1.0000
   mesh wing.002 verts 128 faces 66
   materials white, Outline
   modifier Bevel BEVEL width=0.01 segments=3 limit_method=ANGLE harden_normals=True
-  modifier Outline SOLIDIFY thickness=0.0237 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.03037 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 
 == Scene Collection/Props/toaster_s (11 objects)
 toaster_s  EMPTY
-  loc -1.9106 4.0351 0.0000  rot_deg 0.0000 0.0000 -34.8615  scale 0.4989 0.4989 0.4989
+  loc -1.8948 4.2618 0.0000  rot_deg 0.0000 0.0000 -50.8361  scale 0.3307 0.3307 0.3307
   empty PLAIN_AXES size 0.2000
 toaster_s_body  MESH  parent=toaster_s_hover
   loc 0.0000 0.0000 0.4000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube.007 verts 8 faces 6
   materials metal, Outline
   modifier Bevel BEVEL width=0.13 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.03262 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04979 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 toaster_s_hover  EMPTY  parent=toaster_s
-  loc 0.0000 0.0000 0.1506  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.1727  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action toaster_s_hoverAction.001
+  action toaster_s_hoverAction.007
 toaster_s_lever  MESH  parent=toaster_s_hover
   loc 0.0000 -0.5000 0.5300  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube.009 verts 8 faces 6
   materials black, Outline
   modifier Bevel BEVEL width=0.02 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.03229 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04952 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 toaster_s_lever_slot  MESH  parent=toaster_s_hover
   loc 0.0000 -0.4760 0.4000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube.008 verts 8 faces 6
@@ -931,50 +944,50 @@ toaster_s_slot.001  MESH  parent=toaster_s_hover
   mesh Cube.028 verts 8 faces 6
   materials slot
 toaster_s_toast  MESH  parent=toaster_s_hover
-  loc 0.0000 0.0000 0.3000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.3909  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh toast.002 verts 80 faces 42
   materials toast, Outline
   modifier Bevel BEVEL width=0.012 segments=3 limit_method=ANGLE harden_normals=True
-  modifier Outline SOLIDIFY thickness=0.03265 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action toaster_s_toastAction.001
+  modifier Outline SOLIDIFY thickness=0.04979 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action toaster_s_toastAction.007
 toaster_s_toast.001  MESH  parent=toaster_s_hover
-  loc 0.0000 0.0000 0.3000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.3909  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh toast.003 verts 80 faces 42
   materials toast, Outline
   modifier Bevel BEVEL width=0.012 segments=3 limit_method=ANGLE harden_normals=True
-  modifier Outline SOLIDIFY thickness=0.03265 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action toaster_s_toast.001Action.001
+  modifier Outline SOLIDIFY thickness=0.04979 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action toaster_s_toast.001Action.007
 toaster_s_wing  EMPTY  parent=toaster_s_hover
-  loc 0.2600 0.0000 0.4800  rot_deg 0.0000 -14.5801 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.2600 0.2800 0.5000  rot_deg 0.0000 -19.1760 56.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action toaster_s_wingAction
+  action toaster_s_wingAction.007
 toaster_s_wing.001  MESH  parent=toaster_s_wing
-  loc 0.2400 0.0000 0.4800  rot_deg -58.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.2400 0.2800 0.5000  rot_deg -14.0000 0.0000 56.0000  scale 1.0000 1.0000 1.0000
   mesh wing.001 verts 128 faces 66
   materials white, Outline
   modifier Bevel BEVEL width=0.01 segments=3 limit_method=ANGLE harden_normals=True
-  modifier Outline SOLIDIFY thickness=0.0325 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04975 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 
 == Scene Collection/Props/toaster_tr (11 objects)
 toaster_tr  EMPTY
-  loc 3.1335 5.9104 0.0000  rot_deg 0.0000 0.0000 -48.4072  scale 0.5939 0.5939 0.5939
+  loc 3.2056 6.3922 0.0000  rot_deg 0.0000 0.0000 -64.3836  scale 0.3827 0.3827 0.3827
   empty PLAIN_AXES size 0.2000
 toaster_tr_body  MESH  parent=toaster_tr_hover
   loc 0.0000 0.0000 0.4000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube.003 verts 8 faces 6
   materials metal, Outline
   modifier Bevel BEVEL width=0.13 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02966 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04705 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 toaster_tr_hover  EMPTY  parent=toaster_tr
-  loc 0.0000 0.0000 0.2276  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.1839  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action toaster_tr_hoverAction.001
+  action toaster_tr_hoverAction.007
 toaster_tr_lever  MESH  parent=toaster_tr_hover
   loc 0.0000 -0.5000 0.5300  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube.005 verts 8 faces 6
   materials black, Outline
   modifier Bevel BEVEL width=0.02 segments=4 limit_method=ANGLE harden_normals=False
-  modifier Outline SOLIDIFY thickness=0.02939 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04686 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 toaster_tr_lever_slot  MESH  parent=toaster_tr_hover
   loc 0.0000 -0.4760 0.4000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Cube.004 verts 8 faces 6
@@ -989,422 +1002,278 @@ toaster_tr_slot.001  MESH  parent=toaster_tr_hover
   mesh Cube.027 verts 8 faces 6
   materials slot
 toaster_tr_toast  MESH  parent=toaster_tr_hover
-  loc 0.0000 0.0000 0.3588  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.3939  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh toast verts 80 faces 42
   materials toast, Outline
   modifier Bevel BEVEL width=0.012 segments=3 limit_method=ANGLE harden_normals=True
-  modifier Outline SOLIDIFY thickness=0.02968 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action toaster_tr_toastAction.001
+  modifier Outline SOLIDIFY thickness=0.04705 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action toaster_tr_toastAction.007
 toaster_tr_toast.001  MESH  parent=toaster_tr_hover
-  loc 0.0000 0.0000 0.3368  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.3939  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh toast.001 verts 80 faces 42
   materials toast, Outline
   modifier Bevel BEVEL width=0.012 segments=3 limit_method=ANGLE harden_normals=True
-  modifier Outline SOLIDIFY thickness=0.02968 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action toaster_tr_toast.001Action.001
+  modifier Outline SOLIDIFY thickness=0.04705 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action toaster_tr_toast.001Action.007
 toaster_tr_wing  EMPTY  parent=toaster_tr_hover
-  loc 0.2600 0.0000 0.4800  rot_deg 0.0000 13.1190 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.2600 0.2800 0.5000  rot_deg 0.0000 0.9840 56.0000  scale 1.0000 1.0000 1.0000
   empty PLAIN_AXES size 0.2000
-  action toaster_tr_wingAction
+  action toaster_tr_wingAction.007
 toaster_tr_wing.001  MESH  parent=toaster_tr_wing
-  loc 0.2400 0.0000 0.4800  rot_deg -58.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.2400 0.2800 0.5000  rot_deg -14.0000 0.0000 56.0000  scale 1.0000 1.0000 1.0000
   mesh wing verts 128 faces 66
   materials white, Outline
   modifier Bevel BEVEL width=0.01 segments=3 limit_method=ANGLE harden_normals=True
-  modifier Outline SOLIDIFY thickness=0.02951 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.04696 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 
-== Scene Collection/Props/worm_b (22 objects)
+== Scene Collection/Props/worm_b (14 objects)
 worm_b  EMPTY
-  loc -2.2857 -2.4456 0.0000  rot_deg 0.0000 0.0000 9.6402  scale 0.4300 0.4300 0.4300
+  loc -2.2634 -2.5478 0.0000  rot_deg 0.0000 0.0000 9.6261  scale 0.3022 0.3022 0.3022
   empty PLAIN_AXES size 0.2000
 worm_b_seg0  MESH  parent=worm_b
-  loc -0.5525 0.0000 0.0400  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.5626 0.0000 0.0520  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.031 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02695 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg0Action.001
+  modifier Outline SOLIDIFY thickness=0.03812 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_b_seg0Action.004
 worm_b_seg1  MESH  parent=worm_b
-  loc -0.4930 0.0000 0.0443  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.4686 0.0000 0.0588  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.032 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02695 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg1Action.001
+  modifier Outline SOLIDIFY thickness=0.03813 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_b_seg1Action.004
 worm_b_seg10  MESH  parent=worm_b
-  loc 0.0000 0.0000 0.1882  rot_deg 0.0000 -0.5100 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.052 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.027 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg10Action.001
-worm_b_seg11  MESH  parent=worm_b
-  loc 0.0581 0.0000 0.1776  rot_deg 0.0000 19.0937 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.053 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.027 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg11Action.001
-worm_b_seg12  MESH  parent=worm_b
-  loc 0.1099 0.0000 0.1501  rot_deg 0.0000 33.6234 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.054 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02701 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg12Action.001
-worm_b_seg13  MESH  parent=worm_b
-  loc 0.1559 0.0000 0.1144  rot_deg 0.0000 38.4908 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.055 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02702 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg13Action.001
-worm_b_seg14  MESH  parent=worm_b
-  loc 0.2026 0.0000 0.0793  rot_deg 0.0000 31.9680 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.056 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02704 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg14Action.001
-worm_b_seg15  MESH  parent=worm_b
-  loc 0.2559 0.0000 0.0537  rot_deg 0.0000 16.3485 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.073 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02705 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg15Action
-worm_b_seg16  MESH  parent=worm_b
-  loc 0.3146 0.0000 0.0452  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.074 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02705 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg16Action
-worm_b_seg17  MESH  parent=worm_b
-  loc 0.3741 0.0000 0.0424  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.075 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02706 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg17Action
-worm_b_seg18  MESH  parent=worm_b
-  loc 0.4335 0.0000 0.0400  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.076 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02707 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg18Action
-worm_b_seg19  MESH  parent=worm_b
-  loc 0.4930 0.0000 0.0400  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.077 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02708 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg19Action
-worm_b_seg2  MESH  parent=worm_b
-  loc -0.4335 0.0000 0.0464  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.033 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02696 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg2Action.001
-worm_b_seg20  MESH  parent=worm_b
-  loc 0.5525 0.0000 0.0480  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.078 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02708 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg20Action
-worm_b_seg3  MESH  parent=worm_b
-  loc -0.3741 0.0000 0.0481  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.034 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02696 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg3Action.001
-worm_b_seg4  MESH  parent=worm_b
-  loc -0.3146 0.0000 0.0494  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.035 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02697 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg4Action.001
-worm_b_seg5  MESH  parent=worm_b
-  loc -0.2559 0.0000 0.0570  rot_deg 0.0000 -15.4111 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.036 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02698 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg5Action.001
-worm_b_seg6  MESH  parent=worm_b
-  loc -0.2026 0.0000 0.0818  rot_deg 0.0000 -31.3690 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.037 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02698 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg6Action.001
-worm_b_seg7  MESH  parent=worm_b
-  loc -0.1559 0.0000 0.1163  rot_deg 0.0000 -38.4320 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.038 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02698 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg7Action.001
-worm_b_seg8  MESH  parent=worm_b
-  loc -0.1099 0.0000 0.1514  rot_deg 0.0000 -34.1263 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.039 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02699 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg8Action.001
-worm_b_seg9  MESH  parent=worm_b
-  loc -0.0581 0.0000 0.1782  rot_deg 0.0000 -19.9842 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.040 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02699 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg9Action.001
-
-== Scene Collection/Props/worm_l (22 objects)
-worm_l  EMPTY
-  loc -3.2811 4.5495 0.0000  rot_deg 0.0000 0.0000 9.1118  scale 0.5531 0.5531 0.5531
-  empty PLAIN_AXES size 0.2000
-worm_l_seg0  MESH  parent=worm_l
-  loc -0.5500 0.0000 0.0400  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.013 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03017 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg0Action.001
-worm_l_seg1  MESH  parent=worm_l
-  loc -0.4950 0.0000 0.0443  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.014 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03018 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg1Action.001
-worm_l_seg10  MESH  parent=worm_l
-  loc 0.0000 0.0000 0.0518  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.046 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03016 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg10Action.001
-worm_l_seg11  MESH  parent=worm_l
-  loc 0.0550 0.0000 0.0514  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.3717 0.0000 0.0565  rot_deg 0.0000 2.5282 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.047 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03017 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg11Action.001
-worm_l_seg12  MESH  parent=worm_l
-  loc 0.1100 0.0000 0.0507  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  modifier Outline SOLIDIFY thickness=0.03823 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_b_seg10Action.004
+worm_b_seg11  MESH  parent=worm_b
+  loc 0.4686 0.0000 0.0520  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.048 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03018 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg12Action.001
-worm_l_seg13  MESH  parent=worm_l
-  loc 0.1650 0.0000 0.0498  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  modifier Outline SOLIDIFY thickness=0.03825 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_b_seg11Action.004
+worm_b_seg12  MESH  parent=worm_b
+  loc 0.5626 0.0000 0.0620  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.049 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.0302 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg13Action.001
-worm_l_seg14  MESH  parent=worm_l
-  loc 0.2200 0.0000 0.0486  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.050 verts 482 faces 512
+  modifier Outline SOLIDIFY thickness=0.03826 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_b_seg12Action.004
+worm_b_seg2  MESH  parent=worm_b
+  loc -0.3717 0.0000 0.0624  rot_deg 0.0000 -2.1937 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.033 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03021 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg14Action.001
-worm_l_seg15  MESH  parent=worm_l
-  loc 0.2750 0.0000 0.0471  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.067 verts 482 faces 512
+  modifier Outline SOLIDIFY thickness=0.03814 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_b_seg2Action.004
+worm_b_seg3  MESH  parent=worm_b
+  loc -0.2786 0.0000 0.0767  rot_deg 0.0000 -11.7053 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.034 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03023 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg15Action
-worm_l_seg16  MESH  parent=worm_l
-  loc 0.3300 0.0000 0.0452  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.068 verts 482 faces 512
+  modifier Outline SOLIDIFY thickness=0.03815 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_b_seg3Action.004
+worm_b_seg4  MESH  parent=worm_b
+  loc -0.1876 0.0000 0.1008  rot_deg 0.0000 -15.0941 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.035 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03024 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg16Action
-worm_l_seg17  MESH  parent=worm_l
-  loc 0.3850 0.0000 0.0424  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.069 verts 482 faces 512
+  modifier Outline SOLIDIFY thickness=0.03815 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_b_seg4Action.004
+worm_b_seg5  MESH  parent=worm_b
+  loc -0.0935 0.0000 0.1236  rot_deg 0.0000 -10.3149 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.036 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03025 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg17Action
-worm_l_seg18  MESH  parent=worm_l
-  loc 0.4400 0.0000 0.0400  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.070 verts 482 faces 512
+  modifier Outline SOLIDIFY thickness=0.03816 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_b_seg5Action.004
+worm_b_seg6  MESH  parent=worm_b
+  loc 0.0000 0.0000 0.1321  rot_deg 0.0000 -0.1693 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.037 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03026 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg18Action
-worm_l_seg19  MESH  parent=worm_l
-  loc 0.4950 0.0000 0.0400  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.071 verts 482 faces 512
+  modifier Outline SOLIDIFY thickness=0.03817 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_b_seg6Action.004
+worm_b_seg7  MESH  parent=worm_b
+  loc 0.0935 0.0000 0.1224  rot_deg 0.0000 10.0644 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.038 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03027 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg19Action
-worm_l_seg2  MESH  parent=worm_l
-  loc -0.4400 0.0000 0.0464  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.015 verts 482 faces 512
+  modifier Outline SOLIDIFY thickness=0.03818 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_b_seg7Action.004
+worm_b_seg8  MESH  parent=worm_b
+  loc 0.1876 0.0000 0.0984  rot_deg 0.0000 15.0712 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.039 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03018 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg2Action.001
-worm_l_seg20  MESH  parent=worm_l
-  loc 0.5500 0.0000 0.0480  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.072 verts 482 faces 512
+  modifier Outline SOLIDIFY thickness=0.0382 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_b_seg8Action.004
+worm_b_seg9  MESH  parent=worm_b
+  loc 0.2786 0.0000 0.0728  rot_deg 0.0000 11.9171 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.040 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03027 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg20Action
-worm_l_seg3  MESH  parent=worm_l
-  loc -0.3850 0.0000 0.0481  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.016 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03019 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg3Action.001
-worm_l_seg4  MESH  parent=worm_l
-  loc -0.3300 0.0000 0.0494  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.017 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.0302 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg4Action.001
-worm_l_seg5  MESH  parent=worm_l
-  loc -0.2750 0.0000 0.0504  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.018 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.0302 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg5Action.001
-worm_l_seg6  MESH  parent=worm_l
-  loc -0.2200 0.0000 0.0511  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.019 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03019 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg6Action.001
-worm_l_seg7  MESH  parent=worm_l
-  loc -0.1650 0.0000 0.0517  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.020 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03018 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg7Action.001
-worm_l_seg8  MESH  parent=worm_l
-  loc -0.1100 0.0000 0.0519  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.021 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03016 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg8Action.001
-worm_l_seg9  MESH  parent=worm_l
-  loc -0.0550 0.0000 0.0520  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.045 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.03015 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg9Action.001
+  modifier Outline SOLIDIFY thickness=0.03822 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_b_seg9Action.004
 
-== Scene Collection/Props/worm_r (22 objects)
-worm_r  EMPTY
-  loc 1.9473 4.6808 0.0000  rot_deg 0.0000 0.0000 -5.4214  scale 0.6467 0.6467 0.6467
+== Scene Collection/Props/worm_l (14 objects)
+worm_l  EMPTY
+  loc -3.2373 4.3250 0.0000  rot_deg 0.0000 0.0000 9.0964  scale 0.3317 0.3317 0.3317
   empty PLAIN_AXES size 0.2000
-worm_r_seg0  MESH  parent=worm_r
-  loc -0.4185 0.0000 0.0400  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.002 verts 482 faces 512
+worm_l_seg0  MESH  parent=worm_l
+  loc -0.5634 0.0000 0.0520  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.013 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02603 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg0Action.001
-worm_r_seg1  MESH  parent=worm_r
-  loc -0.3525 0.0000 0.0443  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.003 verts 482 faces 512
+  modifier Outline SOLIDIFY thickness=0.04984 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_l_seg0Action.004
+worm_l_seg1  MESH  parent=worm_l
+  loc -0.4681 0.0000 0.0588  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.014 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02603 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg1Action.001
-worm_r_seg10  MESH  parent=worm_r
-  loc 0.0000 0.0000 0.3002  rot_deg 0.0000 -1.1315 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.012 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02599 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg10Action.001
-worm_r_seg11  MESH  parent=worm_r
-  loc 0.0571 0.0000 0.2761  rot_deg 0.0000 45.3367 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.041 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02599 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg11Action.001
-worm_r_seg12  MESH  parent=worm_r
-  loc 0.0772 0.0000 0.2240  rot_deg 0.0000 87.5327 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.042 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02598 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg12Action.001
-worm_r_seg13  MESH  parent=worm_r
-  loc 0.0695 0.0000 0.1686  rot_deg 0.0000 102.1660 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.043 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02598 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg13Action.001
-worm_r_seg14  MESH  parent=worm_r
-  loc 0.0650 0.0000 0.1127  rot_deg 0.0000 82.5067 0.0000  scale 1.0000 1.0000 1.0000
+  modifier Outline SOLIDIFY thickness=0.04985 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_l_seg1Action.004
+worm_l_seg10  MESH  parent=worm_l
+  loc 0.3700 0.0000 0.0567  rot_deg 0.0000 3.4281 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.044 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02598 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg14Action.001
-worm_r_seg15  MESH  parent=worm_r
-  loc 0.0932 0.0000 0.0628  rot_deg 0.0000 38.1712 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.061 verts 482 faces 512
+  modifier Outline SOLIDIFY thickness=0.04995 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_l_seg10Action.004
+worm_l_seg11  MESH  parent=worm_l
+  loc 0.4681 0.0000 0.0520  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.045 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02597 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg15Action
-worm_r_seg16  MESH  parent=worm_r
-  loc 0.1545 0.0000 0.0452  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.062 verts 482 faces 512
+  modifier Outline SOLIDIFY thickness=0.04996 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_l_seg11Action.004
+worm_l_seg12  MESH  parent=worm_l
+  loc 0.5634 0.0000 0.0620  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.046 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02597 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg16Action
-worm_r_seg17  MESH  parent=worm_r
-  loc 0.2205 0.0000 0.0424  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.063 verts 482 faces 512
+  modifier Outline SOLIDIFY thickness=0.04997 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_l_seg12Action.004
+worm_l_seg2  MESH  parent=worm_l
+  loc -0.3700 0.0000 0.0625  rot_deg 0.0000 -2.9744 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.015 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02597 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg17Action
-worm_r_seg18  MESH  parent=worm_r
-  loc 0.2865 0.0000 0.0400  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.064 verts 482 faces 512
+  modifier Outline SOLIDIFY thickness=0.04986 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_l_seg2Action.004
+worm_l_seg3  MESH  parent=worm_l
+  loc -0.2765 0.0000 0.0813  rot_deg 0.0000 -15.8953 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.016 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02596 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg18Action
-worm_r_seg19  MESH  parent=worm_r
-  loc 0.3525 0.0000 0.0400  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.065 verts 482 faces 512
+  modifier Outline SOLIDIFY thickness=0.04987 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_l_seg3Action.004
+worm_l_seg4  MESH  parent=worm_l
+  loc -0.1870 0.0000 0.1137  rot_deg 0.0000 -20.5175 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.017 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02596 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg19Action
+  modifier Outline SOLIDIFY thickness=0.04987 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_l_seg4Action.004
+worm_l_seg5  MESH  parent=worm_l
+  loc -0.0942 0.0000 0.1445  rot_deg 0.0000 -14.0024 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.018 verts 482 faces 512
+  materials worm, Outline
+  modifier Outline SOLIDIFY thickness=0.04987 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_l_seg5Action.004
+worm_l_seg6  MESH  parent=worm_l
+  loc 0.0000 0.0000 0.1563  rot_deg 0.0000 -0.2296 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.019 verts 482 faces 512
+  materials worm, Outline
+  modifier Outline SOLIDIFY thickness=0.04988 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_l_seg6Action.004
+worm_l_seg7  MESH  parent=worm_l
+  loc 0.0942 0.0000 0.1433  rot_deg 0.0000 13.6614 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.020 verts 482 faces 512
+  materials worm, Outline
+  modifier Outline SOLIDIFY thickness=0.04989 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_l_seg7Action.004
+worm_l_seg8  MESH  parent=worm_l
+  loc 0.1870 0.0000 0.1113  rot_deg 0.0000 20.4863 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.021 verts 482 faces 512
+  materials worm, Outline
+  modifier Outline SOLIDIFY thickness=0.04991 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_l_seg8Action.004
+worm_l_seg9  MESH  parent=worm_l
+  loc 0.2765 0.0000 0.0775  rot_deg 0.0000 16.1838 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.043 verts 482 faces 512
+  materials worm, Outline
+  modifier Outline SOLIDIFY thickness=0.04993 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_l_seg9Action.004
+
+== Scene Collection/Props/worm_r (14 objects)
+worm_r  EMPTY
+  loc 1.9312 4.3568 0.0000  rot_deg 0.0000 0.0000 -5.4559  scale 0.4209 0.4209 0.4209
+  empty PLAIN_AXES size 0.2000
+worm_r_seg0  MESH  parent=worm_r
+  loc -0.5588 0.0000 0.0520  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.002 verts 482 faces 512
+  materials worm, Outline
+  modifier Outline SOLIDIFY thickness=0.03942 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_r_seg0Action.004
+worm_r_seg1  MESH  parent=worm_r
+  loc -0.4662 0.0000 0.0588  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.003 verts 482 faces 512
+  materials worm, Outline
+  modifier Outline SOLIDIFY thickness=0.03941 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_r_seg1Action.004
+worm_r_seg10  MESH  parent=worm_r
+  loc 0.3709 0.0000 0.0564  rot_deg 0.0000 1.4114 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.012 verts 482 faces 512
+  materials worm, Outline
+  modifier Outline SOLIDIFY thickness=0.03935 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_r_seg10Action.004
+worm_r_seg11  MESH  parent=worm_r
+  loc 0.4662 0.0000 0.0520  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.041 verts 482 faces 512
+  materials worm, Outline
+  modifier Outline SOLIDIFY thickness=0.03935 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_r_seg11Action.004
+worm_r_seg12  MESH  parent=worm_r
+  loc 0.5588 0.0000 0.0620  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh Sphere.042 verts 482 faces 512
+  materials worm, Outline
+  modifier Outline SOLIDIFY thickness=0.03934 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_r_seg12Action.004
 worm_r_seg2  MESH  parent=worm_r
-  loc -0.2865 0.0000 0.0464  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.3709 0.0000 0.0622  rot_deg 0.0000 -1.2246 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.004 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02602 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg2Action.001
-worm_r_seg20  MESH  parent=worm_r
-  loc 0.4185 0.0000 0.0480  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.066 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02596 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg20Action
+  modifier Outline SOLIDIFY thickness=0.0394 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_r_seg2Action.004
 worm_r_seg3  MESH  parent=worm_r
-  loc -0.2205 0.0000 0.0481  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.2786 0.0000 0.0710  rot_deg 0.0000 -6.5294 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.005 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02602 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg3Action.001
+  modifier Outline SOLIDIFY thickness=0.03939 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_r_seg3Action.004
 worm_r_seg4  MESH  parent=worm_r
-  loc -0.1545 0.0000 0.0494  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.1869 0.0000 0.0850  rot_deg 0.0000 -8.4150 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.006 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02602 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg4Action.001
+  modifier Outline SOLIDIFY thickness=0.03938 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_r_seg4Action.004
 worm_r_seg5  MESH  parent=worm_r
-  loc -0.0932 0.0000 0.0661  rot_deg 0.0000 -35.7905 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.0924 0.0000 0.0978  rot_deg 0.0000 -5.7549 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.007 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02601 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg5Action.001
+  modifier Outline SOLIDIFY thickness=0.03937 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_r_seg5Action.004
 worm_r_seg6  MESH  parent=worm_r
-  loc -0.0650 0.0000 0.1153  rot_deg 0.0000 -80.6901 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 0.1024  rot_deg 0.0000 -0.0945 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.008 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02601 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg6Action.001
+  modifier Outline SOLIDIFY thickness=0.03937 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_r_seg6Action.004
 worm_r_seg7  MESH  parent=worm_r
-  loc -0.0695 0.0000 0.1704  rot_deg 0.0000 -101.9920 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0924 0.0000 0.0966  rot_deg 0.0000 5.6153 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.009 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.026 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg7Action.001
+  modifier Outline SOLIDIFY thickness=0.03936 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_r_seg7Action.004
 worm_r_seg8  MESH  parent=worm_r
-  loc -0.0772 0.0000 0.2252  rot_deg 0.0000 -89.0586 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.1869 0.0000 0.0826  rot_deg 0.0000 8.4023 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.010 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.026 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg8Action.001
+  modifier Outline SOLIDIFY thickness=0.03936 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_r_seg8Action.004
 worm_r_seg9  MESH  parent=worm_r
-  loc -0.0571 0.0000 0.2767  rot_deg 0.0000 -47.7249 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.2786 0.0000 0.0672  rot_deg 0.0000 6.6473 0.0000  scale 1.0000 1.0000 1.0000
   mesh Sphere.011 verts 482 faces 512
   materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.02599 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg9Action.001
+  modifier Outline SOLIDIFY thickness=0.03936 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  action worm_r_seg9Action.004
 
 == Scene Collection/Set (2 objects)
 Floor  MESH

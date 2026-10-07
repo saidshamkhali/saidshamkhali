@@ -28,11 +28,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import jesus  # noqa: E402
 from kit import (FPS, HERE, LAYOUT, LENS, LOOP, PALETTE, REMAKE, RES_X, RES_Y,  # noqa: E402
                  SENSOR, SRC_H, SRC_W, add_outlines, empty, finish, flat, new_collection, toon)
-from props import BUILDERS  # noqa: E402
+from props import BUILDERS, TURN  # noqa: E402
 
 CAM_PITCH = 20.0       # degrees below horizontal
 CAM_TARGET = Vector((0.0, 0.0, 1.05))
-TYPE_TURN = {"toaster": -40.0, "lips": -8.0}  # degrees; three-quarter views like the source
+TYPE_TURN = TURN
 
 
 def parse_args():
@@ -133,7 +133,8 @@ def place_prop(cam, root, box, turn=0.0):
     the camera sees it once turned: width along the camera's horizontal, height in Z.
     Parts flagged "no_fit" are left out of the measurement. It's measured at the frame in
     the root's "fit_frame" (default 1), so a prop whose shape changes is sized in a set pose,
-    and without its outline shells, so re-placing an outlined prop gives the same result."""
+    and without its outline shells, so re-placing an outlined prop gives the same result.
+    A root with "fit_axis" = "x" is sized by its width alone."""
     scene = bpy.context.scene
     shells = [m for o in descendants(root) if o.type == "MESH" for m in o.modifiers
               if m.name == "Outline" and m.show_viewport]
@@ -162,7 +163,8 @@ def place_prop(cam, root, box, turn=0.0):
         mid_r = (min(rs) + max(rs)) / 2
         depth = (pos - cam.matrix_world.translation).dot(fwd)
         units_per_px = 2 * depth * tan_h / SRC_W
-        s = min((x1 - x0) * units_per_px / (max(rs) - min(rs)), (y1 - y0) * units_per_px / (max(zs) - min(zs)))
+        sx = (x1 - x0) * units_per_px / (max(rs) - min(rs))
+        s = sx if root.get("fit_axis") == "x" else min(sx, (y1 - y0) * units_per_px / (max(zs) - min(zs)))
         pos = on_plane(cam, cx, cy, s * (min(zs) + max(zs)) / 2)
     root.scale = (s, s, s)
     root.location = (pos.x - right.x * mid_r * s, pos.y - right.y * mid_r * s, 0.0)

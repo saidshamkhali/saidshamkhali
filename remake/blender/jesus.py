@@ -10,6 +10,7 @@ poses from reference/layout.json.
 import json
 import math
 import os
+import random
 
 import bpy
 from mathutils import Euler, Vector
@@ -259,7 +260,8 @@ HAND = 1.22  # Simpsons hands are big: the palm is about the size of an eye
 
 def hand_mesh(coll, side, x, curl):
     """Simpsons hand (thumb + three fingers) hanging from the wrist, palm facing the body,
-    thumb forward. curl 0: fingers straight and fanned a little; 1: curled into the palm."""
+    thumb forward. curl 0: fingers straight and fanned a little; 1: bent down into a cup (the
+    beckoning "come here"), not a fist."""
     skin_m = mat("skin")
     wx, wz = WRIST
     wx *= x
@@ -272,7 +274,7 @@ def hand_mesh(coll, side, x, curl):
         """Base, knuckle, tip: straight down at c=0, folded towards the palm (-dx) at c=1."""
         spread = dy * 0.45 * (1 - c)
         base = (0.0, dy, -0.095)
-        a1, a2 = math.radians(8 + 70 * c), math.radians(16 + 150 * c)  # bend at the knuckle, then the tip
+        a1, a2 = math.radians(8 + 64 * c), math.radians(16 + 92 * c)  # bend at the knuckle, then the tip: a cup
         l1, l2 = length * 0.55, length * 0.45
         mid = (base[0] - l1 * math.sin(a1), dy + spread * 0.6, base[2] - l1 * math.cos(a1))
         tip = (mid[0] - l2 * math.sin(a2), dy + spread, mid[2] - l2 * math.cos(a2))
@@ -490,7 +492,31 @@ def build_head(coll, rig):
     skin(shell("J_hair", coll, hair_m, hair_surf, 84, 36, hair_thick, wrap_u=True),
          rig, blend("chest", "head", 1.45, 1.56))
 
-    halo = torus("J_halo", coll, mat("halo", 0.9), (0, 0, 2.2), 0.2, 0.008)
+    # locks: flattened, wavy tubes lying on the hanging hair, ending at uneven lengths; their
+    # outlines draw the strands and break up the bottom edge, like the source's scribbly hair
+    rnd = random.Random(1998)
+    lock_parts = []
+    angles = [a for a in range(104, 181, 11)]
+    for n, deg in enumerate([d * s for d in angles for s in (1, -1) if d * s != -180]):
+        th = math.radians(deg + rnd.uniform(-3, 3))
+        u = (th / math.pi + 1) / 2
+        out = Vector((math.sin(th), -math.cos(th), 0))
+        side = out.cross(Vector((0, 0, 1)))
+        pts = []
+        for k, v in enumerate((0.5, 0.36, 0.24, 0.13, 0.05, 0.0)):
+            p = hair_surf(u, v)
+            p = p + out * (hair_thick(u, v) + 0.004) + side * 0.012 * math.sin(k * 1.7 + n)
+            pts.append(p)
+        end = pts[-1] + Vector((0, 0, -rnd.uniform(0.0, 0.06))) + side * rnd.uniform(-0.02, 0.02)
+        pts.append(end)
+        r = rnd.uniform(0.026, 0.034)
+        lock_parts.append(sweep(f"_lock{n}", coll, hair_m, pts, [r, r * 1.05, r, r * 0.9, r * 0.7, r * 0.5, r * 0.25],
+                                n=18, ring=12, squash=0.4, up=tuple(out)))
+    locks = merge("J_locks", coll, hair_m, lock_parts)
+    locks["outline_even"] = False
+    skin(locks, rig, blend("chest", "head", 1.45, 1.56))
+
+    halo = torus("J_halo", coll, mat("halo", 0.9), (0, 0, 2.2), 0.2, 0.008, rot=(math.radians(-12), 0, 0))
     halo["outline_px"] = 1.2  # a fine line: the source's halo is faint
     skin(halo, rig, head, subsurf=0)
 
@@ -525,13 +551,13 @@ POSES = {
         "L": ((-48, -22, 0), (-145, 0, 0), (0, 0, 60)),
         "R": ((-8, 2, 0), (-42, 10, 0), (0, 0, -20)),
     },
-    "beckon": {
-        "L": ((-18, -6, 0), (-95, 0, -55), (0, 0, 0)),
-        "R": ((-20, 14, 0), (-64, 0, 0), (60, 0, 90)),
+    "beckon": {  # left hand resting across his waist, right palm down, fingers drooping
+        "L": ((-8, -5, 0), (-80, 0, -48), (0, 0, 0)),
+        "R": ((-20, 14, 0), (-64, 0, 0), (0, 0, 90)),
     },
     "beckon_b": {
-        "L": ((-18, -6, 0), (-95, 0, -55), (0, 0, 0)),
-        "R": ((-16, 18, 0), (-68, 0, 0), (25, 0, 90)),
+        "L": ((-8, -5, 0), (-80, 0, -48), (0, 0, 0)),
+        "R": ((-16, 18, 0), (-68, 0, 0), (0, 0, 90)),
     },
 }
 
@@ -602,8 +628,8 @@ def animate(rig):
 # Finger curl per source frame, read off the drawings: the beckoning hand (his right) folds
 # its fingers down twice ("come here"); the other hand rests half-curled on his belly.
 CURL = {
-    "R": {0: 0.2, 11: 0.3, 12: 0.0, 13: 0.0, 14: 0.8, 15: 0.8, 16: 0.5, 17: 0.0, 18: 0.0, 19: 0.35,
-          20: 0.45, 21: 0.8, 22: 0.8, 23: 0.0, 24: 0.2},
+    "R": {0: 0.2, 11: 0.3, 12: 0.0, 13: 0.0, 14: 1.0, 15: 1.0, 16: 0.6, 17: 0.0, 18: 0.0, 19: 0.45,
+          20: 0.55, 21: 1.0, 22: 1.0, 23: 0.0, 24: 0.2},
     "L": {0: 0.0, 11: 0.15, 12: 0.3, 24: 0.3, 25: 0.0},
 }
 

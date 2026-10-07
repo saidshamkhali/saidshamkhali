@@ -150,7 +150,7 @@ PALETTE = {
     "robe": "#D3D1E3",
     "hair": "#3B2015",
     "sandal": "#6B3A1E",
-    "halo": "#DCE6EE",
+    "halo": "#C4CDD4",
     "white": "#FFFFFF",
     "black": "#1A1A1A",
     "metal": "#C6C8CC",

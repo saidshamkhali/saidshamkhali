@@ -7,7 +7,8 @@ A 3D remake of `jesus-christ-homer.gif` (41 frames, 498x318, 10 fps), toon-shade
 | Path | What |
 |---|---|
 | `concepts/` | Style concepts. A (toon + outlines) is the chosen one |
-| `reference/layout.json` | Prop positions, figure yaw/pose timeline and prop cycle lengths, measured from the GIF. The Blender script reads this |
+| `reference/layout.json` | Prop positions (each prop's outline in frame 0), figure yaw/pose timeline and prop cycle lengths, measured from the GIF. The Blender script reads this |
+| `reference/prop_tracks.json` | Each prop's state in every frame of the GIF (mouth open, bell tilt, wing, toast, clock lean, worm loop), written by `build_reference.py` |
 | `reference/build_reference.py` | Regenerates the reference sheets, `reference/frames/` and the figure's silhouettes (`frames/masks.npz`) |
 | `reference/pose_fit.json` | Per-frame pose offsets fitted to the original's silhouettes by `blender/fit_pose.py` |
 | `reference/contact_sheet.png` | Every source frame, numbered |
@@ -29,7 +30,7 @@ A 3D remake of `jesus-christ-homer.gif` (41 frames, 498x318, 10 fps), toon-shade
 ## What the original does
 
 - **Figure**: one full turn per loop, never at a constant speed. Back view (frames 0-2) → quick turn through facing screen-left (3-4) → front, waving (6-10) → hand to face (11) → beckoning with his right arm, swaying (12-23) → hand to face (24) → waving again (25-29) → turn through facing screen-right (31-35) → back view (36-40).
-- **Props**: 14 of them in five kinds. Clocks, bells and toasters run on a ~0.6 s cycle, the lips open and close every ~0.9 s, and the worms curl the middle of their body up into a tight loop and flatten out again about once a second, without going anywhere. Same-type props are offset in phase. Everything is drawn at 10 fps, so each pose is held for a tenth of a second.
+- **Props**: 14 of them in five kinds, each flipping between a few drawings rather than moving smoothly. The bells rest upright for three frames, then ring left-right-left (the left one rests tilted). The lips switch between closed, half open, open and a big shout. The toaster wings are drawn down, level or up while the toast pops, the clocks jolt left and right with their hands rattling, and the worms curl the middle of their body up into an arch and flatten out again without going anywhere. Everything is drawn at 10 fps, so each drawing is held for a tenth of a second.
 
 ## Loop timing
 
@@ -59,10 +60,10 @@ The script writes `remake/blender/homers_web_page.blend`, so you can open the sc
 His proportions come from the GIF and from a clean model sheet drawn from it (front, three-quarter, profile and back), checked pixel class by pixel class (skin, hair, robe) against orthographic renders of the model:
 
 - **Head:** a tall Simpsons dome (`SKULL` rows) about 28% of his height, with a muzzle pushed out where the moustache, lip and chin sit. Big eyes a nose-width apart under heavy half-closed lids, a long nose, C-shaped ears, a wide handlebar moustache whose ends leave the face, a lower lip, and a pointed goatee hanging in front of a thick neck.
-- **Beard and hair:** shells lying on the head surface (`kit.shell`). A band of beard runs along the jaw from the goatee to the sideburns; the cheeks stay bare. The hair arches high over the forehead from a centre parting, with locks at the forehead corners, covers the temples down to the ears and hangs behind them, spreading over the shoulders in waves.
+- **Beard and hair:** shells lying on the head surface (`kit.shell`). A band of beard runs along the jaw from the goatee to the sideburns; the cheeks stay bare. The hair arches high over the forehead from a centre parting, with locks at the forehead corners, covers the temples down to the ears and hangs behind them, spreading over the shoulders in waves. Flattened locks lie on the hanging hair and end at uneven lengths, so their outlines draw strands and a ragged edge.
 - **Robe:** long and nearly straight, the shoulders up at mouth level so the beard hangs over the chest, a soft belly, a wavy hem at mid-calf and a deep V-neck.
 - **Sleeves:** two rigid tubes each, meeting at the elbow, so a hard bend can't fold the mesh and flip its outline.
-- **Hands:** big, a thumb and three fingers, with a `curl` shape key that folds the fingers into the palm.
+- **Hands:** big, a thumb and three fingers, with a `curl` shape key that bends the fingers down into a cup, the beckoning "come here".
 - **Feet:** big, with four toes, on dark soles with a strap.
 
 Every part is skinned to the `Jesus_Rig` armature: `root`, `hips`, `chest`, `head`, `upper_arm/forearm/hand.L/R`, and IK legs (`thigh/shin.L/R` aimed at `foot.L/R`, knees pointing at `knee.L/R`). The feet stay planted while the hips move, and the knees bend. Animation comes from three places:
@@ -80,6 +81,10 @@ Two cartoon cheats copy the source in the raised-arm poses:
 - the palm keeps facing the viewer while he turns, and facing screen-left the arm leans back behind his face.
 
 The camera distance is solved so the top of his hair (`jesus.hair_top()`) lands on `figure.head_top`, with his feet on `figure.feet`.
+
+## The props
+
+`props.py` builds each prop and animates it from `reference/prop_tracks.json`. `build_reference.py` reads every prop's state off the GIF frame by frame (how far the lips' top edge rises and how dark the mouth is, how far a bell's body sits off its handle, where the toaster's white wing and orange toast are, which way a clock's top leans, how high a worm's back rises), so each prop moves drawing for drawing with the original. A prop without a track falls back to a regular cycle (`cycles_s` in `layout.json`, offset by its `phase`). Each prop is sized to its outline in frame 0, the frame its track starts from; worms by their length alone, since a flat worm's box is only a few pixels tall. Toasters turn side-on like the original's (`props.TURN`), but their wing stays broadside to the camera and flaps in the picture plane, as drawn.
 
 ## Working in the live Blender
 

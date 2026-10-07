@@ -160,118 +160,97 @@
    "yaw": 18.0
   },
   "12": {
-   "armL_x": -12.0,
-   "armL_y": -8.0,
    "dip": -0.015,
    "elbowR": -10.0,
-   "pitch": -3.75,
-   "slide": 0.15,
-   "tilt": 1.5,
-   "yaw": -13.5
-  },
-  "13": {
-   "armL_y": -8.0,
-   "dip": -0.025,
    "pitch": -2.25,
    "slide": 0.15,
    "tilt": 1.5,
    "yaw": -7.5
   },
+  "13": {
+   "dip": -0.005,
+   "pitch": 0.75,
+   "slide": 0.15,
+   "yaw": -1.5
+  },
   "14": {
-   "armL_x": 4.0,
-   "armL_y": -4.0,
    "dip": -0.015,
    "pitch": 0.75,
    "slide": 0.15,
    "tilt": -1.5,
-   "yaw": -21.0
+   "yaw": -18.0
   },
   "15": {
-   "armL_x": 4.0,
-   "armL_y": -4.0,
    "dip": -0.015,
    "pitch": 0.75,
    "slide": 0.15,
    "tilt": -1.5,
-   "yaw": -21.0
+   "yaw": -18.0
   },
   "16": {
-   "armL_x": 16.0,
+   "armR_x": -8.0,
    "armR_y": -4.0,
    "dip": 0.02,
    "pitch": 2.25,
    "slide": 0.1425,
    "tilt": -1.5,
-   "yaw": -10.5
+   "yaw": -13.5
   },
   "17": {
-   "armL_x": 20.0,
    "armR_y": -8.0,
-   "dip": 0.03,
-   "elbowL": -5.0,
+   "dip": 0.01,
    "elbowR": -10.0,
    "pitch": 3.75,
    "slide": 0.1275,
    "tilt": -1.5,
-   "yaw": -12.0
+   "yaw": -9.0
   },
   "18": {
-   "armL_x": -4.0,
-   "dip": 0.03,
+   "armR_y": -8.0,
+   "dip": 0.01,
+   "elbowR": -10.0,
    "pitch": -0.75,
    "slide": 0.1725,
    "tilt": -1.5,
-   "yaw": 6.0
+   "yaw": 3.0
   },
   "19": {
-   "armL_x": 4.0,
-   "armL_y": 4.0,
+   "armR_x": -4.0,
+   "armR_y": -4.0,
    "dip": 0.01,
-   "elbowL": -5.0,
    "pitch": -0.75,
    "slide": 0.1725,
-   "yaw": -7.5
+   "yaw": -4.5
   },
   "20": {
-   "armL_x": 4.0,
-   "armL_y": 4.0,
+   "armR_x": -4.0,
+   "armR_y": -4.0,
    "dip": 0.01,
-   "elbowL": -10.0,
+   "elbowR": -5.0,
    "pitch": -0.75,
    "slide": 0.1725,
-   "yaw": -7.5
+   "yaw": -4.5
   },
   "21": {
-   "armL_x": -2.0,
-   "armL_y": -2.0,
    "armR_y": -8.0,
-   "dip": -0.03,
-   "elbowL": -7.5,
-   "pitch": 0.75,
-   "slide": 0.21,
+   "dip": 0.01,
+   "pitch": 3.75,
+   "slide": 0.195,
    "tilt": -1.5,
    "yaw": -4.5
   },
   "22": {
-   "armL_x": -4.0,
-   "armL_y": -16.0,
    "armR_x": 4.0,
-   "armR_y": -8.0,
-   "dip": -0.025,
-   "elbowL": -17.5,
+   "dip": -0.015,
    "pitch": 0.75,
    "slide": 0.2025,
    "tilt": -1.5,
-   "yaw": -4.5
+   "yaw": -7.5
   },
   "23": {
-   "armL_x": -12.0,
-   "armL_y": -18.0,
-   "armR_x": 4.0,
-   "armR_y": -8.0,
-   "dip": -0.025,
-   "elbowL": -7.5,
-   "pitch": 3.75,
+   "armR_y": -12.0,
+   "dip": -0.005,
+   "pitch": 5.25,
    "slide": 0.165,
    "tilt": -1.5,
    "yaw": -10.5
@@ -321,9 +300,9 @@
    "armR_y": -8.0,
    "dip": -0.095,
    "elbowL": 15.0,
+   "elbowR": 10.0,
    "slide": 0.09,
-   "tilt": 3.0,
-   "elbowR": 10.0
+   "tilt": 3.0
   },
   "29": {
    "armL_x": 8.0,

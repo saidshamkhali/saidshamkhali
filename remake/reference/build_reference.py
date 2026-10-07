@@ -6,6 +6,7 @@ Writes next to this file:
   contact_sheet.png  every frame, numbered
   figure_sheet.png   the centre figure, zoomed, with the yaw/pose from layout.json
   layout.png         frame 0 with every prop box from layout.json drawn on top
+  prop_tracks.json   each prop's state per frame (mouth open, bell tilt, wing, toast, lean, loop)
   frames/            every frame upscaled 3x, and masks.npz with the figure's silhouettes (ignored by git)
 """
 import json
@@ -124,6 +125,88 @@ def export_masks(frames):
     np.savez_compressed(os.path.join(out, "masks.npz"), masks=np.array(masks))
 
 
+def prop_masks(frames, box, pad=4):
+    """Per frame: (rgb array, foreground mask) of the region around one prop."""
+    import numpy as np
+    from PIL import ImageFilter
+    x0, y0, x1, y1 = box
+    out = []
+    for fr in frames:
+        a = np.asarray(fr.crop((x0 - pad, y0 - pad, x1 + pad, y1 + pad))).astype(int)
+        r, g, b = a[..., 0], a[..., 1], a[..., 2]
+        bg = (b > 120) & (b - r > 28) & (g - r > 8)
+        m = Image.fromarray(np.where(bg, 0, 255).astype(np.uint8)).filter(ImageFilter.MedianFilter(3))
+        out.append((a, np.asarray(m) > 0))
+    return out
+
+
+def norm(values, lo=None, hi=None):
+    """Scale to 0..1 between the given (or the observed) extremes, clamped."""
+    lo = min(values) if lo is None else lo
+    hi = max(values) if hi is None else hi
+    return [round(min(1.0, max(0.0, (v - lo) / (hi - lo))), 3) if hi != lo else 0.0 for v in values]
+
+
+HALF_OPEN_DARK = 175  # outline pixels of the half-open mouth (the closed one has about 160)
+BELL_SWING_PX = 9.0
+
+
+def track_prop(kind, regions):
+    """The prop's state in every frame, read off the drawings. Each track is one value per
+    frame, 0..1 or -1..1, that props.py turns into a pose."""
+    import numpy as np
+    tracks = {}
+    tops, leans, tilts, wings, toasts, darks = [], [], [], [], [], []
+    for a, m in regions:
+        ys, xs = np.nonzero(m)
+        tops.append(ys.min() if len(ys) else m.shape[0])
+        r, g, b = a[..., 0], a[..., 1], a[..., 2]
+        darks.append(int((m & (r < 90) & (g < 70) & (b < 70)).sum()))
+        if kind == "alarm_clock":  # lean: top half's centre against the bottom half's
+            h = m.shape[0] // 2
+            t, bt = np.nonzero(m[:h]), np.nonzero(m[h:])
+            leans.append((t[1].mean() - bt[1].mean()) / h if len(t[1]) and len(bt[1]) else 0.0)
+        if kind == "bell":  # tilt: the gold body's centre against the whole bell's top
+            gold = m & (r > 150) & (g > 110) & (b < 90)
+            gy, gx = np.nonzero(gold)
+            dark = m & (r < 90) & (g < 70) & (b < 70)
+            dy, dx = np.nonzero(dark[: m.shape[0] // 2])
+            tilts.append((gx.mean() - dx.mean()) if len(gx) and len(dx) else 0.0)
+        if kind == "toaster":
+            white = m & (r > 215) & (g > 215) & (b > 215)
+            wy, wx = np.nonzero(white)
+            wings.append(-wy.mean() if len(wy) else 0.0)  # higher wing = larger value
+            toast = m & (r > 170) & (g > 90) & (g < 175) & (b < 110)
+            ty, tx = np.nonzero(toast)
+            toasts.append(-ty.min() if len(ty) else -m.shape[0])
+    if kind in ("lips", "worm"):  # how far the top edge rises above its lowest drawing
+        hi = max(tops)
+        rise = norm([hi - t for t in tops], 0)
+        if kind == "lips":  # the half-open drawing (pursed lips round a dark mouth) barely rises
+            rise = [0.35 if v < 0.25 and d >= HALF_OPEN_DARK else v for v, d in zip(rise, darks)]
+        tracks["open" if kind == "lips" else "curl"] = rise
+    if kind == "alarm_clock":
+        s = max(abs(v) for v in leans) or 1.0
+        tracks["lean"] = [round(v / s, 3) for v in leans]
+    if kind == "bell":  # pixels the body sits off the handle: 0 upright, about 9 at full swing
+        tracks["tilt"] = [round(max(-1.0, min(1.0, v / BELL_SWING_PX)), 3) for v in tilts]
+    if kind == "toaster":
+        tracks["wing"] = norm(wings)
+        tracks["toast"] = norm(toasts)
+    return tracks
+
+
+def export_prop_tracks(frames):
+    """prop_tracks.json: every prop's state per frame, so the props move drawing for drawing."""
+    out = {}
+    for p in LAYOUT["props"]:
+        out[p["id"]] = track_prop(p["type"], prop_masks(frames, p["box"], pad=10))  # room to swing
+    with open(os.path.join(HERE, "prop_tracks.json"), "w", encoding="utf-8") as f:
+        f.write("{\n" + ",\n".join(
+            f' "{pid}": {{' + ", ".join(f'"{k}": {json.dumps(v)}' for k, v in t.items()) + "}"
+            for pid, t in out.items()) + "\n}\n")
+
+
 def export_frames(frames, scale=3):
     out = os.path.join(HERE, "frames")
     os.makedirs(out, exist_ok=True)
@@ -139,4 +222,5 @@ if __name__ == "__main__":
     layout_sheet(frames)
     export_frames(frames)
     export_masks(frames)
+    export_prop_tracks(frames)
     print(f"{len(frames)} frames -> {HERE}")

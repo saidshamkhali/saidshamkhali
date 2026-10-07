@@ -1,8 +1,15 @@
 """Prop builders. Each makes a prop standing on z=0, facing -Y, about 1 unit tall,
-under a root empty, and keys its own loop animation."""
-import math
+under a root empty, and keys its own loop animation.
 
-from kit import (LAYOUT, LOOP, SRC_FRAMES, bake, box, constant, cycles_per_loop, cylinder, empty, hitch,
+The animation follows reference/prop_tracks.json: each prop's state in every frame of the
+original (mouth open, bell tilt, wing and toast, clock lean, worm loop), measured by
+reference/build_reference.py, so every prop moves drawing for drawing with the GIF. A prop
+without a track falls back to a regular cycle (LAYOUT["cycles_s"], offset by its phase)."""
+import json
+import math
+import os
+
+from kit import (LAYOUT, REMAKE, SRC_FRAMES, bake, box, constant, cycles_per_loop, cylinder, empty, hitch,
                  keep_world, lathe, mat, saw, slab, smooth_outline, sphere, step_frames, sweep, wave)
 
 # Cartoon timing, like the figure (jesus.STEPPED): the props are keyed once per source frame
@@ -12,6 +19,34 @@ STEPPED = True
 
 def animate(obj, path, index, fn):
     bake(obj, path, index, fn, step_frames() if STEPPED else None)
+
+
+TRACKS_FILE = os.path.join(REMAKE, "reference", "prop_tracks.json")
+
+
+def load_tracks():
+    if not os.path.exists(TRACKS_FILE):
+        return {}
+    with open(TRACKS_FILE, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def track(root, name, fallback):
+    """The prop's measured state as a function of t (0..1 over the loop), linear between
+    source frames; fallback(t) when there is no measurement for this prop."""
+    vals = load_tracks().get(root.name, {}).get(name)
+    if not vals:
+        return fallback
+    n = len(vals)
+
+    def f(t):
+        x = (t * n) % n
+        k = int(x)
+        return vals[k] + (vals[(k + 1) % n] - vals[k]) * (x - k)
+    return f
+
+# Extra yaw per prop type, in degrees on top of facing the camera: three-quarter views like the source.
+TURN = {"toaster": -56.0, "lips": -8.0}
 
 # Toaster wing in (span, chord): a long flat blade like the source's, rounded tip, the
 # trailing edge cut into three shallow feathers.
@@ -43,11 +78,16 @@ def build_toaster(root, coll, phase):
         t_.location.z = 0.3
     wings = []
     for side in (1,):
-        pivot = empty(f"{root.name}_wing", coll, loc=(0.26 * side, 0.0, 0.48))
+        # the wing is drawn flat in the picture plane, pointing right, whichever way the toaster
+        # turns: its pivot undoes the toaster's turn, and it flaps about the line of sight
+        pivot = empty(f"{root.name}_wing", coll, loc=(0.26 * side, 0.28, 0.5))
+        pivot.rotation_euler.z = math.radians(-TURN["toaster"])
         outline = [(s * side, -h) for s, h in smooth_outline(WING, 64)][::-1]  # feathers trail
+        outline = [(a * 0.64, b * 1.5) for a, b in outline]  # the source's wing is short and broad
         w = slab("wing", coll, mat("white", 0.8), outline, 0.03, plane="XZ", offset=0.0, bevel=0.01)
-        w.location = (0.24 * side, 0.0, 0.48)
-        w.rotation_euler.x = math.radians(-58)  # nearly flat, tipped up towards the camera
+        w.location = (0.24 * side, 0.28, 0.5)
+        w.rotation_euler.x = math.radians(-14)  # broadside to the camera, top tipped back a little
+        w.rotation_euler.z = math.radians(-TURN["toaster"])
         wings.append((pivot, w, side))
     for p in parts + toasts:
         keep_world(p, hover)
@@ -56,14 +96,15 @@ def build_toaster(root, coll, phase):
         keep_world(w, pivot)
     for p in parts + toasts + [w for _, w, _ in wings]:
         p.name = f"{root.name}_{p.name}"
+    wing = track(root, "wing", lambda t: 0.5 + 0.5 * wave(t, c * 2, phase))      # 0 down .. 1 up
+    toast = track(root, "toast", lambda t: max(0.0, wave(t, c, phase + 0.1)))    # 0 in .. 1 popped up
     hover.location.z = 0.18
-    animate(hover, "location", 2, lambda t: 0.18 + 0.05 * wave(t, c, phase))
-    for k, t_ in enumerate(toasts):
+    animate(hover, "location", 2, lambda t: 0.18 - 0.04 * (wing(t) - 0.5))  # the body dips as the wing beats up
+    for t_ in toasts:
         z0 = t_.location.z
-        animate(t_, "location", 2, lambda t, z0=z0, k=k: z0 + 0.1 * max(0.0, wave(t, c, phase + 0.1 + 0.04 * k)))
+        animate(t_, "location", 2, lambda t, z0=z0: z0 + 0.1 * toast(t))
     for pivot, _, side in wings:  # tip up = -Y rotation on the right
-        animate(pivot, "rotation_euler", 1,
-             lambda t, side=side: side * math.radians(-4 + 18 * wave(t, c * 2, phase)))
+        animate(pivot, "rotation_euler", 1, lambda t, side=side: side * math.radians(-6 - 36 * (2 * wing(t) - 1)))
 
 
 def build_clock(root, coll, phase):
@@ -73,10 +114,6 @@ def build_clock(root, coll, phase):
         # a thin grey case round a big pale face, like the source
         cylinder("body", coll, mat("metal"), (0, 0, 0.5), 0.42, 0.22, rot=(math.pi / 2, 0, 0)),
         cylinder("face", coll, mat("clockface", 0.85), (0, -0.11, 0.5), 0.385, 0.02, rot=(math.pi / 2, 0, 0)),
-        # long hands from the centre (0, 0.5): hour points to 12, minute to 7
-        box("hour", coll, mat("black"), (0, -0.128, 0.62), (0.045, 0.01, 0.26), outline=False),
-        box("minute", coll, mat("black"), (-0.085, -0.128, 0.352), (0.035, 0.01, 0.34),
-            rot=(0, math.radians(30), 0), outline=False),
         cylinder("pin", coll, mat("black"), (0, -0.133, 0.5), 0.032, 0.02, rot=(math.pi / 2, 0, 0), outline=False),
         box("hammer", coll, mat("clock"), (0, 0, 0.97), (0.05, 0.05, 0.14)),
         sphere("chime_l", coll, mat("gold"), (-0.28, 0, 0.9), scale=(0.125, 0.125, 0.08), rot=(0, math.radians(-38), 0)),
@@ -84,9 +121,22 @@ def build_clock(root, coll, phase):
         cylinder("leg_l", coll, mat("clock"), (-0.25, 0, 0.08), 0.05, 0.16, rot=(0, math.radians(-25), 0)),
         cylinder("leg_r", coll, mat("clock"), (0.25, 0, 0.08), 0.05, 0.16, rot=(0, math.radians(25), 0)),
     ]
+    # long hands from the centre (0, 0.5): hour points to 12, minute to 7; they rattle too
+    centre = (0, -0.128, 0.5)
+    hands = []
+    for name, size, angle in (("hour", (0.045, 0.01, 0.26), 0), ("minute", (0.035, 0.01, 0.34), 210)):
+        pivot = empty(f"{root.name}_{name}_pivot", coll, loc=centre)
+        hand = box(name, coll, mat("black"), (0, centre[1], centre[2] + size[2] / 2 - 0.01), size, outline=False)
+        keep_world(hand, pivot)
+        pivot.rotation_euler.y = math.radians(angle)
+        hands.append((pivot, angle))
+        parts.append(hand)
     for p in parts:
-        keep_world(p, rattle)
+        if p.parent is None:
+            keep_world(p, rattle)
         p.name = f"{root.name}_{p.name}"
+    for pivot, _ in hands:
+        keep_world(pivot, rattle)
 
     def shake(t):  # -1 / +1: a fast shimmy, or a flip on every held frame when stepped
         if STEPPED:
@@ -95,13 +145,17 @@ def build_clock(root, coll, phase):
 
     def env(t):  # rattle for the first half of each cycle
         return 1.0 if saw(t, c, phase) < 0.5 else 0.0
-    animate(rattle, "rotation_euler", 1, lambda t: math.radians(14) * env(t) * shake(t))
-    animate(rattle, "location", 2, lambda t: 0.06 * env(t) * (0.5 + 0.5 * shake(t)))
+    lean = track(root, "lean", lambda t: env(t) * shake(t))  # -1 top to the left .. 1 to the right
+    animate(rattle, "rotation_euler", 1, lambda t: math.radians(12) * lean(t))
+    animate(rattle, "location", 2, lambda t: 0.05 * abs(lean(t)))
+    for (pivot, angle), swing in zip(hands, (-14, 22)):  # the hands jolt against the case
+        animate(pivot, "rotation_euler", 1, lambda t, a=angle, w=swing: math.radians(a + w * lean(t)))
 
 
 def build_bell(root, coll, phase):
     c = cycles_per_loop(LAYOUT["cycles_s"]["bell"])
-    pivot = empty(root.name + "_swing", coll, loc=(0, 0, 1.2), parent=root)
+    # it rocks about its middle, so the handle tips one way as the body swings the other, as drawn
+    pivot = empty(root.name + "_swing", coll, loc=(0, 0, 0.6), parent=root)
     # a narrow hand bell: hollow body (the profile runs up the inside, round the flared
     # lip, then down the outside) under a big turned wooden handle, as in the source
     body = lathe("bell", coll, mat("gold"),
@@ -115,7 +169,8 @@ def build_bell(root, coll, phase):
     for p in (body, clapper, handle):
         keep_world(p, pivot)
         p.name = f"{root.name}_{p.name}"
-    animate(pivot, "rotation_euler", 1, lambda t: math.radians(18) * wave(t, c, phase))
+    tilt = track(root, "tilt", lambda t: wave(t, c, phase))  # -1 body to the left .. 1 to the right
+    animate(pivot, "rotation_euler", 1, lambda t: math.radians(-26) * tilt(t))
 
 
 def build_lips(root, coll, phase):
@@ -163,11 +218,12 @@ def build_lips(root, coll, phase):
     for p in [upper, lower, tongue, inner] + teeth + corners:
         p.name = f"{root.name}_{p.name}"
 
-    def opening(t):  # 0 closed .. 1 open, a quick shout each cycle
+    def shout(t):  # 0 closed .. 1 open, a quick shout each cycle
         x = saw(t, c, phase)
         return math.sin(math.pi * min(1.0, x / 0.65)) ** 0.6 if x < 0.65 else 0.0
-    animate(upper_pivot, "rotation_euler", 0, lambda t: math.radians(-50) * opening(t))
-    animate(lower_pivot, "rotation_euler", 0, lambda t: math.radians(40) * opening(t))
+    opening = track(root, "open", shout)
+    animate(upper_pivot, "rotation_euler", 0, lambda t: math.radians(-62) * opening(t))
+    animate(lower_pivot, "rotation_euler", 0, lambda t: math.radians(52) * opening(t))
     animate(inner, "scale", 2, lambda t: 1.0 + 8.0 * opening(t))
     animate(swivel, "rotation_euler", 2, lambda t: math.radians(-58) * opening(t) ** 0.5)
     for corner in corners:  # pointed corners when closed, round joints when shouting
@@ -177,8 +233,8 @@ def build_lips(root, coll, phase):
 
 
 WORM_LENGTH = 1.1
-WORM_LOOP = 0.58     # share of the body that curls up into the loop
-WORM_CURL = 1.75     # radians the body turns at the loop's sides: just past vertical
+WORM_LOOP = 0.7      # share of the body that curls up into the loop
+WORM_CURL = 1.5      # radians the body turns at the loop's sides: an arch with a small hole under it
 WORM_SPREAD = 0.2    # cartoon cheat: at the top of the loop the ends pull in less than they should
 
 
@@ -213,21 +269,22 @@ def build_worm(root, coll, phase):
     tight loop and flattens out again, about once a second. A row of overlapping ring
     segments (their outlines draw the rings), each one tilted along the body."""
     c = cycles_per_loop(LAYOUT["cycles_s"]["worm"])
-    n = 21
+    n = 13
     spacing = WORM_LENGTH / (n - 1)
     segs = []
     for i in range(n):
         u = i / (n - 1)
-        r = 0.04 + 0.012 * math.sin(math.pi * min(1.0, u * 1.15)) ** 0.6 + (0.008 if i == n - 1 else 0.0)
-        sx = max(0.85, 1.45 * spacing / (2 * r))  # round beads that overlap, even stretched
+        r = 0.052 + 0.014 * math.sin(math.pi * min(1.0, u * 1.15)) ** 0.6 + (0.01 if i == n - 1 else 0.0)
+        sx = max(0.7, 1.3 * spacing / (2 * r))  # fat rings that overlap, even stretched
         seg = sphere(f"{root.name}_seg{i}", coll, mat("worm"), (-WORM_LENGTH / 2 + WORM_LENGTH * u, 0, r),
                      scale=(sx if i < n - 1 else 1.1, 1.0, 1.0), r=r)
         keep_world(seg, root)
         segs.append((seg, u, r))
 
-    def curl(t):  # flat for a moment, then up into the loop and back down
+    def loop(t):  # flat for a moment, then up into the loop and back down
         x = saw(t, c, phase)
         return (0.5 - 0.5 * math.cos(2 * math.pi * x)) ** 1.3
+    curl = track(root, "curl", loop)
 
     cache = {}
 
@@ -240,8 +297,9 @@ def build_worm(root, coll, phase):
         animate(seg, "location", 0, lambda t, i=i: pose(t)[i][0])
         animate(seg, "location", 2, lambda t, i=i, r=r: pose(t)[i][1] + r)
         animate(seg, "rotation_euler", 1, lambda t, i=i: -pose(t)[i][2])
-    # size it in its box when flat, whatever its phase
-    root["fit_frame"] = 1 + ((-phase) % 1.0) / c * LOOP
+    root["fit_axis"] = "x"  # a flat worm's box is a few pixels tall: size it by its length
+    if not load_tracks().get(root.name):  # untracked: size it in its box when flat, whatever its phase
+        root["fit_frame"] = 1 + ((-phase) % 1.0) / c * (len(step_frames()) - 1)
 
 
 def held(build):

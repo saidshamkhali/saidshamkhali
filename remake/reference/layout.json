@@ -61,20 +61,21 @@
     "lips": 0.9,
     "worm": 0.95
   },
+  "props_note": "box: the prop's outline in frame 0, less one pixel all round (our outline adds it back)",
   "props": [
-    {"id": "clock_tl",   "type": "alarm_clock", "box": [70, 36, 102, 73],   "phase": 0.0},
-    {"id": "toaster_tr", "type": "toaster",     "box": [395, 68, 437, 104], "phase": 0.3},
-    {"id": "toaster_s",  "type": "toaster",     "box": [128, 104, 169, 140], "phase": 0.6},
-    {"id": "worm_r",     "type": "worm",        "box": [334, 112, 376, 136], "phase": 0.5},
-    {"id": "worm_l",     "type": "worm",        "box": [52, 116, 88, 137],  "phase": 0.0},
-    {"id": "lips_l",     "type": "lips",        "box": [122, 149, 175, 194], "phase": 0.0},
-    {"id": "toaster_l",  "type": "toaster",     "box": [49, 152, 107, 200], "phase": 0.0},
-    {"id": "lips_r",     "type": "lips",        "box": [396, 153, 448, 200], "phase": 0.5},
-    {"id": "bell_r",     "type": "bell",        "box": [331, 157, 374, 202], "phase": 0.5},
-    {"id": "clock_c",    "type": "alarm_clock", "box": [128, 212, 169, 259], "phase": 0.5},
-    {"id": "bell_l",     "type": "bell",        "box": [70, 219, 104, 254], "phase": 0.0},
-    {"id": "toaster_b",  "type": "toaster",     "box": [319, 235, 376, 283], "phase": 0.5},
-    {"id": "clock_br",   "type": "alarm_clock", "box": [405, 253, 437, 290], "phase": 0.25},
-    {"id": "worm_b",     "type": "worm",        "box": [49, 288, 90, 311],  "phase": 0.25}
+    {"id": "clock_tl",   "type": "alarm_clock", "box": [75, 42, 97, 67],   "phase": 0.0},
+    {"id": "toaster_tr", "type": "toaster",     "box": [401, 76, 430, 97], "phase": 0.3},
+    {"id": "toaster_s",  "type": "toaster",     "box": [134, 111, 162, 133], "phase": 0.6},
+    {"id": "worm_r",     "type": "worm",        "box": [341, 128, 370, 131], "phase": 0.5},
+    {"id": "worm_l",     "type": "worm",        "box": [59, 128, 82, 132],  "phase": 0.0},
+    {"id": "lips_l",     "type": "lips",        "box": [127, 166, 169, 183], "phase": 0.0},
+    {"id": "toaster_l",  "type": "toaster",     "box": [55, 158, 100, 193], "phase": 0.0},
+    {"id": "lips_r",     "type": "lips",        "box": [405, 164, 437, 194], "phase": 0.5},
+    {"id": "bell_r",     "type": "bell",        "box": [342, 162, 362, 196], "phase": 0.5},
+    {"id": "clock_c",    "type": "alarm_clock", "box": [135, 218, 164, 254], "phase": 0.5},
+    {"id": "bell_l",     "type": "bell",        "box": [76, 226, 95, 249], "phase": 0.0},
+    {"id": "toaster_b",  "type": "toaster",     "box": [325, 241, 369, 275], "phase": 0.5},
+    {"id": "clock_br",   "type": "alarm_clock", "box": [410, 259, 431, 286], "phase": 0.25},
+    {"id": "worm_b",     "type": "worm",        "box": [55, 302, 85, 305],  "phase": 0.25}
   ]
 }
