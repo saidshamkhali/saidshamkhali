@@ -15,7 +15,7 @@ import random
 import bpy
 from mathutils import Euler, Vector
 
-from kit import (LAYOUT, OUTLINED, REMAKE, blobs, constant, cap, hitch, hold, loft, mat, merge, remake_frame, shell, slab, smooth_outline,
+from kit import (LAYOUT, REMAKE, add_shape, blobs, constant, cap, hitch, hold, loft, mat, merge, remake_frame, shell, slab, smooth_outline,
                  step_frames, sweep, torus, zsec)
 
 RIG = "Jesus_Rig"
@@ -297,16 +297,7 @@ def hand_mesh(coll, side, x, curl):
 def build_hand(coll, side, x):
     """The open hand, with a "curl" shape key that folds the fingers into the palm."""
     hand = hand_mesh(coll, side, x, 0.0)
-    curled = hand_mesh(coll, side, x, 1.0)
-    hand.shape_key_add(name="Basis")
-    key = hand.shape_key_add(name="curl")
-    for v, w in zip(key.data, curled.data.vertices):
-        v.co = w.co
-    data = curled.data
-    if curled in OUTLINED:
-        OUTLINED.remove(curled)
-    bpy.data.objects.remove(curled, do_unlink=True)
-    bpy.data.meshes.remove(data)
+    add_shape(hand, hand_mesh(coll, side, x, 1.0), "curl")
     hand["outline_even"] = False  # folded fingers make sharp creases that spike an even outline
     return hand
 

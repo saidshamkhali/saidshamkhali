@@ -160,8 +160,8 @@ PALETTE = {
     "clockface": "#F4F2EA",
     "gold": "#FFC81E",
     "lips": "#C8608C",
-    "mouth": "#6E1222",
-    "tongue": "#D23A50",
+    "mouth": "#1E0B0E",
+    "tongue": "#C8303F",
     "worm": "#B4AFC0",
 }
 
@@ -526,6 +526,22 @@ def merge(name, coll, material, parts, **kw):
     return finish(obj, material, coll, **kw)
 
 
+def add_shape(obj, other, name):
+    """Give obj a shape key `name` holding other's vertex positions (same topology), then
+    delete other."""
+    if obj.data.shape_keys is None:
+        obj.shape_key_add(name="Basis")
+    kb = obj.shape_key_add(name=name)
+    for v, w in zip(kb.data, other.data.vertices):
+        v.co = w.co
+    if other in OUTLINED:
+        OUTLINED.remove(other)
+    data = other.data
+    bpy.data.objects.remove(other, do_unlink=True)
+    bpy.data.meshes.remove(data)
+    return kb
+
+
 def tube(name, coll, material, shapes, n=32, ring=16, **kw):
     """Tapered tube along X. shapes[k](u) -> (x, z, radius_y, radius_z) for u in [0, 1].
     shapes[0] is the basis; every further shape becomes a shape key ("key1", ...)."""
@@ -580,8 +596,14 @@ def add_outline(obj, cam, px=None):
 
 
 def add_outlines(cam):
+    """Outline every object built so far, sized as they stand on frame 1 (animated parts move,
+    so sizing on whatever frame the scene is on would make builds differ)."""
+    scene = bpy.context.scene
+    current = scene.frame_current
+    scene.frame_set(1)
     for obj in OUTLINED:
         add_outline(obj, cam)
+    scene.frame_set(current)
 
 
 # --------------------------------------------------------------------------- keyframes
