@@ -10,7 +10,7 @@ Options:
     --still N [N ...]  render these frames to remake/render/stills/
     --render           render the whole loop to remake/render/frames/
     --percent P        render resolution percentage (default 100)
-    --font PATH        title font (default: first of Cooper Black / Bookman / Georgia Bold found)
+    --font PATH        title font (default: remake/fonts/Ultra-Regular.ttf, packed into the .blend)
 
 Everything is placed from remake/reference/layout.json, so props and the figure
 land where they were in the original GIF. Shared helpers live in kit.py, the
@@ -21,7 +21,7 @@ import os
 import sys
 
 import bpy
-from mathutils import Matrix, Vector
+from mathutils import Vector
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -32,8 +32,7 @@ from props import BUILDERS  # noqa: E402
 
 CAM_PITCH = 20.0       # degrees below horizontal
 CAM_TARGET = Vector((0.0, 0.0, 1.05))
-FIGURE_HEIGHT = 2.25   # feet to raised hand
-TYPE_TURN = {"toaster": -30.0}  # degrees; show toasters three-quarter like the source
+TYPE_TURN = {"toaster": -40.0, "lips": -8.0}  # degrees; three-quarter views like the source
 
 
 def parse_args():
@@ -75,17 +74,36 @@ def camera_setup():
     data.clip_end = 500
     cam = bpy.data.objects.new("Camera", data)
     bpy.context.scene.collection.objects.link(cam)
-    # distance so the figure fills the same share of the frame as in the source
-    fx0, fy0, fx1, fy1 = LAYOUT["figure"]["box"]
-    share = (fy1 - fy0) / SRC_H
-    tan_v = (SENSOR * RES_Y / RES_X / 2) / LENS
-    dist = FIGURE_HEIGHT / share / 2 / tan_v
-    pitch = math.radians(CAM_PITCH)
-    cam.location = CAM_TARGET + Vector((0, -dist * math.cos(pitch), dist * math.sin(pitch)))
-    cam.rotation_euler = (CAM_TARGET - cam.location).to_track_quat("-Z", "Y").to_euler()
     bpy.context.scene.camera = cam
-    bpy.context.view_layer.update()
+    frame_camera(cam)
     return cam
+
+
+def frame_camera(cam):
+    """Move the camera back until the top of the figure's hair, standing on its feet
+    point, lands on the source's head_top row. The raised hand is a stretched cartoon
+    cheat, so the body is the more reliable yardstick."""
+    from bpy_extras.object_utils import world_to_camera_view
+    scene = bpy.context.scene
+    pitch = math.radians(CAM_PITCH)
+    fx, fy = LAYOUT["figure"]["feet"]
+    target_y = LAYOUT["figure"]["head_top"]
+
+    def head_row(dist):
+        cam.location = CAM_TARGET + Vector((0, -dist * math.cos(pitch), dist * math.sin(pitch)))
+        cam.rotation_euler = (CAM_TARGET - cam.location).to_track_quat("-Z", "Y").to_euler()
+        bpy.context.view_layer.update()
+        top = on_plane(cam, fx, fy, 0.0) + Vector((0, 0, jesus.hair_top()))
+        return (1 - world_to_camera_view(scene, cam, top).y) * SRC_H
+
+    lo, hi = 3.0, 60.0  # the head drops down the frame as the camera backs away
+    for _ in range(40):
+        mid = (lo + hi) / 2
+        if head_row(mid) < target_y:
+            lo = mid
+        else:
+            hi = mid
+    head_row((lo + hi) / 2)
 
 
 def screen_ray(cam, px, py):
@@ -101,14 +119,6 @@ def on_plane(cam, px, py, z):
     return o + d * ((z - o.z) / d.z)
 
 
-def world_bbox(objs):
-    bpy.context.view_layer.update()
-    pts = [o.matrix_world @ Vector(c) for o in objs if o.type == "MESH" for c in o.bound_box]
-    lo = Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts)))
-    hi = Vector((max(p.x for p in pts), max(p.y for p in pts), max(p.z for p in pts)))
-    return lo, hi
-
-
 def descendants(obj):
     out = []
     for ch in obj.children:
@@ -119,49 +129,98 @@ def descendants(obj):
 
 def place_prop(cam, root, box, turn=0.0):
     """Scale and move a prop so its silhouette covers the source box.
-    turn: extra yaw in degrees on top of facing the camera."""
-    bpy.context.scene.frame_set(1)
-    lo, hi = world_bbox(descendants(root))
-    model_w, model_h = hi.x - lo.x, hi.z - lo.z
-    center_x = (lo.x + hi.x) / 2
+    turn: extra yaw in degrees on top of facing the camera. The prop is measured as
+    the camera sees it once turned: width along the camera's horizontal, height in Z.
+    Parts flagged "no_fit" are left out of the measurement. It's measured at the frame in
+    the root's "fit_frame" (default 1), so a prop whose shape changes is sized in a set pose."""
+    scene = bpy.context.scene
+    fit = root.get("fit_frame", 1.0)
+    scene.frame_set(int(fit), subframe=fit - int(fit))
     x0, y0, x1, y1 = box
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
     fwd = cam.matrix_world.to_3x3() @ Vector((0, 0, -1))
+    right = cam.matrix_world.to_3x3() @ Vector((1, 0, 0))
+    right.z = 0
+    right.normalize()
     tan_h = (SENSOR / 2) / LENS
-    s = 1.0
+    root.location, root.scale = (0, 0, 0), (1, 1, 1)
     pos = on_plane(cam, cx, cy, 0.5)
+    s, mid_r = 1.0, 0.0
     for _ in range(4):
+        yaw = math.atan2(cam.location.x - pos.x, -(cam.location.y - pos.y))
+        root.rotation_euler.z = yaw + math.radians(turn)
+        bpy.context.view_layer.update()
+        pts = [o.matrix_world @ Vector(c) for o in descendants(root)
+               if o.type == "MESH" and not o.get("no_fit") for c in o.bound_box]
+        rs = [p.dot(right) for p in pts]
+        zs = [p.z for p in pts]
+        mid_r = (min(rs) + max(rs)) / 2
         depth = (pos - cam.matrix_world.translation).dot(fwd)
         units_per_px = 2 * depth * tan_h / SRC_W
-        s = min((x1 - x0) * units_per_px / model_w, (y1 - y0) * units_per_px / model_h)
-        pos = on_plane(cam, cx, cy, s * (lo.z + hi.z) / 2)
+        s = min((x1 - x0) * units_per_px / (max(rs) - min(rs)), (y1 - y0) * units_per_px / (max(zs) - min(zs)))
+        pos = on_plane(cam, cx, cy, s * (min(zs) + max(zs)) / 2)
     root.scale = (s, s, s)
-    yaw = math.atan2(cam.location.x - pos.x, -(cam.location.y - pos.y))
-    root.rotation_euler.z = yaw + math.radians(turn)
-    offset = Matrix.Rotation(yaw, 3, "Z") @ Vector((center_x * s, 0, 0))
-    root.location = (pos.x - offset.x, pos.y - offset.y, 0.0)
+    root.location = (pos.x - right.x * mid_r * s, pos.y - right.y * mid_r * s, 0.0)
 
 
 def find_font(path):
+    """The title font: Ultra (Apache 2.0, in remake/fonts) is packed into the .blend so
+    the file renders the same anywhere. Fallbacks are only used if it's missing."""
     candidates = [path] if path else []
+    candidates.append(os.path.join(REMAKE, "fonts", "Ultra-Regular.ttf"))
     fonts = os.path.join(os.environ.get("WINDIR", "C:/Windows"), "Fonts")
-    candidates += [os.path.join(fonts, n) for n in ("COOPBL.TTF", "BOOKOSB.TTF", "georgiab.ttf")]
-    candidates += ["/System/Library/Fonts/Supplemental/Georgia Bold.ttf",
-                   "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"]
+    candidates.append(os.path.join(fonts, "georgiab.ttf"))
     for c in candidates:
         if c and os.path.exists(c):
-            return bpy.data.fonts.load(c)
+            font = bpy.data.fonts.load(c, check_existing=True)
+            if os.path.basename(c).startswith("Ultra"):
+                font.pack()
+            return font
     return None
 
 
+# The source title is a heavy, wide display serif. Ultra, a touch emboldened and tracked
+# out, then fitted to the source glyph box in width and height separately, matches it.
+TITLE_BOLD = 0.012
+TITLE_TRACKING = 1.12
+TITLE_WORD_SPACE = 1.2
+
+
+def glyph_bounds(obj):
+    """(x0, y0, x1, y1) of the evaluated glyph geometry in local space. A text object's
+    bound_box covers the font's whole line height, not just the letters."""
+    bpy.context.view_layer.update()
+    ev = obj.evaluated_get(bpy.context.evaluated_depsgraph_get())
+    me = ev.to_mesh()
+    xs, ys = [v.co.x for v in me.vertices], [v.co.y for v in me.vertices]
+    ev.to_mesh_clear()
+    return min(xs), min(ys), max(xs), max(ys)
+
+
+def fit_title(obj, cam):
+    """Scale and move the title (parented to the camera, 6 units out) onto the source box."""
+    d = 6.0
+    units_per_px = 2 * d * (SENSOR / 2) / LENS / SRC_W
+    obj.parent = cam
+    obj.scale = (1, 1, 1)
+    lx, ly, hx, hy = glyph_bounds(obj)
+    x0, y0, x1, y1 = LAYOUT["title"]["box"]
+    sx = (x1 - x0) * units_per_px / (hx - lx)
+    sy = (y1 - y0) * units_per_px / (hy - ly)
+    obj.scale = (sx, sy, sx)
+    obj.location = (((x0 + x1) / 2 - SRC_W / 2) * units_per_px - sx * (lx + hx) / 2,
+                    (SRC_H / 2 - (y0 + y1) / 2) * units_per_px - sy * (ly + hy) / 2, -d)
+
+
 def build_title(cam, coll, font_path):
-    t = LAYOUT["title"]
     curve = bpy.data.curves.new("Title", "FONT")
-    curve.body = t["text"]
+    curve.body = LAYOUT["title"]["text"]
     curve.align_x = "CENTER"
     curve.align_y = "CENTER"
     curve.extrude = 0.01
-    curve.offset = 0.022  # embolden: the original title is a heavy display serif
+    curve.offset = TITLE_BOLD
+    curve.space_character = TITLE_TRACKING
+    curve.space_word = TITLE_WORD_SPACE
     font = find_font(font_path)
     if font:
         curve.font = font
@@ -169,18 +228,7 @@ def build_title(cam, coll, font_path):
     coll.objects.link(obj)
     obj.data.materials.append(flat("TitleInk", "#111111"))
     obj.visible_shadow = False
-    # flat card 6 units in front of the camera, sized to the source title box
-    d = 6.0
-    tan_h = (SENSOR / 2) / LENS
-    units_per_px = 2 * d * tan_h / SRC_W
-    bpy.context.view_layer.update()
-    w = obj.dimensions.x
-    x0, y0, x1, y1 = t["box"]
-    s = (x1 - x0) * units_per_px / w
-    obj.parent = cam
-    obj.scale = (s, s, s)
-    obj.location = (((x0 + x1) / 2 - SRC_W / 2) * units_per_px,
-                    (SRC_H / 2 - (y0 + y1) / 2) * units_per_px, -d)
+    fit_title(obj, cam)
 
 
 def world_and_lights():
@@ -264,6 +312,10 @@ def build(opts):
 
     add_outlines(cam)
     bpy.context.scene.frame_set(1)
+    tweaks_json = os.path.join(HERE, "tweaks.json")  # hand edits exported from the .blend
+    if os.path.exists(tweaks_json) and not os.environ.get("REMAKE_NO_TWEAKS"):  # set by tweaks.py export
+        from tweaks import apply_tweaks
+        apply_tweaks(tweaks_json)
     return cam
 
 

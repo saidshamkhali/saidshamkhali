@@ -1,0 +1,53 @@
+#!/bin/sh
+# Pre-commit hook: when remake/blender/homers_web_page.blend is staged, regenerate
+# remake/blender/scene_manifest.txt from the staged file (tweaks.py manifest) and stage it,
+# so every .blend change comes with a readable diff.
+#
+# Install: cp remake/tools/pre-commit "$(git rev-parse --git-common-dir)/hooks/pre-commit"
+# The hooks folder is shared by every worktree and branch, so this exits quietly
+# wherever remake/ doesn't exist. Blender: $BLENDER if set, else the default Windows
+# install, else `blender` on PATH.
+
+BLEND=remake/blender/homers_web_page.blend
+MANIFEST=remake/blender/scene_manifest.txt
+SCRIPT=remake/blender/tweaks.py
+
+top=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+cd "$top" || exit 0
+[ -f "$SCRIPT" ] || exit 0
+git diff --cached --quiet --diff-filter=d -- "$BLEND" && exit 0
+
+if [ -n "$BLENDER" ]; then
+    candidates=$BLENDER
+else
+    candidates="/c/Program Files/Blender Foundation/Blender 5.2/blender.exe
+blender"
+fi
+blender=
+while IFS= read -r b; do
+    if [ -x "$b" ]; then blender=$b; break; fi
+    if found=$(command -v "$b" 2>/dev/null); then blender=$found; break; fi
+done <<EOF
+$candidates
+EOF
+if [ -z "$blender" ]; then
+    echo "pre-commit: Blender not found; set BLENDER=/path/to/blender to refresh $MANIFEST" >&2
+    echo "pre-commit: (or commit with --no-verify to skip it)" >&2
+    exit 1
+fi
+
+# Read the staged .blend, not the working copy, which may have newer unstaged saves.
+tmp=$(mktemp -d) || exit 1
+trap 'rm -rf "$tmp"' EXIT
+git cat-file blob ":$BLEND" > "$tmp/staged.blend" || exit 1
+staged=$tmp/staged.blend
+command -v cygpath >/dev/null 2>&1 && staged=$(cygpath -w "$staged")
+
+echo "pre-commit: refreshing $MANIFEST"
+if ! "$blender" -b --factory-startup "$staged" --python-exit-code 1 --python "$SCRIPT" -- \
+        manifest --out "$MANIFEST" >"$tmp/log" 2>&1; then
+    cat "$tmp/log" >&2
+    echo "pre-commit: tweaks.py manifest failed" >&2
+    exit 1
+fi
+git add "$MANIFEST"

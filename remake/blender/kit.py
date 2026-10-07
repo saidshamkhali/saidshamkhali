@@ -148,21 +148,21 @@ PALETTE = {
     "bg": "#86C5E3",
     "skin": "#FFD90F",
     "robe": "#E2E0EC",
-    "hair": "#4A2812",
+    "hair": "#3B2015",
     "sandal": "#6B3A1E",
     "halo": "#ECECF2",
     "white": "#FFFFFF",
     "black": "#1A1A1A",
-    "metal": "#C3C7CE",
+    "metal": "#C6C8CC",
     "slot": "#3A3A40",
     "toast": "#E9A84C",
     "clock": "#2A2A2E",
     "clockface": "#F4F2EA",
     "gold": "#FFC81E",
-    "lips": "#E8607E",
+    "lips": "#C8608C",
     "mouth": "#6E1222",
-    "tongue": "#E2405A",
-    "worm": "#F2A7B9",
+    "tongue": "#D23A50",
+    "worm": "#B4AFC0",
 }
 
 
@@ -305,6 +305,227 @@ def blobs(name, coll, material, items, segs=24, **kw):
     return finish(obj, material, coll, **kw)
 
 
+def spline(points, n):
+    """n+1 samples of a Catmull-Rom curve through points (ends clamped)."""
+    pts = [Vector(p) for p in points]
+    pts = [pts[0]] + pts + [pts[-1]]
+    segs = len(pts) - 3
+    out = []
+    for i in range(n + 1):
+        t = i / n * segs
+        k = min(int(t), segs - 1)
+        f = t - k
+        p0, p1, p2, p3 = pts[k:k + 4]
+        out.append(0.5 * ((2 * p1) + (-p0 + p2) * f + (2 * p0 - 5 * p1 + 4 * p2 - p3) * f * f
+                          + (-p0 + 3 * p1 - 3 * p2 + p3) * f * f * f))
+    return out
+
+
+def sweep(name, coll, material, points, radii, n=24, ring=16, squash=1.0, up=(0, 0, 1), **kw):
+    """Round-ended tube along a smooth curve through points; radii are interpolated along it.
+    squash scales the section along the 'up' side (less than 1 = flatter)."""
+    path = spline(points, n)
+    rs = [radii[0]] if len(radii) == 1 else None
+    if rs is None:
+        rs = [r.x for r in spline([(r, 0, 0) for r in radii], n)]
+    else:
+        rs = rs * (n + 1)
+    up = Vector(up)
+    sections = []
+    for i, p in enumerate(path):
+        t = (path[min(i + 1, n)] - path[max(i - 1, 0)]).normalized()
+        v = (up - t * up.dot(t))
+        if v.length < 1e-4:
+            v = Vector((0, 1, 0)) - t * t.y
+        v.normalize()
+        u = t.cross(v)
+        sections.append((p, u, v, rs[i], rs[i] * squash))
+    # round the ends: rings shrinking along the tangent
+    for end in (0, -1):
+        p, u, v, ru, rv = sections[end]
+        t = (path[1] - path[0]).normalized() if end == 0 else (path[-1] - path[-2]).normalized()
+        caps = []
+        for a in (0.45, 0.75, 0.93):
+            k = math.sqrt(1 - a * a)
+            caps.append((p + t * (ru * a) * (-1 if end == 0 else 1), u, v, ru * k, rv * k))
+        sections = (caps[::-1] + sections) if end == 0 else (sections + caps)
+    return loft(name, coll, material, sections, ring=ring, **kw)
+
+
+def shell(name, coll, material, surf, nu, nv, outer, inner=0.004, wrap_u=False, axis=(0.0, 0.0), **kw):
+    """A thick patch lying on a surface: surf(u, v) -> point, u and v in [0, 1].
+    outer(u, v) is the thickness outward, inner the inset below the surface. Outward is
+    away from the vertical axis through `axis` (x, y). wrap_u closes the patch around in u;
+    rows where every u gives the same point (a pole) collapse cleanly."""
+    ax = Vector((axis[0], axis[1], 0))
+    eps = 1e-3
+    us = [i / nu for i in range(nu)] if wrap_u else [i / nu for i in range(nu + 1)]
+    vs = [j / nv for j in range(nv + 1)]
+
+    def normal(u, v):
+        p = surf(u, v)
+        du = surf(min(u + eps, 1.0), v) - surf(max(u - eps, 0.0), v)
+        dv = surf(u, min(v + eps, 1.0)) - surf(u, max(v - eps, 0.0))
+        n = du.cross(dv)
+        radial = p - Vector((ax.x, ax.y, p.z))
+        if n.length < 1e-9:
+            n = radial if radial.length > 1e-6 else Vector((0, 0, 1))
+        n.normalize()
+        if n.dot(radial) < 0 or (radial.length < 1e-6 and n.z < 0):
+            n = -n
+        return p, n
+
+    bm = bmesh.new()
+    O, I = [], []
+    for u in us:
+        orow, irow = [], []
+        for v in vs:
+            p, n = normal(u, v)
+            orow.append(bm.verts.new(p + n * outer(u, v)))
+            irow.append(bm.verts.new(p - n * inner))
+        O.append(orow)
+        I.append(irow)
+    nU = len(us)
+    ucount = nU if wrap_u else nU - 1
+    for i in range(ucount):
+        i2 = (i + 1) % nU
+        for j in range(nv):
+            bm.faces.new((O[i][j], O[i2][j], O[i2][j + 1], O[i][j + 1]))
+            bm.faces.new((I[i][j + 1], I[i2][j + 1], I[i2][j], I[i][j]))
+    # rims along the open borders
+    border = []
+    for i in range(ucount):
+        border.append(((i, 0), ((i + 1) % nU, 0)))
+        border.append((((i + 1) % nU, nv), (i, nv)))
+    if not wrap_u:
+        for j in range(nv):
+            border.append(((0, j + 1), (0, j)))
+            border.append(((nU - 1, j), (nU - 1, j + 1)))
+    for (a, b) in border:
+        try:
+            bm.faces.new((O[a[0]][a[1]], I[a[0]][a[1]], I[b[0]][b[1]], O[b[0]][b[1]]))
+        except ValueError:
+            pass
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+    bmesh.ops.dissolve_degenerate(bm, edges=bm.edges, dist=1e-6)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    mesh = bpy.data.meshes.new(name)
+    bm.to_mesh(mesh)
+    bm.free()
+    obj = bpy.data.objects.new(name, mesh)
+    coll.objects.link(obj)
+    obj["outline_even"] = False
+    return finish(obj, material, coll, **kw)
+
+
+def cap(name, coll, material, center, radius, cut, rot=(0, 0, 0), segs=32, rings=12, **kw):
+    """Closed spherical cap: the part of a sphere above the plane z = cut*radius (local),
+    then rotated by rot and moved to center. Used for eyelids."""
+    phi_c = math.acos(max(-0.99, min(0.99, cut)))
+    bm = bmesh.new()
+    m = Matrix.Translation(center) @ Euler(rot).to_matrix().to_4x4()
+    top = bm.verts.new(m @ Vector((0, 0, radius)))
+    prev = None
+    rows = []
+    for k in range(1, rings + 1):
+        phi = phi_c * k / rings
+        rows.append([bm.verts.new(m @ Vector((radius * math.sin(phi) * math.cos(2 * math.pi * s / segs),
+                                              radius * math.sin(phi) * math.sin(2 * math.pi * s / segs),
+                                              radius * math.cos(phi)))) for s in range(segs)])
+    for s in range(segs):
+        bm.faces.new((top, rows[0][s], rows[0][(s + 1) % segs]))
+    for a, b in zip(rows, rows[1:]):
+        for s in range(segs):
+            bm.faces.new((a[s], b[s], b[(s + 1) % segs], a[(s + 1) % segs]))
+    # flat underside, filled with rings so subdivision keeps it flat
+    rb = radius * math.sin(phi_c)
+    zc = radius * math.cos(phi_c)
+    prev = rows[-1]
+    for f in (0.66, 0.33):
+        ring_ = [bm.verts.new(m @ Vector((rb * f * math.cos(2 * math.pi * s / segs),
+                                          rb * f * math.sin(2 * math.pi * s / segs), zc))) for s in range(segs)]
+        for s in range(segs):
+            bm.faces.new((prev[s], ring_[s], ring_[(s + 1) % segs], prev[(s + 1) % segs]))
+        prev = ring_
+    hub = bm.verts.new(m @ Vector((0, 0, zc)))
+    for s in range(segs):
+        bm.faces.new((prev[s], hub, prev[(s + 1) % segs]))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    mesh = bpy.data.meshes.new(name)
+    bm.to_mesh(mesh)
+    bm.free()
+    obj = bpy.data.objects.new(name, mesh)
+    coll.objects.link(obj)
+    return finish(obj, material, coll, **kw)
+
+
+def slab(name, coll, material, outline_2d, depth, plane="XZ", offset=0.0, bevel=0.0, **kw):
+    """Flat shape cut from an outline and given thickness. outline_2d is a list of (a, b)
+    points; plane "XZ" puts them at (a, offset, b) and extrudes along +Y, "YZ" puts them
+    at (offset, a, b) and extrudes along +X. Centred on the plane through its thickness."""
+    bm = bmesh.new()
+    if plane == "XZ":
+        to3 = lambda a, b: Vector((a, offset - depth / 2, b))  # noqa: E731
+        axis = Vector((0, depth, 0))
+    else:
+        to3 = lambda a, b: Vector((offset - depth / 2, a, b))  # noqa: E731
+        axis = Vector((depth, 0, 0))
+    face = bm.faces.new([bm.verts.new(to3(a, b)) for a, b in outline_2d])
+    ext = bmesh.ops.extrude_face_region(bm, geom=[face])
+    bmesh.ops.translate(bm, vec=axis, verts=[e for e in ext["geom"] if isinstance(e, bmesh.types.BMVert)])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    mesh = bpy.data.meshes.new(name)
+    bm.to_mesh(mesh)
+    bm.free()
+    obj = bpy.data.objects.new(name, mesh)
+    coll.objects.link(obj)
+    finish(obj, material, coll, smooth=False, **kw)
+    if bevel:
+        m = obj.modifiers.new("Bevel", "BEVEL")
+        m.width = bevel
+        m.segments = 3
+        m.limit_method = "ANGLE"
+        m.harden_normals = True
+        for poly in obj.data.polygons:
+            poly.use_smooth = True
+    return obj
+
+
+def smooth_outline(points, n):
+    """Closed Catmull-Rom loop through 2D points, n samples."""
+    pts = [Vector((a, b, 0)) for a, b in points]
+    m = len(pts)
+    out = []
+    for i in range(n):
+        t = i / n * m
+        k = int(t)
+        f = t - k
+        p0, p1, p2, p3 = (pts[(k + j) % m] for j in (-1, 0, 1, 2))
+        p = 0.5 * ((2 * p1) + (-p0 + p2) * f + (2 * p0 - 5 * p1 + 4 * p2 - p3) * f * f
+                   + (-p0 + 3 * p1 - 3 * p2 + p3) * f * f * f)
+        out.append((p.x, p.y))
+    return out
+
+
+def merge(name, coll, material, parts, **kw):
+    """Join untransformed part objects into one mesh (each part keeps its own outline shell)."""
+    bm = bmesh.new()
+    for p in parts:
+        bm.from_mesh(p.data)
+    mesh = bpy.data.meshes.new(name)
+    bm.to_mesh(mesh)
+    bm.free()
+    for p in parts:
+        if p in OUTLINED:
+            OUTLINED.remove(p)
+        data = p.data
+        bpy.data.objects.remove(p, do_unlink=True)
+        bpy.data.meshes.remove(data)
+    obj = bpy.data.objects.new(name, mesh)
+    coll.objects.link(obj)
+    return finish(obj, material, coll, **kw)
+
+
 def tube(name, coll, material, shapes, n=32, ring=16, **kw):
     """Tapered tube along X. shapes[k](u) -> (x, z, radius_y, radius_z) for u in [0, 1].
     shapes[0] is the basis; every further shape becomes a shape key ("key1", ...)."""
@@ -331,41 +552,81 @@ def tube(name, coll, material, shapes, n=32, ring=16, **kw):
     return finish(obj, material, coll, **kw)
 
 
-def add_outlines(cam):
-    """Inverted-hull outlines, sized so they read as ~OUTLINE_PX on screen."""
+def add_outline(obj, cam, px=OUTLINE_PX):
+    """Inverted-hull outline on one object, sized so it reads as ~px on screen."""
     bpy.context.view_layer.update()
     om = outline_material()
     half_w = SENSOR / 2 / LENS
     fwd = cam.matrix_world.to_3x3() @ Vector((0, 0, -1))
-    for obj in OUTLINED:
-        depth = max(0.5, (obj.matrix_world.translation - cam.matrix_world.translation).dot(fwd))
-        world_px = 2 * depth * half_w / RES_X
-        scale = max(obj.matrix_world.to_scale())
+    depth = max(0.5, (obj.matrix_world.translation - cam.matrix_world.translation).dot(fwd))
+    world_px = 2 * depth * half_w / RES_X
+    # an object whose own scale is animated declares the scale its outline is sized for
+    own = max(abs(c) for c in obj.scale) or 1.0
+    scale = max(obj.matrix_world.to_scale()) / own * obj.get("outline_ref_scale", own)
+    if om.name not in obj.data.materials:
         obj.data.materials.append(om)
-        m = obj.modifiers.new("Outline", "SOLIDIFY")
-        m.thickness = OUTLINE_PX * world_px / scale
-        m.offset = 1.0
-        m.use_flip_normals = True
-        m.use_even_offset = True
-        m.use_rim = False
-        m.material_offset = 1
-        obj.visible_shadow = True
+    m = obj.modifiers.get("Outline") or obj.modifiers.new("Outline", "SOLIDIFY")
+    m.thickness = px * world_px / scale
+    m.offset = 1.0
+    m.use_flip_normals = True
+    # even offset keeps lines even on boxy props but spikes on the sharp rims of shells
+    m.use_even_offset = bool(obj.get("outline_even", True))
+    m.use_quality_normals = True
+    m.use_rim = False
+    m.material_offset = list(obj.data.materials).index(om)
+    obj.visible_shadow = True
+
+
+def add_outlines(cam):
+    for obj in OUTLINED:
+        add_outline(obj, cam)
 
 
 # --------------------------------------------------------------------------- keyframes
 
-def bake(obj, path, index, fn):
-    """Keyframe obj.path[index] = fn(t) on every frame, t in [0, 1) over the loop."""
-    for f in range(1, LOOP + 2):
+def step_frames():
+    """Our frames where each source frame starts: hold a pose from one to the next for
+    the 10 fps look of the original (the last one is the loop's start again)."""
+    return [remake_frame(k) for k in range(SRC_FRAMES + 1)]
+
+
+def bake(obj, path, index, fn, frames=None):
+    """Keyframe obj.path[index] = fn(t), t in [0, 1) over the loop, on every frame or on
+    the given (possibly fractional) frames."""
+    for f in frames or range(1, LOOP + 2):
         t = (f - 1) / LOOP
         getattr(obj, path)[index] = fn(t)
         obj.keyframe_insert(path, index=index, frame=f)
 
 
-def bake_value(owner, prop, fn):
-    for f in range(1, LOOP + 2):
-        setattr(owner, prop, fn((f - 1) / LOOP))
-        owner.keyframe_insert(prop, frame=f)
+def constant(obj):
+    """Hold every key of obj until the next one (no easing in between)."""
+    for fc in fcurves(obj):
+        for kp in fc.keyframe_points:
+            kp.interpolation = "CONSTANT"
+
+
+def fcurves(obj):
+    """The F-curves of obj's action (Blender 5 keeps them in a channelbag per slot)."""
+    from bpy_extras import anim_utils
+    ad = obj.animation_data
+    if ad is None or ad.action is None:
+        return []
+    bag = anim_utils.action_get_channelbag_for_slot(ad.action, ad.action_slot)
+    return list(bag.fcurves) if bag else []
+
+
+def hold(obj, times):
+    """Cartoon timing: replace every curve of obj by its values at `times`, each held until
+    the next (constant interpolation), like a drawing held for several frames."""
+    for fc in fcurves(obj):
+        values = [fc.evaluate(t) for t in times]
+        fc.keyframe_points.clear()
+        fc.keyframe_points.add(len(times))
+        for kp, t, v in zip(fc.keyframe_points, times, values):
+            kp.co = (t, v)
+            kp.interpolation = "CONSTANT"
+        fc.update()
 
 
 def wave(t, cycles, phase=0.0):

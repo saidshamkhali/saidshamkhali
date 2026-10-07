@@ -1,4 +1,7 @@
 reference/frames/
 render/
-blender/*.blend
-blender/*.blend1
+# The scene is tracked; Blender's backups (.blend1, .blend2, ...) and scratch builds are not.
+*.blend
+!blender/homers_web_page.blend
+*.blend[0-9]*
+__pycache__/
