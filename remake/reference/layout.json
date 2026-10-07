@@ -1,0 +1,69 @@
+{
+  "source": {
+    "file": "jesus-christ-homer.gif",
+    "width": 498,
+    "height": 318,
+    "frames": 41,
+    "frame_ms": 100
+  },
+  "background": "#86C5E3",
+  "title": {
+    "text": "Homer’s Web Page",
+    "box": [84, 2, 413, 32]
+  },
+  "figure": {
+    "box": [196, 79, 283, 254],
+    "feet": [240, 250],
+    "yaw_note": "degrees; 0 = facing camera, +90 = facing screen-left, 180/-180 = back to camera",
+    "timeline": [
+      {"frame": 0,    "yaw": 180,  "pose": "up"},
+      {"frame": 2,    "yaw": 178,  "pose": "up"},
+      {"frame": 4,    "yaw": 95,   "pose": "up"},
+      {"frame": 6,    "yaw": 20,   "pose": "up"},
+      {"frame": 7,    "yaw": 8,    "pose": "wave_a"},
+      {"frame": 8,    "yaw": 4,    "pose": "wave_b"},
+      {"frame": 9,    "yaw": 2,    "pose": "wave_a"},
+      {"frame": 10,   "yaw": 0,    "pose": "wave_b"},
+      {"frame": 11,   "yaw": 15,   "pose": "face"},
+      {"frame": 12.5, "yaw": 30,   "pose": "beckon"},
+      {"frame": 15,   "yaw": 34,   "pose": "beckon_b"},
+      {"frame": 18,   "yaw": 30,   "pose": "beckon"},
+      {"frame": 21,   "yaw": 34,   "pose": "beckon_b"},
+      {"frame": 23,   "yaw": 30,   "pose": "beckon"},
+      {"frame": 24,   "yaw": 15,   "pose": "face"},
+      {"frame": 25.5, "yaw": 4,    "pose": "up"},
+      {"frame": 26.5, "yaw": 2,    "pose": "wave_a"},
+      {"frame": 27.5, "yaw": 0,    "pose": "wave_b"},
+      {"frame": 28.5, "yaw": -4,   "pose": "wave_a"},
+      {"frame": 29.5, "yaw": -10,  "pose": "up"},
+      {"frame": 31,   "yaw": -55,  "pose": "up"},
+      {"frame": 33,   "yaw": -95,  "pose": "up"},
+      {"frame": 35,   "yaw": -140, "pose": "up"},
+      {"frame": 36.5, "yaw": -175, "pose": "up"},
+      {"frame": 41,   "yaw": -180, "pose": "up"}
+    ]
+  },
+  "cycles_s": {
+    "alarm_clock": 0.6,
+    "toaster": 0.6,
+    "bell": 0.6,
+    "lips": 0.9,
+    "worm": 1.4
+  },
+  "props": [
+    {"id": "clock_tl",   "type": "alarm_clock", "box": [70, 36, 102, 73],   "phase": 0.0},
+    {"id": "toaster_tr", "type": "toaster",     "box": [395, 68, 437, 104], "phase": 0.3},
+    {"id": "toaster_s",  "type": "toaster",     "box": [128, 104, 169, 140], "phase": 0.6},
+    {"id": "worm_r",     "type": "worm",        "box": [334, 112, 376, 136], "phase": 0.5},
+    {"id": "worm_l",     "type": "worm",        "box": [52, 116, 88, 137],  "phase": 0.0},
+    {"id": "lips_l",     "type": "lips",        "box": [122, 149, 175, 194], "phase": 0.0},
+    {"id": "toaster_l",  "type": "toaster",     "box": [49, 152, 107, 200], "phase": 0.0},
+    {"id": "lips_r",     "type": "lips",        "box": [396, 153, 448, 200], "phase": 0.5, "turn": -40},
+    {"id": "bell_r",     "type": "bell",        "box": [331, 157, 374, 202], "phase": 0.5},
+    {"id": "clock_c",    "type": "alarm_clock", "box": [128, 212, 169, 259], "phase": 0.5},
+    {"id": "bell_l",     "type": "bell",        "box": [70, 219, 104, 254], "phase": 0.0},
+    {"id": "toaster_b",  "type": "toaster",     "box": [319, 235, 376, 283], "phase": 0.5},
+    {"id": "clock_br",   "type": "alarm_clock", "box": [405, 253, 437, 290], "phase": 0.25},
+    {"id": "worm_b",     "type": "worm",        "box": [49, 288, 90, 311],  "phase": 0.25}
+  ]
+}
