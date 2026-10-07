@@ -314,7 +314,7 @@ SKULL = [
 EYE_R = 0.047
 EYE_X = 0.069
 EYE_Z = 1.79
-EYE_Y = -0.112
+EYE_Y = -0.128  # bulging out of the face, as Simpsons eyes do
 HANG_Z = 1.7    # below this the hair hangs straight instead of following the head
 MUZZLE = 0.045  # how far the Simpsons muzzle (moustache, lip, chin) juts out of the face
 HAIR_TOP = 0.02  # hair thickness on the crown
@@ -390,7 +390,7 @@ def build_head(coll, rig):
 
     # eyes: big Simpsons balls bulging out of the face, a nose-width apart
     eyes, pupils = [], []
-    look = math.radians(10)  # a calm gaze, the pupils right under the heavy lids
+    look = math.radians(3)  # a calm, level gaze under the lids
     for x in (1, -1):
         c = Vector((EYE_X * x, EYE_Y, EYE_Z))
         eyes.append((c, (EYE_R,) * 3, (0, 0, 0)))
@@ -398,10 +398,10 @@ def build_head(coll, rig):
         pupils.append((c + d * EYE_R * 0.98, (0.011, 0.004, 0.011), (look, 0, 0)))
     skin(blobs("J_eyes", coll, mat("white", 0.93), eyes), rig, head)
     skin(blobs("J_pupils", coll, mat("black"), pupils, outline=False), rig, head, subsurf=0)
-    # heavy upper lids: level caps over the top half of each eye, relaxed and half-closed
+    # upper lids: level caps over the top third of each eye, calm but awake
     for x, side in ((1, "L"), (-1, "R")):
         c = Vector((EYE_X * x, EYE_Y, EYE_Z))
-        skin(cap(f"J_lid_{side}", coll, skin_m, c, EYE_R * 1.07, -0.02, rot=(math.radians(-4), 0, 0)), rig, head)
+        skin(cap(f"J_lid_{side}", coll, skin_m, c, EYE_R * 1.07, 0.48, rot=(math.radians(-10), 0, 0)), rig, head)
 
     # nose: the long Simpsons sausage from between the eyes, pointing forward and a little down
     skin(sweep("J_nose", coll, skin_m, [(0, -0.115, 1.758), (0, -0.168, 1.74), (0, -0.212, 1.724)],
@@ -507,7 +507,8 @@ def build_head(coll, rig):
     locks["outline_even"] = False
     skin(locks, rig, blend("chest", "head", 1.45, 1.56))
 
-    halo = torus("J_halo", coll, mat("halo", 0.9), (0, 0, 2.2), 0.2, 0.008, rot=(math.radians(-12), 0, 0))
+    # level, so it reads as the same flat ellipse from every side, about as wide as his head
+    halo = torus("J_halo", coll, mat("halo", 0.9), (0, 0, 2.19), 0.165, 0.008)
     halo["outline_px"] = 1.2  # a fine line: the source's halo is faint
     skin(halo, rig, head, subsurf=0)
 
@@ -693,8 +694,8 @@ def apply_offsets(rig, p, right=None):
 # Where his face points, read off the drawings: degrees towards screen-left, 0 facing us. In
 # every front-facing frame he looks off to screen-left, a three-quarter view, whichever way
 # his body faces. Frames not listed keep the head in line with the body (the turns).
-HEAD_YAW = {5: 70, 6: 47, 7: 47, 8: 40, 9: 35, 10: 45, 11: 45, 12: 55, 13: 55, 14: 55, 15: 55, 16: 52,
-            17: 52, 18: 52, 19: 55, 20: 55, 21: 55, 22: 55, 23: 55, 24: 45, 25: 40, 26: 40, 27: 35,
+HEAD_YAW = {5: 70, 6: 47, 7: 47, 8: 40, 9: 35, 10: 45, 11: 45, 12: 42, 13: 42, 14: 42, 15: 42, 16: 40,
+            17: 40, 18: 40, 19: 42, 20: 42, 21: 42, 22: 42, 23: 42, 24: 45, 25: 40, 26: 40, 27: 35,
             28: 15, 29: 10, 30: -25, 31: -40}
 
 

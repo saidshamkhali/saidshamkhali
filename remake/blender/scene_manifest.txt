@@ -235,11 +235,11 @@ J_hair  MESH  parent=Jesus_Rig
   modifier Subsurf SUBSURF levels=1 render_levels=2
   modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
 J_halo  MESH  parent=Jesus_Rig
-  loc 0.0000 0.0000 2.2000  rot_deg -12.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 0.0000 2.1900  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Torus verts 576 faces 576
   materials halo, Outline
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
-  modifier Outline SOLIDIFY thickness=0.006764 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.006765 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_hand_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_hand_L verts 1492 faces 1584 shape_keys 2
