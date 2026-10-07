@@ -1,6 +1,6 @@
 # Homer's Web Page in 3D
 
-A 3D remake of `jesus-christ-homer.gif` (41 frames, 498x318, 10 fps), toon-shaded with outlines (concept A in `concepts/`), rendered at 25 fps.
+A 3D remake of `jesus-christ-homer.gif` (41 frames, 498x318, 10 fps), toon-shaded with outlines (concept A in `concepts/`), at the original's own 10 fps.
 
 ## Layout
 
@@ -8,7 +8,8 @@ A 3D remake of `jesus-christ-homer.gif` (41 frames, 498x318, 10 fps), toon-shade
 |---|---|
 | `concepts/` | Style concepts. A (toon + outlines) is the chosen one |
 | `reference/layout.json` | Prop positions, figure yaw/pose timeline and prop cycle lengths, measured from the GIF. The Blender script reads this |
-| `reference/build_reference.py` | Regenerates the reference sheets and `reference/frames/` |
+| `reference/build_reference.py` | Regenerates the reference sheets, `reference/frames/` and the figure's silhouettes (`frames/masks.npz`) |
+| `reference/pose_fit.json` | Per-frame pose offsets fitted to the original's silhouettes by `blender/fit_pose.py` |
 | `reference/contact_sheet.png` | Every source frame, numbered |
 | `reference/figure_sheet.png` | The figure, zoomed, with yaw/pose per frame |
 | `reference/layout.png` | Frame 0 with every prop box drawn |
@@ -16,13 +17,14 @@ A 3D remake of `jesus-christ-homer.gif` (41 frames, 498x318, 10 fps), toon-shade
 | `blender/jesus.py` | The figure: modelled in code, skinned to an armature, poses and timeline |
 | `blender/props.py` | Toasters, alarm clocks, bells, lips and worms, each with its own loop |
 | `blender/kit.py` | Shared settings, toon materials, mesh builders, keyframe helpers |
+| `blender/fit_pose.py` | Fits the figure's pose to the original, frame by frame |
 | `blender/homers_web_page.blend` | The scene. Tracked, and the source of truth once edited in the UI |
 | `blender/render.py` | Renders the tracked .blend as it is |
 | `blender/tweaks.py` | Carries UI edits across a rebuild, and writes `scene_manifest.txt` |
 | `blender/scene_manifest.txt` | Text summary of the .blend, so its changes show up in diffs |
 | `fonts/` | Ultra (Apache 2.0, by Astigmatic), the title font, packed into the .blend |
 | `tools/pre-commit` | Git hook that refreshes the manifest when the .blend is staged |
-| `make_gif.py` | Rendered frames to a looping GIF via ffmpeg |
+| `make_gif.py` | Rendered frames to a looping GIF, animated WebP and/or MP4 via ffmpeg |
 
 ## What the original does
 
@@ -31,7 +33,7 @@ A 3D remake of `jesus-christ-homer.gif` (41 frames, 498x318, 10 fps), toon-shade
 
 ## Loop timing
 
-25 fps × 105 frames = 4.2 s (original: 4.1 s). GIF delays are whole hundredths of a second and browsers slow anything under 2/100 s, so 25 fps (4/100 s) plays exactly. Every prop runs a whole number of cycles per loop (clocks, bells and toasters 7, lips 5, worms 4), so the loop has no seam.
+The original's own: 41 frames at 10 fps (4.1 s), one of ours for each of its frames. Eight of its frames are whole-frame copies of the one before (`source.held_frames`: 1, 7, 13, 15, 20, 26, 32 and 38), a hitch about every half second, and ours hold on the same frames (`kit.hitch`). Every prop runs a whole number of cycles per loop, so the loop has no seam. The scripts still work at other rates (`kit.FPS`, `kit.LOOP`): the poses are then held for several frames each.
 
 ## Run
 
@@ -52,18 +54,23 @@ The script writes `remake/blender/homers_web_page.blend`, so you can open the sc
 
 `jesus.py` builds him from parametric surfaces:
 
-- **Head:** a Simpsons cylinder (`SKULL` rows) with a muzzle pushed out where the moustache, lip and chin sit. It has eyes that touch, half-closed lids, a short nose, ears and a bushy moustache. It's modelled at a comfortable size, then scaled down and lifted about the collar (`HEAD_SCALE`, `HEAD_LIFT`), so it's about a quarter of his height, as in the source.
-- **Beard and hair:** thick shells lying on the head surface (`kit.shell`). The beard covers the jaw and chin and leaves the cheeks bare. The hair has a centre parting, a ragged fringe and puffy temples, and hangs straight behind the ears.
-- **Robe:** an A-line (`ROBE` rows) with a soft belly, a wavy hem at mid-calf and a V-neck patch lying on it.
+His proportions come from the GIF and from a clean model sheet drawn from it (front, three-quarter, profile and back), checked pixel class by pixel class (skin, hair, robe) against orthographic renders of the model:
+
+- **Head:** a tall Simpsons dome (`SKULL` rows) about 28% of his height, with a muzzle pushed out where the moustache, lip and chin sit. Big eyes a nose-width apart under heavy half-closed lids, a long nose, C-shaped ears, a wide handlebar moustache whose ends leave the face, a lower lip, and a pointed goatee hanging in front of a thick neck.
+- **Beard and hair:** shells lying on the head surface (`kit.shell`). A band of beard runs along the jaw from the goatee to the sideburns; the cheeks stay bare. The hair arches high over the forehead from a centre parting, with locks at the forehead corners, covers the temples down to the ears and hangs behind them, spreading over the shoulders in waves.
+- **Robe:** long and nearly straight, the shoulders up at mouth level so the beard hangs over the chest, a soft belly, a wavy hem at mid-calf and a deep V-neck.
 - **Sleeves:** two rigid tubes each, meeting at the elbow, so a hard bend can't fold the mesh and flip its outline.
-- **Hands:** a thumb and three fingers.
+- **Hands:** big, a thumb and three fingers, with a `curl` shape key that folds the fingers into the palm.
+- **Feet:** big, with four toes, on dark soles with a strap.
 
 Every part is skinned to the `Jesus_Rig` armature: `root`, `hips`, `chest`, `head`, `upper_arm/forearm/hand.L/R`, and IK legs (`thigh/shin.L/R` aimed at `foot.L/R`, knees pointing at `knee.L/R`). The feet stay planted while the hips move, and the knees bend. Animation comes from three places:
 
 - **Arms:** `POSES`, written in rest-pose axes, keyed from the timeline in `layout.json`.
 - **Turn:** the armature object's Z rotation, keyed from the same timeline (one key per source frame through the turns).
 - **Body:** `BODY`, one row per source frame, read off the source drawings. It holds the knee dip, hip sway, thrust and roll, the chest's lean and pitch, and the head's tilt, nod and turn. This is the wiggle: the dips during the turns, the hip swing while waving, and the forward rock and head bob while beckoning.
-- **Timing:** with `STEPPED = True` (the default) the figure moves like the 10 fps original. Its motion is sampled once per source frame and each pose is held for two or three of our frames (constant interpolation, `kit.hold`). Set it to `False` for smooth motion. `props.STEPPED` does the same for the props: they're keyed once per source frame and held, and the clocks then flip left and right on every held frame instead of shimmying. With both on, the whole picture changes only on the original's 41 beats, so the GIF is also about half the size.
+- **Fit:** `reference/pose_fit.json`, per source frame offsets on top of all that, found by `fit_pose.py`: it renders his silhouette at the GIF's size from the scene camera, compares it with the GIF's, and nudges the slide across the screen, the turn, dip, lean and arm angles one at a time to raise the overlap (with a small penalty for straying from the designed pose). This catches what's hard to see by eye, like how far he drifts to the right while beckoning. Re-run it after changing the model or the poses: `blender -b remake/blender/homers_web_page.blend --python remake/blender/fit_pose.py` (`--frames 0-10` and `--merge` split the work over several processes).
+- **Hands:** `CURL`, the finger curl per source frame: the beckoning hand folds its fingers down twice ("come here") while the other rests on his belly.
+- **Timing:** with `STEPPED = True` (the default) the figure moves like the 10 fps original: its motion is sampled once per source frame and held (constant interpolation, `kit.hold`), then the fit and the hitches are applied. Set it to `False` for smooth motion (without the fit). `props.STEPPED` does the same for the props: they're keyed once per source frame and held, and the clocks then flip left and right on every held frame instead of shimmying. With both on, the whole picture changes only on the original's 41 beats, so the GIF is also about half the size.
 
 Two cartoon cheats copy the source in the raised-arm poses:
 

@@ -6,7 +6,7 @@ Writes next to this file:
   contact_sheet.png  every frame, numbered
   figure_sheet.png   the centre figure, zoomed, with the yaw/pose from layout.json
   layout.png         frame 0 with every prop box from layout.json drawn on top
-  frames/            every frame upscaled 3x (ignored by git)
+  frames/            every frame upscaled 3x, and masks.npz with the figure's silhouettes (ignored by git)
 """
 import json
 import os
@@ -107,6 +107,23 @@ def layout_sheet(frames, scale=3):
     save_small(img, "layout.png")
 
 
+def export_masks(frames):
+    """frames/masks.npz: the figure's silhouette in every frame (anything that isn't the blue
+    background; the pale halo counts as background), for blender/fit_pose.py."""
+    import numpy as np
+    from PIL import ImageFilter
+    masks = []
+    for fr in frames:
+        a = np.asarray(fr).astype(int)
+        r, g, b = a[..., 0], a[..., 1], a[..., 2]
+        bg = (b > 120) & (b - r > 28) & (g - r > 8)
+        m = Image.fromarray(np.where(bg, 0, 255).astype(np.uint8)).filter(ImageFilter.MedianFilter(3))
+        masks.append(np.asarray(m) > 0)
+    out = os.path.join(HERE, "frames")
+    os.makedirs(out, exist_ok=True)
+    np.savez_compressed(os.path.join(out, "masks.npz"), masks=np.array(masks))
+
+
 def export_frames(frames, scale=3):
     out = os.path.join(HERE, "frames")
     os.makedirs(out, exist_ok=True)
@@ -121,4 +138,5 @@ if __name__ == "__main__":
     figure_sheet(frames)
     layout_sheet(frames)
     export_frames(frames)
+    export_masks(frames)
     print(f"{len(frames)} frames -> {HERE}")

@@ -17,11 +17,11 @@ SRC_W = LAYOUT["source"]["width"]
 SRC_H = LAYOUT["source"]["height"]
 SRC_FRAMES = LAYOUT["source"]["frames"]
 
-# 25 fps is the smoothest a GIF plays exactly (delays are in 1/100 s).
-# 105 frames = 4.2 s, close to the original 4.1 s, and divisible into whole
-# prop cycles (0.6 s = 15 frames, ~0.84 s = 21, 1.4 s = 35) so the loop is seamless.
-FPS = 25
-LOOP = 105
+# The original's own timing: 41 frames at 10 fps (4.1 s), one of ours per source frame,
+# with the same frames held (LAYOUT["source"]["held_frames"]). Every prop runs a whole
+# number of cycles per loop, so the loop is seamless.
+FPS = 10
+LOOP = 41
 RES_X, RES_Y = 1200, 768  # 1.5625:1, same shape as the 498x318 original
 
 LENS = 85.0
@@ -147,10 +147,10 @@ def outline_material():
 PALETTE = {
     "bg": "#86C5E3",
     "skin": "#FFD90F",
-    "robe": "#E2E0EC",
+    "robe": "#D3D1E3",
     "hair": "#3B2015",
     "sandal": "#6B3A1E",
-    "halo": "#ECECF2",
+    "halo": "#DCE6EE",
     "white": "#FFFFFF",
     "black": "#1A1A1A",
     "metal": "#C6C8CC",
@@ -552,8 +552,10 @@ def tube(name, coll, material, shapes, n=32, ring=16, **kw):
     return finish(obj, material, coll, **kw)
 
 
-def add_outline(obj, cam, px=OUTLINE_PX):
-    """Inverted-hull outline on one object, sized so it reads as ~px on screen."""
+def add_outline(obj, cam, px=None):
+    """Inverted-hull outline on one object, sized so it reads as ~px on screen
+    (default OUTLINE_PX, or the object's own "outline_px")."""
+    px = px or obj.get("outline_px", OUTLINE_PX)
     bpy.context.view_layer.update()
     om = outline_material()
     half_w = SENSOR / 2 / LENS
@@ -604,6 +606,19 @@ def constant(obj):
     for fc in fcurves(obj):
         for kp in fc.keyframe_points:
             kp.interpolation = "CONSTANT"
+
+
+def hitch(obj):
+    """Copy the frames the original holds (whole-frame duplicates) from the frame before,
+    so the whole picture pauses on the same beats. Needs a key on every frame."""
+    held = set(LAYOUT["source"].get("held_frames", []))
+    for fc in fcurves(obj):
+        keys = {round(kp.co.x): kp for kp in fc.keyframe_points}
+        for k in sorted(held):
+            f = round(remake_frame(k))
+            if f in keys and f - 1 in keys:
+                keys[f].co.y = keys[f - 1].co.y
+        fc.update()
 
 
 def fcurves(obj):

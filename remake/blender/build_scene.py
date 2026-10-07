@@ -132,8 +132,13 @@ def place_prop(cam, root, box, turn=0.0):
     turn: extra yaw in degrees on top of facing the camera. The prop is measured as
     the camera sees it once turned: width along the camera's horizontal, height in Z.
     Parts flagged "no_fit" are left out of the measurement. It's measured at the frame in
-    the root's "fit_frame" (default 1), so a prop whose shape changes is sized in a set pose."""
+    the root's "fit_frame" (default 1), so a prop whose shape changes is sized in a set pose,
+    and without its outline shells, so re-placing an outlined prop gives the same result."""
     scene = bpy.context.scene
+    shells = [m for o in descendants(root) if o.type == "MESH" for m in o.modifiers
+              if m.name == "Outline" and m.show_viewport]
+    for m in shells:
+        m.show_viewport = False
     fit = root.get("fit_frame", 1.0)
     scene.frame_set(int(fit), subframe=fit - int(fit))
     x0, y0, x1, y1 = box
@@ -161,6 +166,8 @@ def place_prop(cam, root, box, turn=0.0):
         pos = on_plane(cam, cx, cy, s * (min(zs) + max(zs)) / 2)
     root.scale = (s, s, s)
     root.location = (pos.x - right.x * mid_r * s, pos.y - right.y * mid_r * s, 0.0)
+    for m in shells:
+        m.show_viewport = True
 
 
 def find_font(path):

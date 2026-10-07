@@ -2,7 +2,7 @@
 under a root empty, and keys its own loop animation."""
 import math
 
-from kit import (LAYOUT, LOOP, SRC_FRAMES, bake, box, constant, cycles_per_loop, cylinder, empty,
+from kit import (LAYOUT, LOOP, SRC_FRAMES, bake, box, constant, cycles_per_loop, cylinder, empty, hitch,
                  keep_world, lathe, mat, saw, slab, smooth_outline, sphere, step_frames, sweep, wave)
 
 # Cartoon timing, like the figure (jesus.STEPPED): the props are keyed once per source frame
@@ -251,6 +251,7 @@ def held(build):
         if STEPPED:
             for obj in coll.objects:
                 constant(obj)
+                hitch(obj)
     return run
 
 
