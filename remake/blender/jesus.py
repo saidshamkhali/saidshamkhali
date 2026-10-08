@@ -156,6 +156,10 @@ def build_body(coll, rig):
             f = 1 + 0.028 * k * math.sin(5 * th + 0.8)
             v.co.x *= f
             v.co.y *= f
+    for v in robe.data.vertices:  # the seat: in profile the robe bulges out behind his hips
+        rx, ry, cy = robe_ring(v.co.z)
+        back = max(0.0, (v.co.y - cy) / max(ry, 1e-3)) ** 2
+        v.co.y += 0.055 * back * math.exp(-((v.co.z - 0.92) / 0.15) ** 2)
     skin(robe, rig, robe_weights)
 
     # V-neck: skin showing through the collar, a thin patch lying on the robe, deep as on the sheet
