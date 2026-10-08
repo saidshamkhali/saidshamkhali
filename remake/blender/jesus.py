@@ -72,8 +72,9 @@ def make_rig(coll):
         if parent:
             eb.parent = arm.edit_bones[parent]
             eb.use_connect = name.startswith("shin")
-        if name.startswith(("forearm", "hand")):
-            eb.inherit_scale = "NONE"  # a stretched upper arm must not stretch the hand
+        if name.startswith(("forearm", "hand", "upper_arm", "head", "thigh")):
+            # a stretched upper arm must not stretch the hand, nor a slimmer body the head and limbs
+            eb.inherit_scale = "NONE"
         eb.use_deform = name not in CONTROLS
     bpy.ops.object.mode_set(mode="OBJECT")
     for side in ("L", "R"):
@@ -715,7 +716,7 @@ def animate_hands(rig):
 FIT_PARAMS = ("slide", "yaw", "dip", "tilt", "pitch", "twist", "head_x", "head_y", "head_z",
               "armL_x", "armL_y", "armL_z", "elbowL", "stretchL", "armR_x", "armR_y", "armR_z", "elbowR", "stretchR",
               "footL_x", "footL_y", "footR_x", "footR_y",
-              "sway", "thrust", "lean", "skirt_x", "skirt_y", "flare", "wristL", "wristR", "hipL", "hipR")
+              "sway", "thrust", "lean", "skirt_x", "skirt_y", "flare", "wristL", "wristR", "hipL", "hipR", "girth", "hipgirth")
 HEAD_PARAMS = ("head_x", "head_y", "head_z")  # applied after aim_head, on top of where it points the face
 FIT_FILE = os.path.join(REMAKE, "reference", "pose_fit.json")
 
@@ -769,6 +770,12 @@ def apply_offsets(rig, p, right=None):
         if out:  # outward from his middle
             hip = pb[f"hip.{side}"]
             hip.location += hip.bone.matrix_local.to_3x3().normalized().inverted() @ Vector((x * out, 0, 0))
+    # squash and stretch: the drawings slim his body when he turns side-on or away, the chest
+    # (girth) and the hips (hipgirth) each on their own; the head and limbs keep their size
+    for name, g in (("spine", get("girth")), ("hips", get("hipgirth"))):
+        if g:
+            pb[name].scale.x *= 1 + g
+            pb[name].scale.z *= 1 + g
     flare = get("flare")
     if flare:  # the hem widens all round (bone x and z), not longer
         pb["skirt"].scale.x *= 1 + flare

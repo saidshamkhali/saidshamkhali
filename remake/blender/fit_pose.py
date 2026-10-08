@@ -26,8 +26,8 @@ with reference/frames/masks.npz.
 
 The offsets in jesus.FIT_PARAMS are searched together with CMA-ES (covariance matrix adaptation,
 the usual tool for a few dozen coupled parameters), starting from the existing pose_fit.json,
-with a small penalty for straying from the designed pose: a wide search, then a narrow one from
-the best pose found. jesus.animate() bakes the result in.
+with a small penalty for straying from the designed pose (a quarter of it for the shape
+controls in LIGHT): a wide search, then a narrow one from the best pose found. jesus.animate() bakes the result in.
 
 The robe pass (--part robe) is there because the robe's swing and flare change little of the
 whole figure's score: against the pose penalty they barely move in the full fit, though the
@@ -49,16 +49,19 @@ from kit import LAYOUT, REMAKE, remake_frame  # noqa: E402
 
 # bound of each offset (degrees, units for slide/dip/feet, a fraction for stretch)
 BOUND = {
-    "slide": 0.35, "yaw": 45.0, "dip": 0.12, "tilt": 15.0, "pitch": 15.0, "twist": 30.0,
+    "slide": 0.35, "yaw": 45.0, "dip": 0.18, "tilt": 15.0, "pitch": 15.0, "twist": 30.0,
     "head_x": 20.0, "head_y": 20.0, "head_z": 30.0,
     "armL_x": 60.0, "armL_y": 60.0, "armL_z": 60.0, "elbowL": 70.0, "stretchL": 0.3,
     "armR_x": 60.0, "armR_y": 60.0, "armR_z": 60.0, "elbowR": 70.0, "stretchR": 0.3,
-    "footL_x": 0.16, "footL_y": 0.25, "footR_x": 0.16, "footR_y": 0.25,
-    "sway": 0.1, "thrust": 0.1, "lean": 15.0, "skirt_x": 25.0, "skirt_y": 25.0, "flare": 0.4,
-    "wristL": 60.0, "wristR": 60.0, "hipL": 0.08, "hipR": 0.08,
+    "footL_x": 0.22, "footL_y": 0.25, "footR_x": 0.22, "footR_y": 0.25,
+    "sway": 0.14, "thrust": 0.1, "lean": 15.0, "skirt_x": 25.0, "skirt_y": 25.0, "flare": 0.4,
+    "wristL": 60.0, "wristR": 60.0, "hipL": 0.12, "hipR": 0.12, "girth": 0.3, "hipgirth": 0.3,
 }
 PENALTY = 0.02          # cost of an offset at its bound, in IoU
-ROBE_PARAMS = ("sway", "thrust", "tilt", "skirt_x", "skirt_y", "flare", "hipL", "hipR")
+ROBE_PARAMS = ("sway", "thrust", "tilt", "skirt_x", "skirt_y", "flare", "hipL", "hipR", "girth", "hipgirth")
+# shape controls (cartoon squash and stretch) pay a quarter of the pose penalty: they change too
+# little of the whole figure's score to move against the full one, though the drawings use them
+LIGHT = {"girth", "hipgirth", "flare", "hipL", "hipR", "skirt_x", "skirt_y"}
 ROBE_PENALTY = 0.004    # the robe pass: the hem may follow the drawing
 REGION = (60, 262, 165, 315)  # rows, cols of the GIF compared (the figure and its reach)
 CLASSES = {1: "skin", 2: "dark", 3: "robe"}
@@ -321,6 +324,7 @@ class Fitter:
         robe = self.part == "robe"
         names = [n for n in (ROBE_PARAMS if robe else jesus.FIT_PARAMS) if n not in fix]
         penalty = ROBE_PENALTY if robe else PENALTY
+        weight = np.array([0.25 if n in LIGHT and not robe else 1.0 for n in names])
         try:
             def params(x):
                 p = dict(guess) if robe else {}  # the robe pass holds the rest of the pose
@@ -329,7 +333,7 @@ class Fitter:
                 return p
 
             def cost(x):
-                return 1 - self.score(params(x)) + penalty * float(np.sum(np.asarray(x) ** 2))
+                return 1 - self.score(params(x)) + penalty * float(np.sum(weight * np.asarray(x) ** 2))
 
             x0 = np.array([max(-1.0, min(1.0, guess.get(n, 0.0) / BOUND[n])) for n in names])
             before = self.score(params(x0))

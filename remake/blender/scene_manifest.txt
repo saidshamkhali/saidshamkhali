@@ -544,7 +544,7 @@ J_vneck  MESH  parent=Jesus_Rig
   modifier Subsurf SUBSURF levels=1 render_levels=2
   modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
 Jesus_Rig  ARMATURE
-  loc -0.1055 -0.5743 0.0000  rot_deg 0.0000 0.0000 -172.6490  scale 1.0000 1.0000 1.0000
+  loc -0.0929 -0.5743 0.0000  rot_deg 0.0000 0.0000 -169.7704  scale 1.0000 1.0000 1.0000
   armature Jesus_Rig bones 23
   action Jesus_RigAction
 
