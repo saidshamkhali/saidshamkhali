@@ -55,13 +55,14 @@ BOUND = {
     "armR_x": 60.0, "armR_y": 60.0, "armR_z": 60.0, "elbowR": 70.0, "stretchR": 0.3,
     "footL_x": 0.22, "footL_y": 0.25, "footR_x": 0.22, "footR_y": 0.25,
     "sway": 0.14, "thrust": 0.1, "lean": 15.0, "skirt_x": 25.0, "skirt_y": 25.0, "flare": 0.4,
-    "wristL": 60.0, "wristR": 60.0, "hipL": 0.12, "hipR": 0.12, "girth": 0.3, "hipgirth": 0.3,
+    "wristL": 60.0, "wristR": 60.0, "hipL": 0.12, "hipR": 0.12, "girth": 0.3, "hipgirth": 0.3, "kneeL": 0.15, "kneeR": 0.15,
 }
 PENALTY = 0.02          # cost of an offset at its bound, in IoU
-ROBE_PARAMS = ("sway", "thrust", "tilt", "skirt_x", "skirt_y", "flare", "hipL", "hipR", "girth", "hipgirth")
+ROBE_PARAMS = ("sway", "thrust", "tilt", "skirt_x", "skirt_y", "flare", "hipL", "hipR", "girth", "hipgirth",
+               "kneeL", "kneeR")
 # shape controls (cartoon squash and stretch) pay a quarter of the pose penalty: they change too
 # little of the whole figure's score to move against the full one, though the drawings use them
-LIGHT = {"girth", "hipgirth", "flare", "hipL", "hipR", "skirt_x", "skirt_y"}
+LIGHT = {"girth", "hipgirth", "flare", "hipL", "hipR", "skirt_x", "skirt_y", "kneeL", "kneeR"}
 ROBE_PENALTY = 0.004    # the robe pass: the hem may follow the drawing
 REGION = (60, 262, 165, 315)  # rows, cols of the GIF compared (the figure and its reach)
 CLASSES = {1: "skin", 2: "dark", 3: "robe"}

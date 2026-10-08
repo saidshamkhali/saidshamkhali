@@ -81,7 +81,7 @@ worm  toon  #B4AFC0  shadow 0.720
 [actions]
 J_hand_LAction  fcurves 1  keys 42  frames 1.0-42.0
 J_hand_RAction  fcurves 1  keys 42  frames 1.0-42.0
-Jesus_RigAction  fcurves 160  keys 6720  frames 1.0-42.0
+Jesus_RigAction  fcurves 180  keys 7560  frames 1.0-42.0
 bell_l_d0_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_l_d0_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_l_d1_inkAction  fcurves 2  keys 84  frames 1.0-42.0
@@ -428,14 +428,14 @@ J_hand_R  MESH  parent=Jesus_Rig
   shape_key_action J_hand_RAction
 J_leg_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh J_leg_L verts 142 faces 160
+  mesh J_leg_L verts 162 faces 180
   materials skin, Outline
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
   modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_leg_R  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh J_leg_R verts 142 faces 160
+  mesh J_leg_R verts 162 faces 180
   materials skin, Outline
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
@@ -544,7 +544,7 @@ J_vneck  MESH  parent=Jesus_Rig
   modifier Subsurf SUBSURF levels=1 render_levels=2
   modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
 Jesus_Rig  ARMATURE
-  loc -0.0929 -0.5743 0.0000  rot_deg 0.0000 0.0000 -169.7704  scale 1.0000 1.0000 1.0000
+  loc -0.0852 -0.5743 0.0000  rot_deg 0.0000 0.0000 -165.4635  scale 1.0000 1.0000 1.0000
   armature Jesus_Rig bones 23
   action Jesus_RigAction
 

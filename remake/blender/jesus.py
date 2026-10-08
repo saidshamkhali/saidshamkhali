@@ -72,8 +72,9 @@ def make_rig(coll):
         if parent:
             eb.parent = arm.edit_bones[parent]
             eb.use_connect = name.startswith("shin")
-        if name.startswith(("forearm", "hand", "upper_arm", "head", "thigh")):
-            # a stretched upper arm must not stretch the hand, nor a slimmer body the head and limbs
+        if name.startswith(("forearm", "hand", "upper_arm", "head", "thigh", "chest")):
+            # a stretched upper arm must not stretch the hand, nor a slimmer waist the chest, head
+            # and limbs
             eb.inherit_scale = "NONE"
         eb.use_deform = name not in CONTROLS
     bpy.ops.object.mode_set(mode="OBJECT")
@@ -245,10 +246,11 @@ def build_body(coll, rig):
               ring=24), rig, blend("chest", "head", 1.47, 1.53))
 
     for side, x in (("L", 1), ("R", -1)):
-        # the leg runs up under the robe so bent knees never open a gap at the hem
+        # the leg runs up under the robe so bent knees never open a gap at the hem, and down inside
+        # the foot so a leg the fit bends less (shorter) never shows its end above the ankle
         leg = loft(f"J_leg_{side}", coll, skin_m, [
             zsec(z, r, r * 0.95, cx=LEG_X * x) for z, r in
-            ((0.05, 0.062), (0.12, 0.068), (0.24, 0.074), (0.38, 0.075), (0.55, 0.074), (0.72, 0.072), (0.9, 0.068))],
+            ((0.02, 0.045), (0.05, 0.062), (0.12, 0.068), (0.24, 0.074), (0.38, 0.075), (0.55, 0.074), (0.72, 0.072), (0.9, 0.068))],
             ring=20)
         skin(leg, rig, blend(f"shin.{side}", f"thigh.{side}", KNEE_Z - 0.06, KNEE_Z + 0.06))
         skin(build_foot(coll, side, x), rig, rigid(f"foot.{side}"))
@@ -716,7 +718,7 @@ def animate_hands(rig):
 FIT_PARAMS = ("slide", "yaw", "dip", "tilt", "pitch", "twist", "head_x", "head_y", "head_z",
               "armL_x", "armL_y", "armL_z", "elbowL", "stretchL", "armR_x", "armR_y", "armR_z", "elbowR", "stretchR",
               "footL_x", "footL_y", "footR_x", "footR_y",
-              "sway", "thrust", "lean", "skirt_x", "skirt_y", "flare", "wristL", "wristR", "hipL", "hipR", "girth", "hipgirth")
+              "sway", "thrust", "lean", "skirt_x", "skirt_y", "flare", "wristL", "wristR", "hipL", "hipR", "girth", "hipgirth", "kneeL", "kneeR")
 HEAD_PARAMS = ("head_x", "head_y", "head_z")  # applied after aim_head, on top of where it points the face
 FIT_FILE = os.path.join(REMAKE, "reference", "pose_fit.json")
 
@@ -739,7 +741,7 @@ def screen_right():
 
 
 FIT_BONES = ("hips", "chest", "skirt", "upper_arm.L", "forearm.L", "hand.L", "upper_arm.R", "forearm.R", "hand.R",
-             "foot.L", "foot.R", "torso", "spine", "hip.L", "hip.R")
+             "foot.L", "foot.R", "torso", "spine", "hip.L", "hip.R", "thigh.L", "thigh.R")
 
 
 def apply_offsets(rig, p, right=None):
@@ -770,12 +772,16 @@ def apply_offsets(rig, p, right=None):
         if out:  # outward from his middle
             hip = pb[f"hip.{side}"]
             hip.location += hip.bone.matrix_local.to_3x3().normalized().inverted() @ Vector((x * out, 0, 0))
-    # squash and stretch: the drawings slim his body when he turns side-on or away, the chest
-    # (girth) and the hips (hipgirth) each on their own; the head and limbs keep their size
+    # squash and stretch: the drawings slim his body when he turns side-on or away, the waist
+    # (girth) and the hips (hipgirth) each on their own; the chest, head and limbs keep their size
     for name, g in (("spine", get("girth")), ("hips", get("hipgirth"))):
         if g:
             pb[name].scale.x *= 1 + g
             pb[name].scale.z *= 1 + g
+    for side in ("L", "R"):
+        k = get(f"knee{side}")
+        if k:  # a cartoon cheat: the leg stretches a little and, its foot planted, bends at the knee
+            pb[f"thigh.{side}"].scale.y *= 1 + k  # the shin inherits it
     flare = get("flare")
     if flare:  # the hem widens all round (bone x and z), not longer
         pb["skirt"].scale.x *= 1 + flare
