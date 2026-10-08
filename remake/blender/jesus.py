@@ -1,4 +1,5 @@
-"""The figure: Simpsons-style Jesus, modelled from code, skinned to an armature.
+"""The figure: Simpsons-style Jesus, modelled from code and rigged in layers, the way animators
+rig a robed figure: a skeleton, a hidden body skinned to it, and the robe riding on the body.
 
 Feet at z=0, facing -Y, +X is his left, the top of his hair at 2.0. Proportions are measured
 from the source frames (upscaled, see the README) and a model sheet drawn from them: head ~28%
@@ -19,12 +20,21 @@ from kit import (LAYOUT, REMAKE, add_shape, blobs, constant, cap, hitch, hold, l
 
 RIG = "Jesus_Rig"
 
+# The skeleton. The hips are their own bone under a "torso" control, so they swing out while
+# a two-bone spine keeps the shoulders where they were (with the chest hanging off the hips,
+# moving the hips dragged his whole upper body along).
 # bone: (head, tail, parent)
 BONES = {
     "root": ((0, 0, 0), (0, 0, 0.3), None),
-    "hips": ((0, 0, 0.85), (0, 0, 1.15), "root"),
-    "chest": ((0, 0, 1.15), (0, 0, 1.45), "hips"),
+    "torso": ((0, 0, 1.0), (0, 0, 1.2), "root"),  # control: lowers the whole body when he dips
+    "hips": ((0, 0, 1.0), (0, 0, 0.8), "torso"),  # the pelvis, pivoting at the waist
+    "spine": ((0, 0, 1.0), (0, 0, 1.22), "torso"),
+    "chest": ((0, 0, 1.22), (0, 0, 1.45), "spine"),
     "head": ((0, 0, 1.47), (0, 0, 1.95), "chest"),  # pivots at the neck, under the beard
+    # a hip on each side, only in the body under the robe: pushed out, the robe bulges over
+    # one hip as the drawings do when he leans his weight onto it
+    "hip.L": ((0.15, 0, 0.94), (0.15, 0, 0.8), "hips"),
+    "hip.R": ((-0.15, 0, 0.94), (-0.15, 0, 0.8), "hips"),
     # the skirt of the robe, hanging from the waist: swings the hem and flares it (bone scale)
     "skirt": ((0, 0, 1.0), (0, 0, 0.45), "hips"),
 }
@@ -44,7 +54,7 @@ for _s, _x in (("L", 1), ("R", -1)):
     BONES[f"shin.{_s}"] = ((LEG_X * _x, -0.015, KNEE_Z), (LEG_X * _x, 0, ANKLE_Z), f"thigh.{_s}")
     BONES[f"foot.{_s}"] = ((LEG_X * _x, 0, ANKLE_Z), (LEG_X * _x, -0.2, 0.03), "root")
     BONES[f"knee.{_s}"] = ((LEG_X * _x, -0.7, KNEE_Z), (LEG_X * _x, -0.7, KNEE_Z + 0.1), "root")
-CONTROLS = {"knee.L", "knee.R"}  # helpers that don't deform
+CONTROLS = {"knee.L", "knee.R", "torso"}  # helpers that don't deform
 
 
 # --------------------------------------------------------------------------- rig + skinning
@@ -97,6 +107,70 @@ def skin(obj, rig, weights, subsurf=1):
     return obj
 
 
+def auto_skin(obj, rig, bones):
+    """Blender's automatic weights (bone heat, as Ctrl+P > With Automatic Weights) from these
+    bones only; adds the Armature modifier."""
+    deform = {b.name: b.use_deform for b in rig.data.bones}
+    for b in rig.data.bones:
+        b.use_deform = b.name in bones
+    bpy.ops.object.select_all(action="DESELECT")
+    obj.select_set(True)
+    rig.select_set(True)
+    bpy.context.view_layer.objects.active = rig
+    bpy.ops.object.parent_set(type="ARMATURE_AUTO")
+    for b in rig.data.bones:
+        b.use_deform = deform[b.name]
+    return obj
+
+
+def ride(obj, rig, body, subsurf=1):
+    """Let obj follow the body's surface (Surface Deform, bound in the rest pose) instead of
+    the bones: cloth on a body."""
+    obj.parent = rig
+    mod = obj.modifiers.new("Body", "SURFACE_DEFORM")
+    mod.target = body
+    obj.modifiers.move(len(obj.modifiers) - 1, 0)
+    bpy.ops.object.select_all(action="DESELECT")
+    obj.select_set(True)
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.surfacedeform_bind(modifier=mod.name)
+    obj.evaluated_get(bpy.context.evaluated_depsgraph_get())  # the bind happens on evaluation
+    if subsurf:
+        sub = obj.modifiers.new("Subsurf", "SUBSURF")
+        sub.levels = subsurf
+        sub.render_levels = subsurf + 1
+        obj.modifiers.move(len(obj.modifiers) - 1, 1)
+    return obj
+
+
+def build_body_hull(coll, rig):
+    """The body under the robe, hidden: chest, waist and hips, and below them the space his
+    legs fill down to the hem, just inside the robe. Skinned with automatic weights to the
+    spine, hips and legs, plus a share of the skirt bone towards the hem (so the hem still
+    swings and flares)."""
+    zs = [HEM_Z + 0.04 * i for i in range(int((1.44 - HEM_Z) / 0.04) + 1)] + [z for z, *_ in ROBE if z > 1.44]
+    body = loft("J_body", coll, mat("skin"), [zsec(z, max(rx * 0.92, 0.004), max(ry * 0.92, 0.004), cy=cy)
+                                             for z in zs for rx, ry, cy in [robe_ring(z)]], ring=32, outline=False)
+    for v in body.data.vertices:  # the same seat as the robe
+        rx, ry, cy = robe_ring(v.co.z)
+        back = max(0.0, (v.co.y - cy) / max(ry, 1e-3)) ** 2
+        v.co.y += 0.05 * back * math.exp(-((v.co.z - 0.92) / 0.15) ** 2)
+    auto_skin(body, rig, {"hips", "hip.L", "hip.R", "spine", "chest", "thigh.L", "thigh.R", "shin.L", "shin.R"})
+    skirt = body.vertex_groups.new(name="skirt")
+    groups = {g.index: g for g in body.vertex_groups}
+    for v in body.data.vertices:
+        k = 0.6 * smooth(1.02, 0.5, v.co.z)
+        if k <= 0:
+            continue
+        for ge in v.groups:
+            groups[ge.group].add([v.index], ge.weight * (1 - k), "REPLACE")
+        skirt.add([v.index], k, "REPLACE")
+    body.hide_render = True
+    body["helper"] = True  # not drawn: the fitter and the renders leave it out
+    body.hide_set(True)
+    return body
+
+
 def rigid(bone):
     return lambda co: {bone: 1.0}
 
@@ -107,18 +181,6 @@ def blend(lo_bone, hi_bone, z0, z1):
         t = min(1.0, max(0.0, (co.z - z0) / (z1 - z0)))
         return {lo_bone: 1.0 - t, hi_bone: t}
     return w
-
-
-def robe_weights(co):
-    """Chest above the waist, hips below, handing over to the skirt bone towards the hem so
-    the hem can swing and flare on its own; the skirt also follows the thighs a little, so
-    it swings with the knees instead of hanging like a rigid bell."""
-    t = min(1.0, max(0.0, (co.z - 1.0) / 0.2))
-    k = 0.3 * smooth(0.95, 0.4, co.z)
-    s = smooth(1.02, 0.5, co.z)
-    side = min(1.0, max(0.0, 0.5 + co.x / 0.16))
-    return {"chest": t, "hips": (1 - t) * (1 - k) * (1 - s), "skirt": (1 - t) * (1 - k) * s,
-            "thigh.L": (1 - t) * k * side, "thigh.R": (1 - t) * k * (1 - side)}
 
 
 # --------------------------------------------------------------------------- model
@@ -164,7 +226,7 @@ def build_body(coll, rig):
         rx, ry, cy = robe_ring(v.co.z)
         back = max(0.0, (v.co.y - cy) / max(ry, 1e-3)) ** 2
         v.co.y += 0.055 * back * math.exp(-((v.co.z - 0.92) / 0.15) ** 2)
-    skin(robe, rig, robe_weights)
+    ride(robe, rig, build_body_hull(coll, rig))  # the robe rides on the body, not on the bones
 
     # V-neck: skin showing through the collar, a thin patch lying on the robe, deep as on the sheet
     def vneck_surf(u, v):
@@ -653,7 +715,7 @@ def animate_hands(rig):
 FIT_PARAMS = ("slide", "yaw", "dip", "tilt", "pitch", "twist", "head_x", "head_y", "head_z",
               "armL_x", "armL_y", "armL_z", "elbowL", "stretchL", "armR_x", "armR_y", "armR_z", "elbowR", "stretchR",
               "footL_x", "footL_y", "footR_x", "footR_y",
-              "sway", "thrust", "lean", "skirt_x", "skirt_y", "flare", "wristL", "wristR")
+              "sway", "thrust", "lean", "skirt_x", "skirt_y", "flare", "wristL", "wristR", "hipL", "hipR")
 HEAD_PARAMS = ("head_x", "head_y", "head_z")  # applied after aim_head, on top of where it points the face
 FIT_FILE = os.path.join(REMAKE, "reference", "pose_fit.json")
 
@@ -676,7 +738,7 @@ def screen_right():
 
 
 FIT_BONES = ("hips", "chest", "skirt", "upper_arm.L", "forearm.L", "hand.L", "upper_arm.R", "forearm.R", "hand.R",
-             "foot.L", "foot.R")
+             "foot.L", "foot.R", "torso", "spine", "hip.L", "hip.R")
 
 
 def apply_offsets(rig, p, right=None):
@@ -686,9 +748,15 @@ def apply_offsets(rig, p, right=None):
     pb = rig.pose.bones
     rig.location += (right or screen_right()) * get("slide")
     rig.rotation_euler.z += math.radians(-get("yaw"))
+    # the dip lowers the whole body; the sway and thrust move the hips alone
+    torso_rest = pb["torso"].bone.matrix_local.to_3x3().normalized()
+    pb["torso"].location += torso_rest.inverted() @ Vector((0, 0, -get("dip")))
     hips_rest = pb["hips"].bone.matrix_local.to_3x3().normalized()
-    pb["hips"].location += hips_rest.inverted() @ Vector((get("sway"), -get("thrust"), -get("dip")))
-    for name, rot in (("hips", (0, get("tilt"), 0)), ("chest", (-get("pitch"), get("lean"), -get("twist"))),
+    pb["hips"].location += hips_rest.inverted() @ Vector((get("sway"), -get("thrust"), 0))
+    # the spine bends half of the lean, pitch and twist, the chest the rest: a curve, not a kink
+    upper = (-get("pitch") / 2, get("lean") / 2, -get("twist") / 2)
+    pb["spine"].rotation_quaternion = bone_rotation(pb["spine"], upper) @ pb["spine"].rotation_quaternion
+    for name, rot in (("hips", (0, get("tilt"), 0)), ("chest", upper),
                       ("skirt", (get("skirt_x"), get("skirt_y"), 0)),
                       ("upper_arm.L", (get("armL_x"), get("armL_y"), get("armL_z"))), ("forearm.L", (get("elbowL"), 0, 0)),
                       ("hand.L", (get("wristL"), 0, 0)),
@@ -696,6 +764,11 @@ def apply_offsets(rig, p, right=None):
                       ("hand.R", (get("wristR"), 0, 0))):
         if any(rot):
             pb[name].rotation_quaternion = bone_rotation(pb[name], rot) @ pb[name].rotation_quaternion
+    for side, x in (("L", 1), ("R", -1)):
+        out = get(f"hip{side}")
+        if out:  # outward from his middle
+            hip = pb[f"hip.{side}"]
+            hip.location += hip.bone.matrix_local.to_3x3().normalized().inverted() @ Vector((x * out, 0, 0))
     flare = get("flare")
     if flare:  # the hem widens all round (bone x and z), not longer
         pb["skirt"].scale.x *= 1 + flare
@@ -829,9 +902,8 @@ def apply_head_fit(rig):
 
 
 # The body under the arms, one row per source frame, read off the source drawings.
-# dip: knee bend 0..1 (hips drop by DIP), sway: hips sideways (+ his left), thrust: hips
-# forward, tilt: hips roll (+ leans his upper body to his left), lean: chest roll on top
-# of that, pitch: chest leans back (+), roll/nod/turn: head tilt to his left (+), nod
+# dip: knee bend 0..1 (the body drops by DIP), sway: hips sideways (+ his left), thrust: hips
+# forward, tilt: hips roll, lean: the upper body's roll (spine and chest), pitch: chest leans back (+), roll/nod/turn: head tilt to his left (+), nod
 # down (+), turn towards screen-left like the yaw (+). The turn is mostly set by HEAD_YAW,
 # after the fit has settled how his body faces.
 DIP = 0.09
@@ -883,14 +955,20 @@ BODY = {
 def animate_body(rig):
     pb = rig.pose.bones
     hips_rest = pb["hips"].bone.matrix_local.to_3x3().normalized()
+    torso_rest = pb["torso"].bone.matrix_local.to_3x3().normalized()
     keys = dict(BODY)
     keys[LAYOUT["source"]["frames"]] = BODY[0]  # close the loop
     for src, row in sorted(keys.items()):
         b = dict(zip(BODY_KEYS, row))
         f = remake_frame(src)
-        pb["hips"].location = hips_rest.inverted() @ Vector((b["sway"], -b["thrust"], -b["dip"] * DIP))
+        pb["torso"].location = torso_rest.inverted() @ Vector((0, 0, -b["dip"] * DIP))
+        pb["torso"].keyframe_insert("location", frame=f)
+        pb["hips"].location = hips_rest.inverted() @ Vector((b["sway"], -b["thrust"], 0))
         pb["hips"].keyframe_insert("location", frame=f)
-        for name, rot in (("hips", (0, b["tilt"], 0)), ("chest", (-b["pitch"], b["lean"], 0)),
+        upper = (-b["pitch"] / 2, b["lean"] / 2, 0)  # half in the spine, half in the chest
+        pb["spine"].rotation_quaternion = bone_rotation(pb["spine"], upper)
+        pb["spine"].keyframe_insert("rotation_quaternion", frame=f)
+        for name, rot in (("hips", (0, b["tilt"], 0)), ("chest", upper),
                           ("head", (b["nod"], b["roll"], -b["turn"]))):
             pb[name].rotation_quaternion = bone_rotation(pb[name], rot)
             pb[name].keyframe_insert("rotation_quaternion", frame=f)

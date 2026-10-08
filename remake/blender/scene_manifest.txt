@@ -81,7 +81,7 @@ worm  toon  #B4AFC0  shadow 0.720
 [actions]
 J_hand_LAction  fcurves 1  keys 42  frames 1.0-42.0
 J_hand_RAction  fcurves 1  keys 42  frames 1.0-42.0
-Jesus_RigAction  fcurves 120  keys 5040  frames 1.0-42.0
+Jesus_RigAction  fcurves 160  keys 6720  frames 1.0-42.0
 bell_l_d0_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_l_d0_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_l_d1_inkAction  fcurves 2  keys 84  frames 1.0-42.0
@@ -320,7 +320,7 @@ Sun  LIGHT
   loc 0.0000 0.0000 0.0000  rot_deg 41.1743 0.0000 -30.9638  scale 1.0000 1.0000 1.0000
   light SUN energy 3.0000 color #FFFFFF angle_deg 6.0000
 
-== Scene Collection/Figure (32 objects)
+== Scene Collection/Figure (33 objects)
 J_beard_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_beard_L verts 414 faces 412
@@ -335,6 +335,12 @@ J_beard_R  MESH  parent=Jesus_Rig
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
   modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+J_body  MESH  parent=Jesus_Rig
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render
+  mesh J_body verts 962 faces 992
+  materials skin
+  modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
 J_cuff_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_cuff_L verts 194 faces 216
@@ -492,7 +498,7 @@ J_robe  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_robe verts 722 faces 768
   materials robe, Outline
-  modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
+  modifier Body SURFACE_DEFORM
   modifier Subsurf SUBSURF levels=1 render_levels=2
   modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_sandal_L  MESH  parent=Jesus_Rig
@@ -538,8 +544,8 @@ J_vneck  MESH  parent=Jesus_Rig
   modifier Subsurf SUBSURF levels=1 render_levels=2
   modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
 Jesus_Rig  ARMATURE
-  loc -0.1215 -0.5743 0.0000  rot_deg 0.0000 0.0000 -175.2300  scale 1.0000 1.0000 1.0000
-  armature Jesus_Rig bones 19
+  loc -0.1055 -0.5743 0.0000  rot_deg 0.0000 0.0000 -172.6490  scale 1.0000 1.0000 1.0000
+  armature Jesus_Rig bones 23
   action Jesus_RigAction
 
 == Scene Collection/Props (0 objects)

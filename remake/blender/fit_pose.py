@@ -55,10 +55,10 @@ BOUND = {
     "armR_x": 60.0, "armR_y": 60.0, "armR_z": 60.0, "elbowR": 70.0, "stretchR": 0.3,
     "footL_x": 0.16, "footL_y": 0.25, "footR_x": 0.16, "footR_y": 0.25,
     "sway": 0.1, "thrust": 0.1, "lean": 15.0, "skirt_x": 25.0, "skirt_y": 25.0, "flare": 0.4,
-    "wristL": 60.0, "wristR": 60.0,
+    "wristL": 60.0, "wristR": 60.0, "hipL": 0.08, "hipR": 0.08,
 }
 PENALTY = 0.02          # cost of an offset at its bound, in IoU
-ROBE_PARAMS = ("sway", "thrust", "tilt", "skirt_x", "skirt_y", "flare")
+ROBE_PARAMS = ("sway", "thrust", "tilt", "skirt_x", "skirt_y", "flare", "hipL", "hipR")
 ROBE_PENALTY = 0.004    # the robe pass: the hem may follow the drawing
 REGION = (60, 262, 165, 315)  # rows, cols of the GIF compared (the figure and its reach)
 CLASSES = {1: "skin", 2: "dark", 3: "robe"}
@@ -181,7 +181,7 @@ class Fitter:
         shading = self.scene.display.shading
         shading.light = "FLAT"
         shading.color_type = "OBJECT"
-        keep = {o.name for o in self.rig.children} - {"J_halo"}
+        keep = {o.name for o in self.rig.children if not o.get("helper")} - {"J_halo"}
         for coll in bpy.data.collections:  # whole collections: traced props key their own visibility
             coll.hide_render = self.rig.name not in coll.objects
         for o in self.scene.objects:
