@@ -3,25 +3,36 @@
     blender -b remake/blender/homers_web_page.blend --python remake/blender/fit_pose.py -- [options]
 
 Options:
-    --frames A-B     source frames to fit (default 0-40; held and reused frames are skipped, they copy)
+    --frames LIST    source frames to fit, e.g. 0-40 (the default), 12,14 or 2-4,6 (held and reused
+                     frames are skipped, they copy)
     --loss L         "regions" (default when reference/frames/regions.npz exists) or "silhouette"
     --iters N        CMA-ES generations per frame (default 60)
     --out PATH       where to write the offsets (default remake/reference/pose_fit.json; a
                      partial run writes PATH with only its frames, merge them with --merge)
     --fix N=V,...    hold these offsets at fixed values instead of fitting them (e.g. yaw=0
                      where the drawing alone would rather turn him than move an arm)
+    --part robe      a second pass over the hips and robe alone (ROBE_PARAMS), scored on the lower
+                     half of the figure (averaged with the whole), the rest of the pose held at the fitted values
     --merge A B ...  merge partial result files into --out and stop
 
 For each source frame the figure is rendered from the scene camera and compared with the GIF.
 With the "regions" loss he is drawn in flat colours, one per region (skin, hair/beard/sandals,
 robe), at twice the GIF's size, and compared region by region with reference/frames/regions.npz
 (the upscaled original, see reference/build_reference.py), so the fit sees his hands in front of
-the robe, his face and his feet, not just his outline; the outline counts too. The "silhouette"
-loss compares the outline alone with reference/frames/masks.npz.
+the robe, his face and his feet, not just his outline; the outline counts too. Each hand the
+designed pose shows also scores how much of it lands on skin in the drawing, so the fit can't
+win pixels by tucking a hand behind the robe. The "silhouette" loss compares the outline alone
+with reference/frames/masks.npz.
 
 The offsets in jesus.FIT_PARAMS are searched together with CMA-ES (covariance matrix adaptation,
 the usual tool for a few dozen coupled parameters), starting from the existing pose_fit.json,
-with a small penalty for straying from the designed pose. jesus.animate() bakes the result in.
+with a small penalty for straying from the designed pose: a wide search, then a narrow one from
+the best pose found. jesus.animate() bakes the result in.
+
+The robe pass (--part robe) is there because the robe's swing and flare change little of the
+whole figure's score: against the pose penalty they barely move in the full fit, though the
+drawn robe is about a fifth wider at the hips while he beckons, and narrower side-on. With the hips, robe, legs and
+feet counted twice and a lighter penalty, the hem follows the drawings.
 """
 import json
 import math
@@ -42,31 +53,40 @@ BOUND = {
     "head_x": 20.0, "head_y": 20.0, "head_z": 30.0,
     "armL_x": 60.0, "armL_y": 60.0, "armL_z": 60.0, "elbowL": 70.0, "stretchL": 0.3,
     "armR_x": 60.0, "armR_y": 60.0, "armR_z": 60.0, "elbowR": 70.0, "stretchR": 0.3,
-    "footL_x": 0.12, "footL_y": 0.2, "footR_x": 0.12, "footR_y": 0.2,
+    "footL_x": 0.16, "footL_y": 0.25, "footR_x": 0.16, "footR_y": 0.25,
+    "sway": 0.1, "thrust": 0.1, "lean": 15.0, "skirt_x": 25.0, "skirt_y": 25.0, "flare": 0.4,
+    "wristL": 60.0, "wristR": 60.0,
 }
 PENALTY = 0.02          # cost of an offset at its bound, in IoU
+ROBE_PARAMS = ("sway", "thrust", "tilt", "skirt_x", "skirt_y", "flare")
+ROBE_PENALTY = 0.004    # the robe pass: the hem may follow the drawing
 REGION = (60, 262, 165, 315)  # rows, cols of the GIF compared (the figure and its reach)
 CLASSES = {1: "skin", 2: "dark", 3: "robe"}
 COLOURS = {1: (1, 0, 0, 1), 2: (0, 1, 0, 1), 3: (0, 0, 1, 1)}
+HAND_COLOURS = {"L": (1, 0, 0.15, 1), "R": (1, 0.15, 0, 1)}  # skin, each hand told apart by a touch of another colour
+HAND_WEIGHT = 0.5  # each visible hand's term, against 1 for each region
 MATERIAL_CLASS = {"skin": 1, "white": 1, "black": 1, "hair": 2, "sandal": 2, "robe": 3}  # eyes read as skin, as drawn
 
 
 def parse_args():
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     regions = os.path.exists(os.path.join(REMAKE, "reference", "frames", "regions.npz"))
-    opts = {"frames": (0, 40), "loss": "regions" if regions else "silhouette", "iters": 60,
-            "out": jesus.FIT_FILE, "merge": None, "fix": {}}
+    opts = {"frames": list(range(41)), "loss": "regions" if regions else "silhouette", "iters": 60,
+            "out": jesus.FIT_FILE, "merge": None, "fix": {}, "part": "all"}
     i = 0
     while i < len(argv):
         a = argv[i]
         if a == "--frames":
-            lo, hi = argv[i + 1].split("-"); opts["frames"] = (int(lo), int(hi)); i += 2
+            opts["frames"] = [k for part in argv[i + 1].split(",") for k in
+                              (range(int(part.split("-")[0]), int(part.split("-")[-1]) + 1))]; i += 2
         elif a == "--loss":
             opts["loss"] = argv[i + 1]; i += 2
         elif a == "--iters":
             opts["iters"] = int(argv[i + 1]); i += 2
         elif a == "--fix":
             opts["fix"] = {n: float(v) for n, v in (kv.split("=") for kv in argv[i + 1].split(","))}; i += 2
+        elif a == "--part":
+            opts["part"] = argv[i + 1]; i += 2
         elif a == "--out":
             opts["out"] = os.path.abspath(argv[i + 1]); i += 2
         elif a == "--merge":
@@ -132,8 +152,8 @@ def cmaes(f, x0, sigma=0.15, iters=60, seed=0):
 
 
 class Fitter:
-    def __init__(self, loss):
-        self.loss = loss
+    def __init__(self, loss, part="all"):
+        self.loss, self.part = loss, part
         self.scene = bpy.context.scene
         self.rig = bpy.data.objects[jesus.RIG]
         ref = os.path.join(REMAKE, "reference", "frames")
@@ -170,6 +190,11 @@ class Fitter:
                 if o.name in keep:
                     mat = o.material_slots[0].material.name if o.material_slots and o.material_slots[0].material else ""
                     o.color = COLOURS[MATERIAL_CLASS.get(mat, 1)]
+                    if o.name.startswith("J_hand_"):
+                        o.color = HAND_COLOURS[o.name[-1]]
+                    for m in o.modifiers:  # the viewport's subdivision: the same outline at this size, a lot faster
+                        if m.type == "SUBSURF":
+                            m.render_levels = m.levels
         self.right = jesus.screen_right()
         self.reanimate_without_fit()
         self.renders = 0
@@ -199,6 +224,20 @@ class Fitter:
                      {p.name: (p.location.copy(), p.rotation_quaternion.copy(), p.scale.copy()) for p in rig.pose.bones})
         r0, r1, c0, c1 = (v * self.scale for v in REGION)
         self.want = self.target[k][r0:r1, c0:c1]
+        self.hand_area = {}
+        # the lower half of the figure, hair top to soles: hips, robe, legs and feet
+        hair = np.nonzero((self.want == 2).sum(1) > 4)[0]
+        body = np.nonzero((self.want != 0).sum(1) > 2)[0]
+        self.lower = hair[0] + (body[-1] - hair[0]) // 2 if len(hair) and len(body) else 0
+
+    def measure_hands(self):
+        """How big each hand shows in the designed pose (call with the action off): the hands
+        term only counts the hands it shows (not the one behind his head), and hiding one
+        scores as a miss."""
+        self.hand_area = {}
+        self.pose({})
+        hands = self.hands(self.render())
+        self.hand_area = {side: 0.6 * m.sum() for side, m in hands.items() if m.sum() > 30}
 
     def pose(self, params):
         """The pose jesus.animate() would bake for these offsets: the body's, then the head
@@ -226,6 +265,13 @@ class Fitter:
         bpy.data.images.remove(img)
         return px.reshape(h, w, 4)[::-1]
 
+    @staticmethod
+    def hands(px):
+        """Each hand's visible pixels: skin with its touch of blue (left) or green (right)."""
+        skin = (px[..., 3] > 0.5) & (px[..., 0] > 0.5)
+        touch = lambda c: (px[..., c] > 0.05) & (px[..., c] < 0.5)  # noqa: E731
+        return {"L": skin & touch(2), "R": skin & touch(1)}
+
     def score(self, params):
         """1 = a perfect match."""
         self.pose(params)
@@ -233,9 +279,24 @@ class Fitter:
         want = self.want
         if want.shape != px.shape[:2]:
             px = px[:want.shape[0], :want.shape[1]]
-        fg = px[..., 3] > 0.5
         if self.loss == "silhouette":
+            fg = px[..., 3] > 0.5
             return (want & fg).sum() / max(1, (want | fg).sum())
+        ious = self.ious(want, px)
+        if self.part == "robe":  # the lower half counts as much again; the whole keeps the torso in place
+            return float((np.mean(ious) + np.mean(self.ious(want[self.lower:], px[self.lower:]))) / 2)
+        terms = []
+        if self.hand_area:  # each hand should land on skin the drawing shows: not robe, not hidden
+            hands = self.hands(px)
+            for side, area in self.hand_area.items():
+                h = hands[side]
+                terms.append(((h & (want == 1)).sum()) / max(h.sum(), area))
+        return float((np.sum(ious) + HAND_WEIGHT * np.sum(terms)) / (len(ious) + HAND_WEIGHT * len(terms)))
+
+    @staticmethod
+    def ious(want, px):
+        """Overlap of each region, and of the outline."""
+        fg = px[..., 3] > 0.5
         ours = np.zeros(fg.shape, np.uint8)
         ours[fg & (px[..., 0] > 0.5)] = 1
         ours[fg & (px[..., 1] > 0.5)] = 2
@@ -247,29 +308,36 @@ class Fitter:
             u = (a | b).sum()
             if u:
                 ious.append((a & b).sum() / u)
-        sil_t, sil_o = want != 0, fg
-        ious.append((sil_t & sil_o).sum() / max(1, (sil_t | sil_o).sum()))
-        return float(np.mean(ious))
+        sil_t = want != 0
+        ious.append((sil_t & fg).sum() / max(1, (sil_t | fg).sum()))
+        return ious
 
     def fit(self, k, guess, iters, fix):
         self.capture(k)
         anim = self.rig.animation_data
         act, slot = anim.action, anim.action_slot
         anim.action = None
-        names = [n for n in jesus.FIT_PARAMS if n not in fix]
+        self.measure_hands()
+        robe = self.part == "robe"
+        names = [n for n in (ROBE_PARAMS if robe else jesus.FIT_PARAMS) if n not in fix]
+        penalty = ROBE_PENALTY if robe else PENALTY
         try:
             def params(x):
-                p = {n: v * BOUND[n] for n, v in zip(names, x)}
+                p = dict(guess) if robe else {}  # the robe pass holds the rest of the pose
+                p.update({n: v * BOUND[n] for n, v in zip(names, x)})
                 p.update(fix)
                 return p
 
             def cost(x):
-                return 1 - self.score(params(x)) + PENALTY * float(np.sum(np.asarray(x) ** 2))
+                return 1 - self.score(params(x)) + penalty * float(np.sum(np.asarray(x) ** 2))
 
             x0 = np.array([max(-1.0, min(1.0, guess.get(n, 0.0) / BOUND[n])) for n in names])
             before = self.score(params(x0))
-            c, x = cmaes(cost, x0, iters=iters, seed=k)
-            p = params(x)
+            # a wide search, then a narrow one from the best pose it found: from a pose that
+            # already fits well, wide steps that move every offset at once rarely beat it
+            c, x = cmaes(cost, x0, sigma=0.12, iters=iters // 2, seed=k)
+            c2, x2 = cmaes(cost, x, sigma=0.035, iters=iters - iters // 2, seed=k + 1000)
+            p = params(x2 if c2 < c else x)
             return p, self.score(p), before
         finally:
             anim.action = act
@@ -290,13 +358,12 @@ def main():
         write(opts["out"], frames)
         print(f"merged {len(opts['merge'])} files into {opts['out']}")
         return
-    fitter = Fitter(opts["loss"])
+    fitter = Fitter(opts["loss"], opts["part"])
     prior = jesus.load_fit()
     skip = set(LAYOUT["source"].get("held_frames", [])) | set(jesus.REUSE)
-    lo, hi = opts["frames"]
     out = {}
     t0 = time.time()
-    for k in range(lo, hi + 1):
+    for k in opts["frames"]:
         if k in skip:
             continue
         p, score, before = fitter.fit(k, prior.get(k, {}), opts["iters"], opts["fix"])

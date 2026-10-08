@@ -81,7 +81,7 @@ worm  toon  #B4AFC0  shadow 0.720
 [actions]
 J_hand_LAction  fcurves 1  keys 42  frames 1.0-42.0
 J_hand_RAction  fcurves 1  keys 42  frames 1.0-42.0
-Jesus_RigAction  fcurves 98  keys 4116  frames 1.0-42.0
+Jesus_RigAction  fcurves 120  keys 5040  frames 1.0-42.0
 bell_l_d0_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_l_d0_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_l_d1_inkAction  fcurves 2  keys 84  frames 1.0-42.0
@@ -538,8 +538,8 @@ J_vneck  MESH  parent=Jesus_Rig
   modifier Subsurf SUBSURF levels=1 render_levels=2
   modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
 Jesus_Rig  ARMATURE
-  loc -0.1015 -0.5743 0.0000  rot_deg 0.0000 0.0000 -178.0896  scale 1.0000 1.0000 1.0000
-  armature Jesus_Rig bones 18
+  loc -0.1215 -0.5743 0.0000  rot_deg 0.0000 0.0000 -175.2300  scale 1.0000 1.0000 1.0000
+  armature Jesus_Rig bones 19
   action Jesus_RigAction
 
 == Scene Collection/Props (0 objects)

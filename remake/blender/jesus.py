@@ -25,6 +25,8 @@ BONES = {
     "hips": ((0, 0, 0.85), (0, 0, 1.15), "root"),
     "chest": ((0, 0, 1.15), (0, 0, 1.45), "hips"),
     "head": ((0, 0, 1.47), (0, 0, 1.95), "chest"),  # pivots at the neck, under the beard
+    # the skirt of the robe, hanging from the waist: swings the hem and flares it (bone scale)
+    "skirt": ((0, 0, 1.0), (0, 0, 0.45), "hips"),
 }
 SHOULDER = (0.222, 1.42)  # (x, z) of the joints on his left side
 ELBOW = (0.262, 1.13)
@@ -108,12 +110,14 @@ def blend(lo_bone, hi_bone, z0, z1):
 
 
 def robe_weights(co):
-    """Chest above the waist, hips below; the skirt also follows the thighs a little, so
+    """Chest above the waist, hips below, handing over to the skirt bone towards the hem so
+    the hem can swing and flare on its own; the skirt also follows the thighs a little, so
     it swings with the knees instead of hanging like a rigid bell."""
     t = min(1.0, max(0.0, (co.z - 1.0) / 0.2))
-    k = 0.4 * smooth(0.95, 0.4, co.z)
+    k = 0.3 * smooth(0.95, 0.4, co.z)
+    s = smooth(1.02, 0.5, co.z)
     side = min(1.0, max(0.0, 0.5 + co.x / 0.16))
-    return {"chest": t, "hips": (1 - t) * (1 - k),
+    return {"chest": t, "hips": (1 - t) * (1 - k) * (1 - s), "skirt": (1 - t) * (1 - k) * s,
             "thigh.L": (1 - t) * k * side, "thigh.R": (1 - t) * k * (1 - side)}
 
 
@@ -264,8 +268,9 @@ HAND = 1.22  # Simpsons hands are big: the palm is about the size of an eye
 
 def hand_mesh(coll, side, x, curl):
     """Simpsons hand (thumb + three fingers) hanging from the wrist, palm facing the body,
-    thumb forward. curl 0: fingers straight and fanned a little; 1: bent down into a cup (the
-    beckoning "come here"), not a fist."""
+    thumb forward. curl 0: fingers straight and fanned a little; 1: drooping from the knuckles
+    and still spread (the beckoning "come here"), as the drawings show it: never folded under
+    the palm, which reads as a fist from the camera."""
     skin_m = mat("skin")
     wx, wz = WRIST
     wx *= x
@@ -276,9 +281,9 @@ def hand_mesh(coll, side, x, curl):
 
     def finger(dy, length, c):
         """Base, knuckle, tip: straight down at c=0, folded towards the palm (-dx) at c=1."""
-        spread = dy * 0.45 * (1 - c)
+        spread = dy * 0.45 * (1 - 0.4 * c)
         base = (0.0, dy, -0.095)
-        a1, a2 = math.radians(8 + 64 * c), math.radians(16 + 92 * c)  # bend at the knuckle, then the tip: a cup
+        a1, a2 = math.radians(8 + 42 * c), math.radians(16 + 58 * c)  # bend at the knuckle, then the tip: a droop
         l1, l2 = length * 0.55, length * 0.45
         mid = (base[0] - l1 * math.sin(a1), dy + spread * 0.6, base[2] - l1 * math.cos(a1))
         tip = (mid[0] - l2 * math.sin(a2), dy + spread, mid[2] - l2 * math.cos(a2))
@@ -639,13 +644,16 @@ def animate_hands(rig):
 # --------------------------------------------------------------------------- fitted offsets
 # reference/pose_fit.json holds, per source frame, offsets found by fitting the figure to the
 # original frame by frame (see fit_pose.py): how far he slides across the screen, the turn,
-# dip, lean and twist of his body, the head's nod, roll and turn, the arm angles and stretch
-# (a cartoon cheat: the drawings make his arms longer when they reach), and where his feet
-# stand. They sit on top of the designed poses above, so the poses stay readable and the fit
-# only nudges them. Degrees for angles, units for the slide, dip and feet, a fraction for stretch.
+# dip, tilt and twist of his body, the hips' sway and thrust under the chest's lean, the swing
+# and flare of the skirt, the head's nod, roll and turn, the arm angles and stretch (a cartoon
+# cheat: the drawings make his arms longer when they reach), the wrists' bend, and where his
+# feet stand. They sit on top of the designed poses above, so the poses stay readable and the
+# fit only nudges them. Degrees for angles, units for the slide, dip, sway, thrust and feet,
+# a fraction for stretch and flare.
 FIT_PARAMS = ("slide", "yaw", "dip", "tilt", "pitch", "twist", "head_x", "head_y", "head_z",
               "armL_x", "armL_y", "armL_z", "elbowL", "stretchL", "armR_x", "armR_y", "armR_z", "elbowR", "stretchR",
-              "footL_x", "footL_y", "footR_x", "footR_y")
+              "footL_x", "footL_y", "footR_x", "footR_y",
+              "sway", "thrust", "lean", "skirt_x", "skirt_y", "flare", "wristL", "wristR")
 HEAD_PARAMS = ("head_x", "head_y", "head_z")  # applied after aim_head, on top of where it points the face
 FIT_FILE = os.path.join(REMAKE, "reference", "pose_fit.json")
 
@@ -667,7 +675,8 @@ def screen_right():
     return r.normalized()
 
 
-FIT_BONES = ("hips", "chest", "upper_arm.L", "forearm.L", "upper_arm.R", "forearm.R", "foot.L", "foot.R")
+FIT_BONES = ("hips", "chest", "skirt", "upper_arm.L", "forearm.L", "hand.L", "upper_arm.R", "forearm.R", "hand.R",
+             "foot.L", "foot.R")
 
 
 def apply_offsets(rig, p, right=None):
@@ -678,12 +687,19 @@ def apply_offsets(rig, p, right=None):
     rig.location += (right or screen_right()) * get("slide")
     rig.rotation_euler.z += math.radians(-get("yaw"))
     hips_rest = pb["hips"].bone.matrix_local.to_3x3().normalized()
-    pb["hips"].location += hips_rest.inverted() @ Vector((0, 0, -get("dip")))
-    for name, rot in (("hips", (0, get("tilt"), 0)), ("chest", (-get("pitch"), 0, -get("twist"))),
+    pb["hips"].location += hips_rest.inverted() @ Vector((get("sway"), -get("thrust"), -get("dip")))
+    for name, rot in (("hips", (0, get("tilt"), 0)), ("chest", (-get("pitch"), get("lean"), -get("twist"))),
+                      ("skirt", (get("skirt_x"), get("skirt_y"), 0)),
                       ("upper_arm.L", (get("armL_x"), get("armL_y"), get("armL_z"))), ("forearm.L", (get("elbowL"), 0, 0)),
-                      ("upper_arm.R", (get("armR_x"), get("armR_y"), get("armR_z"))), ("forearm.R", (get("elbowR"), 0, 0))):
+                      ("hand.L", (get("wristL"), 0, 0)),
+                      ("upper_arm.R", (get("armR_x"), get("armR_y"), get("armR_z"))), ("forearm.R", (get("elbowR"), 0, 0)),
+                      ("hand.R", (get("wristR"), 0, 0))):
         if any(rot):
             pb[name].rotation_quaternion = bone_rotation(pb[name], rot) @ pb[name].rotation_quaternion
+    flare = get("flare")
+    if flare:  # the hem widens all round (bone x and z), not longer
+        pb["skirt"].scale.x *= 1 + flare
+        pb["skirt"].scale.z *= 1 + flare
     for side in ("L", "R"):
         s = get(f"stretch{side}")
         if s:
