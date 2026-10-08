@@ -1,8 +1,8 @@
 """The figure: Simpsons-style Jesus, modelled from code, skinned to an armature.
 
 Feet at z=0, facing -Y, +X is his left, the top of his hair at 2.0. Proportions are measured
-from the source frames and a model sheet drawn from them: head ~28% of his height, robe to
-mid-calf, shoulders ~0.5 wide.
+from the source frames (upscaled, see the README) and a model sheet drawn from them: head ~28%
+of his height, robe to just below the knee, shoulders ~0.5 wide.
 
 build(coll) returns the armature object; animate(rig) keys the turn and the
 poses from reference/layout.json.
@@ -595,6 +595,7 @@ def animate(rig):
         hold(rig, step_frames())
         apply_fit(rig)
         aim_head(rig)
+        apply_head_fit(rig)
         apply_reuse(rig)
         hitch(rig)
     animate_hands(rig)
@@ -636,11 +637,16 @@ def animate_hands(rig):
 
 
 # --------------------------------------------------------------------------- fitted offsets
-# reference/pose_fit.json holds, per source frame, small offsets found by fitting the figure's
-# silhouette to the original GIF frame by frame (see fit_pose.py): how far he slides across
-# the screen, the turn, the dip, the lean and the arm angles. They sit on top of the
-# designed poses above, so the poses stay readable and the fit only nudges them.
-FIT_PARAMS = ("slide", "yaw", "dip", "tilt", "pitch", "armL_x", "armL_y", "elbowL", "armR_x", "armR_y", "elbowR")
+# reference/pose_fit.json holds, per source frame, offsets found by fitting the figure to the
+# original frame by frame (see fit_pose.py): how far he slides across the screen, the turn,
+# dip, lean and twist of his body, the head's nod, roll and turn, the arm angles and stretch
+# (a cartoon cheat: the drawings make his arms longer when they reach), and where his feet
+# stand. They sit on top of the designed poses above, so the poses stay readable and the fit
+# only nudges them. Degrees for angles, units for the slide, dip and feet, a fraction for stretch.
+FIT_PARAMS = ("slide", "yaw", "dip", "tilt", "pitch", "twist", "head_x", "head_y", "head_z",
+              "armL_x", "armL_y", "armL_z", "elbowL", "stretchL", "armR_x", "armR_y", "armR_z", "elbowR", "stretchR",
+              "footL_x", "footL_y", "footR_x", "footR_y")
+HEAD_PARAMS = ("head_x", "head_y", "head_z")  # applied after aim_head, on top of where it points the face
 FIT_FILE = os.path.join(REMAKE, "reference", "pose_fit.json")
 
 
@@ -661,19 +667,40 @@ def screen_right():
     return r.normalized()
 
 
+FIT_BONES = ("hips", "chest", "upper_arm.L", "forearm.L", "upper_arm.R", "forearm.R", "foot.L", "foot.R")
+
+
 def apply_offsets(rig, p, right=None):
-    """Add one frame's fitted offsets to the pose the rig is in now (not keyed)."""
+    """Add one frame's fitted body offsets to the pose the rig is in now (not keyed); the
+    head's are added by apply_head_offsets."""
     get = lambda k: p.get(k, 0.0)  # noqa: E731
     pb = rig.pose.bones
     rig.location += (right or screen_right()) * get("slide")
     rig.rotation_euler.z += math.radians(-get("yaw"))
     hips_rest = pb["hips"].bone.matrix_local.to_3x3().normalized()
     pb["hips"].location += hips_rest.inverted() @ Vector((0, 0, -get("dip")))
-    for name, rot in (("hips", (0, get("tilt"), 0)), ("chest", (-get("pitch"), 0, 0)),
-                      ("upper_arm.L", (get("armL_x"), get("armL_y"), 0)), ("forearm.L", (get("elbowL"), 0, 0)),
-                      ("upper_arm.R", (get("armR_x"), get("armR_y"), 0)), ("forearm.R", (get("elbowR"), 0, 0))):
+    for name, rot in (("hips", (0, get("tilt"), 0)), ("chest", (-get("pitch"), 0, -get("twist"))),
+                      ("upper_arm.L", (get("armL_x"), get("armL_y"), get("armL_z"))), ("forearm.L", (get("elbowL"), 0, 0)),
+                      ("upper_arm.R", (get("armR_x"), get("armR_y"), get("armR_z"))), ("forearm.R", (get("elbowR"), 0, 0))):
         if any(rot):
             pb[name].rotation_quaternion = bone_rotation(pb[name], rot) @ pb[name].rotation_quaternion
+    for side in ("L", "R"):
+        s = get(f"stretch{side}")
+        if s:
+            for name in (f"upper_arm.{side}", f"forearm.{side}"):
+                pb[name].scale.y *= 1 + s
+        x, y = get(f"foot{side}_x"), get(f"foot{side}_y")
+        if x or y:  # +x to his left, +y forward
+            foot = pb[f"foot.{side}"]
+            foot.location += foot.bone.matrix_local.to_3x3().normalized().inverted() @ Vector((x, -y, 0))
+
+
+def apply_head_offsets(rig, p):
+    """The head's fitted nod, roll and turn (+ towards screen-left), on top of aim_head."""
+    rot = (p.get("head_x", 0.0), p.get("head_y", 0.0), -p.get("head_z", 0.0))
+    if any(rot):
+        pb = rig.pose.bones["head"]
+        pb.rotation_quaternion = bone_rotation(pb, rot) @ pb.rotation_quaternion
 
 
 # Where his face points, read off the drawings: degrees towards screen-left, 0 facing us. In
@@ -706,7 +733,7 @@ def aim_head(rig):
 # The second wave reuses the first wave's drawings, slid across: frame: (drawing reused,
 # shift in source pixels, extra fit offsets), measured by matching the GIF's silhouettes to
 # each other and tracking where the head went.
-REUSE = {24: (11, 5, {}), 25: (10, 3, {"tilt": -4.5}), 27: (9, 0, {})}  # 25: the body slides, the head stays
+REUSE = {24: (11, 5, {}), 27: (9, 0, {})}
 
 
 def source_px():
@@ -738,8 +765,9 @@ def apply_reuse(rig):
         if extra:
             scene.frame_set(int(fk), subframe=fk - int(fk))
             apply_offsets(rig, extra, right)
-            for name in ("hips", "chest", "upper_arm.L", "forearm.L", "upper_arm.R", "forearm.R"):
-                rig.pose.bones[name].keyframe_insert("rotation_quaternion", frame=fk)
+            for name in FIT_BONES:
+                for path in ("location", "rotation_quaternion", "scale"):
+                    rig.pose.bones[name].keyframe_insert(path, frame=fk)
     constant(rig)
 
 
@@ -751,9 +779,16 @@ def apply_fit(rig):
     scene = bpy.context.scene
     right = screen_right()
     channels = [(rig, "location"), (rig, "rotation_euler")]
-    for name in ("hips", "chest", "upper_arm.L", "forearm.L", "upper_arm.R", "forearm.R"):
+    for name in FIT_BONES:
         pb = rig.pose.bones[name]
-        channels += [(pb, "location"), (pb, "rotation_quaternion")]
+        channels += [(pb, "location"), (pb, "rotation_quaternion"), (pb, "scale")]
+    # first key every channel as it stands on every frame, so a channel nothing animated yet (a
+    # foot, a bone's scale) holds its own value on each frame instead of the last frame's offset
+    for f in step_frames():
+        scene.frame_set(int(f), subframe=f - int(f))
+        for owner, path in channels:
+            owner.keyframe_insert(path, frame=f)
+    constant(rig)
     for k, p in sorted(fit.items()):
         f = remake_frame(k)
         scene.frame_set(int(f), subframe=f - int(f))
@@ -761,6 +796,19 @@ def apply_fit(rig):
         apply_offsets(rig, p, right)
         for owner, path in channels:
             owner.keyframe_insert(path, frame=f)
+    constant(rig)
+
+
+def apply_head_fit(rig):
+    """Bake the head's fitted offsets, after aim_head has pointed the face."""
+    fit = {k: p for k, p in load_fit().items() if any(p.get(n) for n in HEAD_PARAMS)}
+    scene = bpy.context.scene
+    pb = rig.pose.bones["head"]
+    for k, p in sorted(fit.items()):
+        f = remake_frame(k)
+        scene.frame_set(int(f), subframe=f - int(f))
+        apply_head_offsets(rig, p)
+        pb.keyframe_insert("rotation_quaternion", frame=f)
     constant(rig)
 
 

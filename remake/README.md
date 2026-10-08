@@ -10,7 +10,9 @@ A 3D remake of `jesus-christ-homer.gif` (41 frames, 498x318, 10 fps), toon-shade
 | `reference/layout.json` | Prop positions (each prop's outline in frame 0), figure yaw/pose timeline and prop cycle lengths, measured from the GIF. The Blender script reads this |
 | `reference/prop_tracks.json` | Each prop's state in every frame of the GIF (mouth open, bell tilt, wing, toast, clock lean, worm loop), written by `build_reference.py` |
 | `reference/build_reference.py` | Regenerates the reference sheets, `reference/frames/` and the figure's silhouettes (`frames/masks.npz`) |
-| `reference/pose_fit.json` | Per-frame pose offsets fitted to the original's silhouettes by `blender/fit_pose.py` |
+| `reference/prop_drawings.json` | The traced props: each prop's drawings split into coloured parts, and which one each frame shows, written by `build_reference.py` from the upscaled frames |
+| `reference/pose_fit.json` | Per-frame pose offsets fitted to the original, region by region, by `blender/fit_pose.py` |
+| `reference/model_sheet.webp`, `model_apose.webp` | A clean model sheet (front, profile, back, three-quarter) and an A-pose drawing of him, redrawn by an image model from the upscaled frames: references for modelling |
 | `reference/contact_sheet.png` | Every source frame, numbered |
 | `reference/figure_sheet.png` | The figure, zoomed, with yaw/pose per frame |
 | `reference/layout.png` | Frame 0 with every prop box drawn |
@@ -18,8 +20,7 @@ A 3D remake of `jesus-christ-homer.gif` (41 frames, 498x318, 10 fps), toon-shade
 | `blender/jesus.py` | The figure: modelled in code, skinned to an armature, poses and timeline |
 | `blender/props.py` | Toasters, alarm clocks, bells, lips and worms, each with its own loop |
 | `blender/kit.py` | Shared settings, toon materials, mesh builders, keyframe helpers |
-| `blender/fit_pose.py` | Fits the figure's pose to the original, frame by frame |
-| `blender/fit_hand.py` | Aims his left hand, which the silhouette fit can't see, at where the original draws it |
+| `blender/fit_pose.py` | Fits the figure's pose to the original, frame by frame, region by region |
 | `blender/homers_web_page.blend` | The scene. Tracked, and the source of truth once edited in the UI |
 | `blender/render.py` | Renders the tracked .blend as it is |
 | `blender/tweaks.py` | Carries UI edits across a rebuild, and writes `scene_manifest.txt` |
@@ -44,7 +45,7 @@ The GIF is 498x318 with 256 colours and heavy dithering, and his face is about 3
 - a left hand that beckons along with the right;
 - mouths that, when open, are drawn side-on.
 
-The upscaled frames are a reading aid only. Every measurement (silhouettes, tracks, positions) still comes from the GIF's own pixels or is checked against them. The upscaler fills in detail at the scale of the eyes, and two of its models disagree there. The frames aren't committed; to make them, export the GIF's frames at their own size and run `realesrgan-ncnn-vulkan -i frames -o x4 -n realesr-animevideov3 -s 4`.
+The upscaled frames are also data. The pose fit scores the figure against their regions (skin, hair and beard, robe), and the mouths, toasters, clocks and bells are traced from them. The GIF's own pixels still give the outline and the props' tracks. Where the upscaler invents detail (at the scale of the eyes, where two of its models disagree), nothing is taken from it. The frames aren't committed. `build_reference.py` writes the GIF's frames at their own size to `reference/frames/gif/`; upscale them into `reference/frames/x4/` with `realesrgan-ncnn-vulkan -i remake/reference/frames/gif -o remake/reference/frames/x4 -n realesr-animevideov3 -s 4`, then run `build_reference.py` again for `regions.npz` and `prop_drawings.json`.
 
 ## Loop timing
 
@@ -90,7 +91,12 @@ Every part is skinned to the `Jesus_Rig` armature: `root`, `hips`, `chest`, `hea
 - **Arms:** `POSES`, written in rest-pose axes, keyed from the timeline in `layout.json`.
 - **Turn:** the armature object's Z rotation, keyed from the same timeline (one key per source frame through the turns).
 - **Body:** `BODY`, one row per source frame, read off the source drawings. It holds the knee dip, hip sway, thrust and roll, the chest's lean and pitch, and the head's tilt, nod and turn. This is the wiggle: the dips during the turns, the hip swing while waving, and the forward rock and head bob while beckoning.
-- **Fit:** `reference/pose_fit.json`, per source frame offsets on top of all that, found by `fit_pose.py`: it renders his silhouette at the GIF's size from the scene camera, compares it with the GIF's, and nudges the slide across the screen, the turn, dip, lean and arm angles one at a time to raise the overlap (with a small penalty for straying from the designed pose). This catches what's hard to see by eye, like how far he drifts to the right while beckoning. Re-run it after changing the model or the poses: `blender -b remake/blender/homers_web_page.blend --python remake/blender/fit_pose.py` (`--frames 0-10` and `--merge` split the work over several processes). While he beckons, his left hand rests in front of his belly, inside his silhouette, where the silhouette fit can't see it. `fit_hand.py` aims it at `figure.hand_targets` in `layout.json` (where the upscaled frames show it) and keeps it in front of his belly. Run it after `fit_pose.py`, then rebuild, until the offsets stop changing.
+- **Fit:** `reference/pose_fit.json`, per source frame offsets on top of all that, found by `fit_pose.py`. It works like this:
+  - **What it compares:** it draws him from the scene camera in flat colours, one per region (skin, hair/beard/sandals, robe), at twice the GIF's size. It compares each region with `reference/frames/regions.npz`, the same regions read off the upscaled original, and the outline counts too. So it sees his hands in front of the robe, his face and his feet, not just his outline.
+  - **What it adjusts:** 23 offsets at once: the slide across the screen; the turn, dip, tilt, lean and twist of his body; the head's nod, roll and turn; each arm's three angles, elbow bend and stretch (a cartoon cheat: the drawings make his arms longer when they reach); and where his feet stand.
+  - **How it searches:** with CMA-ES (covariance matrix adaptation, the standard tool for a few dozen coupled parameters), with a small penalty for straying from the designed pose.
+  - **Skipped frames:** held frames and the second wave's reused drawings copy their frame.
+  - **Running it:** re-run it after changing the model or the poses. It takes a few minutes a frame, so split it over processes and merge the parts: `blender -b remake/blender/homers_web_page.blend --python remake/blender/fit_pose.py -- --frames 0-10 --out part1.json`, then `-- --merge part1.json part2.json ...`.
 - **Hands:** `CURL`, the finger curl per source frame: the beckoning hand folds its fingers down twice ("come here"). The hand on his belly beckons with it: it points, opens into a claw, closes into a fist and points again. Between the waves, the left hand goes up behind his head (frames 11 and 24) and only the sleeve shows.
 - **Timing:** with `STEPPED = True` (the default) the figure moves like the 10 fps original: its motion is sampled once per source frame and held (constant interpolation, `kit.hold`), then the fit and the hitches are applied. Set it to `False` for smooth motion (without the fit). `props.STEPPED` does the same for the props: they're keyed once per source frame and held, and the clocks then flip left and right on every held frame instead of shimmying. With both on, the whole picture changes only on the original's 41 beats, so the GIF is also about half the size.
 
@@ -103,11 +109,15 @@ The camera distance is solved so the top of his hair (`jesus.hair_top()`) lands 
 
 ## The props
 
-`props.py` builds each prop and animates it from `reference/prop_tracks.json`. `build_reference.py` reads every prop's state off the GIF frame by frame (which drawing a mouth is in: its teeth show only when it shouts, and a dark mouth without teeth is half open; how far a bell's body sits off its handle, where the toaster's white wing and orange toast are, which way a clock's top leans, how high a worm's back rises), so each prop moves drawing for drawing with the original. A prop without a track falls back to a regular cycle (`cycles_s` in `layout.json`, offset by its `phase`). Each prop is sized to its outline in frame 0, the frame its track starts from; worms by their length alone, since a flat worm's box is only a few pixels tall. Toasters turn side-on like the original's (`props.TURN`), but their wing stays broadside to the camera and flaps in the picture plane, as drawn. The lips swap between two drawings, as the original's do:
-- **Closed:** fat lips facing the camera.
-- **Open:** the mouth seen side-on and facing screen-left. One thick lip line bends into a C (upper lip, the corner at the back, lower lip) round a dark mouth, with a `wide` shape key for the big shout. When it shouts, a row of teeth hangs from the upper lip and a tongue lies on the lower one.
+Each prop in the original flips between a handful of drawings: a mouth between five, a clock between three, a toaster's wing through a six-frame beat. So the mouths, toasters, clocks and bells are those drawings, traced and blown up into 3D:
 
-Only the drawing on show counts when the prop is sized.
+- **Tracing:** `build_reference.py` reads them off the upscaled frames into `reference/prop_drawings.json`. It groups each prop's frames by silhouette into its drawings and traces the most typical frame of each. Each drawing is split into coloured parts, with the colours sampled from the original, plus the ink: the whole drawing, whose dark line-art shows between the colours. It also records which drawing every frame shows.
+- **Inflating:** `props.py` blows each part up into a soft 3D shape with `kit.inflate`, the "Teddy" trick for turning cartoon drawings into models. The surface rises with the distance from the edge: round where the part is thin, flat-topped where it's wide. The ink sits just behind the colours, and only it gets a thin outline, round the whole drawing.
+- **Showing:** each drawing faces the camera square on, and on every frame only the drawing the original shows is visible. So the wings beat, the bells swing, the clocks jolt and the mouths shout drawing for drawing, each drawing in its place in the frame.
+
+The worms are modelled instead: at three pixels tall their drawings trace into noise. They're chunky ring segments with dark bands between them, and they curl their middle up into an arch on the beats measured in `reference/prop_tracks.json`, without going anywhere. That file holds every prop's state per frame (a mouth's drawing from whether its teeth show, a bell's tilt, the toaster's wing and toast, a clock's lean, a worm's arch). It also drives the models `props.py` still has for every prop, used when there are no traces.
+
+Each prop is sized to its outline in frame 0 (worms by their length, traced props by their width); only the drawing on show counts.
 
 ## Working in the live Blender
 

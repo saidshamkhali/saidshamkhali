@@ -10,7 +10,7 @@ import math
 import os
 
 from kit import (LAYOUT, LOOP, REMAKE, SRC_FRAMES, add_shape, bake, box, constant, cycles_per_loop, cylinder, empty, hitch,
-                 keep_world, lathe, mat, saw, slab, smooth_outline, sphere, step_frames, sweep, wave)
+                 inflate, keep_world, lathe, mat, saw, slab, smooth_outline, sphere, step_frames, sweep, toon, unrle, wave)
 
 # Cartoon timing, like the figure (jesus.STEPPED): the props are keyed once per source frame
 # and hold each pose, as the 10 fps original does. False = keyed on every frame, smooth.
@@ -53,7 +53,7 @@ def track(root, name, fallback):
     return f
 
 # Extra yaw per prop type, in degrees on top of facing the camera: three-quarter views like the source.
-TURN = {"toaster": -56.0, "lips": -8.0}
+TURN = {"toaster": -56.0, "lips": 0.0}
 
 # Toaster wing in (span, chord): a long flat blade like the source's, rounded tip, the
 # trailing edge cut into three shallow feathers.
@@ -190,6 +190,70 @@ MOUTH_WIDE = [(-0.3, 0.66), (-0.09, 0.71), (0.1, 0.72), (0.25, 0.66), (0.3, 0.5)
 MOUTH_R = [0.055, 0.07, 0.072, 0.065, 0.05, 0.05, 0.065, 0.072, 0.058]
 
 
+DRAWINGS_FILE = os.path.join(REMAKE, "reference", "prop_drawings.json")
+DRAWING_PX = 1 / 40  # units per GIF pixel for traced drawings (place_prop scales the prop to its box anyway)
+# how a traced part is inflated: (depth behind the drawing's front, radius, shadow). The ink (the
+# whole drawing, its dark line-art) sits just behind the coloured parts and shows between them,
+# so it draws the lines: only it gets a (thin) outline, round the whole drawing.
+INK = (0.05, 0.03, 0.8)
+COLOUR = (0.0, 0.07, 0.72)
+INK_OUTLINE_PX = 0.8
+
+
+def load_drawings():
+    if not os.path.exists(DRAWINGS_FILE):
+        return {}
+    with open(DRAWINGS_FILE, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def build_traced(root, coll, data, spec):
+    """The prop's own drawings off the GIF (reference/prop_drawings.json), each coloured part
+    inflated into a soft 3D shape in the GIF's own colour, and on every frame only the drawing
+    the GIF shows. The drawings keep their places in the frame, so the prop moves between them
+    as drawn: the bells swing, the wings beat, the clocks jolt, drawing for drawing."""
+    cell = DRAWING_PX / data["cell"]
+    w, h = spec["size"]
+    mats = {name: toon(f"{root.name}_{name}", hexc, (INK if name == "ink" else COLOUR)[2])
+            for name, hexc in spec["palette"].items()}
+    drawings = []
+    for i, dr in enumerate(spec["drawings"]):
+        parts = []
+        for name, runs in dr["parts"].items():
+            depth, radius, _ = INK if name == "ink" else COLOUR
+            o = inflate(f"{root.name}_d{i}_{name}", coll, mats[name], unrle(runs, w, h), cell, depth=depth, radius=radius,
+                        outline=name == "ink")
+            if name == "ink":
+                o["outline_px"] = INK_OUTLINE_PX
+            o.location.x = -w * cell / 2
+            keep_world(o, root)
+            parts.append(o)
+        drawings.append(parts)
+    shown = spec["frame_drawing"]
+
+    def drawing(t):
+        return shown[round(t * SRC_FRAMES) % SRC_FRAMES]
+    for i, parts in enumerate(drawings):
+        for o in parts:
+            animate_value(o, "hide_render", lambda t, i=i: drawing(t) != i)
+            animate_value(o, "hide_viewport", lambda t, i=i: drawing(t) != i)
+    root["face_camera"] = True  # flat drawings: face the camera square on, its tilt included
+    root["fit_axis"] = "x"      # the traced width is the drawing's own; heights include the line-art
+
+
+def traced_or(build):
+    """Build the prop from its traced drawings when reference/prop_drawings.json has them,
+    otherwise from scratch with `build`."""
+    def run(root, coll, phase):
+        spec = load_drawings().get("props", {}).get(root.name)
+        if spec:
+            build_traced(root, coll, load_drawings(), spec)
+        else:
+            build(root, coll, phase)
+    run.__doc__ = build.__doc__
+    return run
+
+
 def build_lips(root, coll, phase):
     """A shouting mouth, two drawings like the source's: closed, fat lips facing the camera;
     open, the mouth seen side-on facing screen-left, a C of lip round a dark mouth, with a row
@@ -298,20 +362,28 @@ def worm_curve(a, samples):
 
 def build_worm(root, coll, phase):
     """Inchworm, as in the source: it stays put while the middle of its body curls up into a
-    tight loop and flattens out again, about once a second. A row of overlapping ring
-    segments (their outlines draw the rings), each one tilted along the body."""
+    tight loop and flattens out again, about once a second. A row of fat overlapping ring
+    segments, each one tilted along the body, with a dark band between each two (the stripes)."""
     c = cycles_per_loop(LAYOUT["cycles_s"]["worm"])
     n = 13
     spacing = WORM_LENGTH / (n - 1)
     segs = []
     for i in range(n):
         u = i / (n - 1)
-        r = 0.052 + 0.014 * math.sin(math.pi * min(1.0, u * 1.15)) ** 0.6 + (0.01 if i == n - 1 else 0.0)
+        r = 0.1 + 0.02 * math.sin(math.pi * min(1.0, u * 1.15)) ** 0.6 + (0.015 if i == n - 1 else 0.0)  # chunky, as drawn
         sx = max(0.7, 1.3 * spacing / (2 * r))  # fat rings that overlap, even stretched
         seg = sphere(f"{root.name}_seg{i}", coll, mat("worm"), (-WORM_LENGTH / 2 + WORM_LENGTH * u, 0, r),
                      scale=(sx if i < n - 1 else 1.1, 1.0, 1.0), r=r)
         keep_world(seg, root)
         segs.append((seg, u, r))
+    bands = []
+    for i in range(n - 1):  # thin dark discs between the segments, across the body
+        u = (i + 0.5) / (n - 1)
+        r = (segs[i][2] + segs[i + 1][2]) / 2 * 1.04
+        band = cylinder(f"{root.name}_band{i}", coll, mat("black"), (-WORM_LENGTH / 2 + WORM_LENGTH * u, 0, r), r, 0.03,
+                        rot=(0, math.pi / 2, 0), outline=False)
+        keep_world(band, root)
+        bands.append((band, u, r))
 
     def loop(t):  # flat for a moment, then up into the loop and back down
         x = saw(t, c, phase)
@@ -322,13 +394,14 @@ def build_worm(root, coll, phase):
 
     def pose(t):
         if t not in cache:
-            cache[t] = worm_curve(curl(t), [u * WORM_LENGTH for _, u, _ in segs])
+            cache[t] = worm_curve(curl(t), [u * WORM_LENGTH for _, u, _ in segs + bands])
         return cache[t]
 
-    for i, (seg, _, r) in enumerate(segs):
-        animate(seg, "location", 0, lambda t, i=i: pose(t)[i][0])
-        animate(seg, "location", 2, lambda t, i=i, r=r: pose(t)[i][1] + r)
-        animate(seg, "rotation_euler", 1, lambda t, i=i: -pose(t)[i][2])
+    for i, (part, _, r) in enumerate(segs + bands):
+        turn = math.pi / 2 if i >= len(segs) else 0.0  # the bands' discs stand across the body
+        animate(part, "location", 0, lambda t, i=i: pose(t)[i][0])
+        animate(part, "location", 2, lambda t, i=i, r=r: pose(t)[i][1] + r)
+        animate(part, "rotation_euler", 1, lambda t, i=i, turn=turn: turn - pose(t)[i][2])
     root["fit_axis"] = "x"  # a flat worm's box is a few pixels tall: size it by its length
     if not load_tracks().get(root.name):  # untracked: size it in its box when flat, whatever its phase
         root["fit_frame"] = 1 + ((-phase) % 1.0) / c * (len(step_frames()) - 1)
@@ -350,9 +423,9 @@ def held(build):
 
 
 BUILDERS = {
-    "toaster": held(build_toaster),
-    "alarm_clock": held(build_clock),
-    "bell": held(build_bell),
-    "lips": held(build_lips),
-    "worm": held(build_worm),
+    "toaster": held(traced_or(build_toaster)),
+    "alarm_clock": held(traced_or(build_clock)),
+    "bell": held(traced_or(build_bell)),
+    "lips": held(traced_or(build_lips)),
+    "worm": held(traced_or(build_worm)),
 }

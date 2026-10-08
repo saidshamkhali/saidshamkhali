@@ -20,9 +20,6 @@
     "head_top": 108,
     "feet_note": "feet: where the floor point between his heels projects (the sandal toes reach y~247); head_top: top of the hair, frames 12-24",
     "yaw_note": "degrees; 0 = facing camera, +90 = facing screen-left, 180/-180 = back to camera",
-    "hand_targets": {"note": "his left hand's centre while he beckons (inside his silhouette, so fit_pose.py can't see it), read off upscaled frames; blender/fit_hand.py aims the hand here",
-      "12": [246, 171.5], "14": [247, 172], "16": [248, 173], "17": [249, 172.5], "18": [246.5, 174.5],
-      "19": [248.5, 172], "21": [249.5, 173.5], "22": [250, 173], "23": [250, 172]},
     "timeline": [
       {"frame": 0,    "yaw": 180,  "pose": "up"},
       {"frame": 2,    "yaw": 176,  "pose": "up"},

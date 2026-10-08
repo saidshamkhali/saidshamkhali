@@ -135,7 +135,8 @@ def place_prop(cam, root, box, turn=0.0):
     changes is sized in a set pose, and without its outline shells, so re-placing an outlined
     prop gives the same result. Parts flagged "no_fit", or hidden on that frame (a mouth swaps
     drawings), are left out of the measurement.
-    A root with "fit_axis" = "x" is sized by its width alone."""
+    A root with "fit_axis" = "x" is sized by its width alone; one with "face_camera" (a traced
+    drawing) is also tipped back to face the camera square on."""
     scene = bpy.context.scene
     shells = [m for o in descendants(root) if o.type == "MESH" for m in o.modifiers
               if m.name == "Outline" and m.show_viewport]
@@ -155,7 +156,10 @@ def place_prop(cam, root, box, turn=0.0):
     s, mid_r = 1.0, 0.0
     for _ in range(4):
         yaw = math.atan2(cam.location.x - pos.x, -(cam.location.y - pos.y))
-        root.rotation_euler.z = yaw + math.radians(turn)
+        root.rotation_euler.z = yaw + (0.0 if root.get("face_camera") else math.radians(turn))
+        if root.get("face_camera"):  # a traced drawing: square on to the camera, which looks down on it
+            off = cam.location - pos
+            root.rotation_euler.x = -math.atan2(off.z, math.hypot(off.x, off.y))
         bpy.context.view_layer.update()
         pts = [o.matrix_world @ Vector(c) for o in descendants(root)
                if o.type == "MESH" and not o.get("no_fit") and not o.hide_render for c in o.bound_box]

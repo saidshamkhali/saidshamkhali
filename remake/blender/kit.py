@@ -192,6 +192,101 @@ def finish(obj, material, coll, outline=True, smooth=True, bevel=0.0):
     return obj
 
 
+def unrle(runs, w, h):
+    """Boolean mask from "start,length,...;..." row runs (reference/build_reference.py rle)."""
+    import numpy as np
+    m = np.zeros((h, w), bool)
+    for i, row in enumerate(runs.split(";")):
+        if row:
+            v = [int(x) for x in row.split(",")]
+            for a, n in zip(v[::2], v[1::2]):
+                m[i, a:a + n] = True
+    return m
+
+
+def inflate(name, coll, material, mask, cell, depth=0.0, radius=0.08, back=0.4, smooth_edge=6, keep=0.12, **kw):
+    """A flat drawn shape blown up into a soft 3D one, like a balloon (the "Teddy" trick for
+    turning cartoon drawings into models). mask: boolean (rows top-down) on a grid of `cell`
+    units, laid in the XZ plane facing -Y, its bottom-left corner at the origin. The surface
+    rises with the distance from the edge: a round tube where the shape is thin, a flat top
+    `radius` high where it's wide; the back bulges `back` as much. depth moves it along +Y. The grid is
+    thinned to `keep` of its faces (a dense grid is mostly flat and the scene file is tracked)."""
+    import numpy as np
+    h, w = mask.shape
+    inside = np.argwhere(mask)
+    pad = np.pad(mask, 1)
+    edge = pad[1:-1, 1:-1] & ~(pad[:-2, 1:-1] & pad[2:, 1:-1] & pad[1:-1, :-2] & pad[1:-1, 2:])
+    touch = np.zeros_like(pad)  # cells just outside the shape: the nearest outside cell is always one of these
+    touch[1:-1, 1:-1] = pad[:-2, 1:-1] | pad[2:, 1:-1] | pad[1:-1, :-2] | pad[1:-1, 2:]
+    touch[0, 1:-1] |= pad[1, 1:-1]
+    touch[-1, 1:-1] |= pad[-2, 1:-1]
+    touch[1:-1, 0] |= pad[1:-1, 1]
+    touch[1:-1, -1] |= pad[1:-1, -2]
+    near = np.argwhere(touch & ~pad) - 1
+    dist = np.zeros((h, w))
+    for chunk in np.array_split(inside, max(1, len(inside) // 2000)):
+        d = np.sqrt(((chunk[:, None, :] - near[None, :, :]) ** 2).sum(-1)).min(1) - 0.5
+        dist[chunk[:, 0], chunk[:, 1]] = d * cell
+    r = min(radius, max(cell, dist.max()))
+    t = np.clip(dist / r, 0, 1)
+    height = r * np.sqrt(1 - (1 - t) ** 2)
+    height[edge] = np.minimum(height[edge], 0.35 * cell)
+    # corners of the cells: a corner on the shape's edge is shared by front and back
+    count = np.zeros((h + 1, w + 1), int)
+    hsum = np.zeros((h + 1, w + 1))
+    for di in (0, 1):
+        for dj in (0, 1):
+            count[di:di + h, dj:dj + w] += mask
+            hsum[di:di + h, dj:dj + w] += height * mask
+    bm = bmesh.new()
+    front, rear, rim = {}, {}, []
+    for i, j in np.argwhere(count > 0):
+        x, z = j * cell, (h - i) * cell
+        if count[i, j] < 4:
+            v = bm.verts.new((x, depth, z))
+            front[(i, j)] = rear[(i, j)] = v
+            rim.append(v)
+        else:
+            hc = hsum[i, j] / 4
+            front[(i, j)] = bm.verts.new((x, depth - hc, z))
+            rear[(i, j)] = bm.verts.new((x, depth + back * hc, z))
+    for i, j in inside:
+        c00, c01, c10, c11 = (i, j), (i, j + 1), (i + 1, j), (i + 1, j + 1)
+        bm.faces.new([front[c10], front[c11], front[c01], front[c00]])
+        if any(front[c] is not rear[c] for c in (c00, c01, c10, c11)):  # a cell all on the edge is a single sheet
+            bm.faces.new([rear[c00], rear[c01], rear[c11], rear[c10]])
+    bm.verts.index_update()
+    rim_set = set(rim)
+    for _ in range(smooth_edge):  # round off the pixel steps along the edge, in the drawing's plane
+        moved = {}
+        for v in rim:
+            nb = [e.other_vert(v) for e in v.link_edges if e.other_vert(v) in rim_set]
+            if nb:
+                c = sum((n.co for n in nb), Vector()) / len(nb)
+                moved[v] = v.co.lerp(Vector((c.x, v.co.y, c.z)), 0.5)
+        for v, co in moved.items():
+            v.co = co
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=cell * 1e-3)
+    mesh = bpy.data.meshes.new(name)
+    bm.to_mesh(mesh)
+    bm.free()
+    obj = bpy.data.objects.new(name, mesh)
+    coll.objects.link(obj)
+    if keep < 1 and len(mesh.polygons) > 200:
+        dec = obj.modifiers.new("Decimate", "DECIMATE")
+        dec.ratio = keep
+        thin = bpy.data.meshes.new_from_object(obj.evaluated_get(bpy.context.evaluated_depsgraph_get()))
+        obj.modifiers.remove(dec)
+        obj.data = thin
+        bpy.data.meshes.remove(mesh)
+        obj.data.name = name
+    obj = finish(obj, material, coll, **kw)
+    obj["outline_even"] = False  # thin tips and sheets would spike an even outline
+    sub = obj.modifiers.new("Subdivision", "SUBSURF")
+    sub.levels, sub.render_levels = 1, 1
+    return obj
+
+
 def sphere(name, coll, material, loc, scale=(1, 1, 1), rot=(0, 0, 0), r=1.0, **kw):
     bpy.ops.mesh.primitive_uv_sphere_add(segments=32, ring_count=16, radius=r, location=loc, rotation=rot)
     obj = bpy.context.active_object
