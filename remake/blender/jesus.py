@@ -10,7 +10,6 @@ poses from reference/layout.json.
 import json
 import math
 import os
-import random
 
 import bpy
 from mathutils import Euler, Vector
@@ -124,9 +123,9 @@ def robe_weights(co):
 # eyes at 1.78, beard tip at 1.40, shoulders at 1.40, hem at 0.38, back hair down to 1.34.
 
 # Robe: horizontal ellipses (z, rx, ry, cy). Long and nearly straight, a soft belly pushing
-# the front out (cy), the hem at mid-calf.
+# the front out (cy), the hem just below the knee.
 ROBE = [
-    (0.4, 0.257, 0.205, 0.0), (0.44, 0.255, 0.203, 0.0), (0.6, 0.246, 0.197, -0.01),
+    (0.445, 0.256, 0.204, 0.0), (0.48, 0.254, 0.202, 0.0), (0.6, 0.246, 0.197, -0.01),
     (0.8, 0.236, 0.191, -0.02), (0.95, 0.229, 0.186, -0.024), (1.08, 0.222, 0.177, -0.016),
     (1.2, 0.217, 0.168, -0.006), (1.32, 0.216, 0.16, 0.0), (1.4, 0.212, 0.154, 0.0),
     (1.44, 0.2, 0.146, 0.0), (1.47, 0.176, 0.132, 0.0), (1.495, 0.136, 0.112, 0.0), (1.512, 0.085, 0.085, 0.0),
@@ -156,6 +155,7 @@ def build_body(coll, rig):
             f = 1 + 0.028 * k * math.sin(5 * th + 0.8)
             v.co.x *= f
             v.co.y *= f
+            v.co.z += 0.015 * k * max(0.0, v.co.y / 0.2) ** 2  # the hem rides up a little at the back
     for v in robe.data.vertices:  # the seat: in profile the robe bulges out behind his hips
         rx, ry, cy = robe_ring(v.co.z)
         back = max(0.0, (v.co.y - cy) / max(ry, 1e-3)) ** 2
@@ -315,10 +315,10 @@ SKULL = [
     (1.84, 0.12, 0.137, 0.0), (1.89, 0.113, 0.129, 0.0), (1.93, 0.098, 0.112, 0.0),
     (1.958, 0.074, 0.085, 0.0), (1.975, 0.042, 0.048, 0.0), (1.981, 0.0, 0.0, 0.0),
 ]
-EYE_R = 0.047
-EYE_X = 0.069
-EYE_Z = 1.79
-EYE_Y = -0.128  # bulging out of the face, as Simpsons eyes do
+EYE_R = 0.039
+EYE_X = 0.058
+EYE_Z = 1.83
+EYE_Y = -0.118  # half out of the face, as Simpsons eyes are
 HANG_Z = 1.7    # below this the hair hangs straight instead of following the head
 MUZZLE = 0.045  # how far the Simpsons muzzle (moustache, lip, chin) juts out of the face
 HAIR_TOP = 0.02  # hair thickness on the crown
@@ -392,9 +392,11 @@ def build_head(coll, rig):
                  blobs(f"_ear_bowl_{side}", coll, skin_m, [(base + outward(th) * 0.004, (0.01, 0.02, 0.03), (0, 0, 0))])]
         skin(merge(f"J_ear_{side}", coll, skin_m, parts), rig, head)
 
-    # eyes: big Simpsons balls bulging out of the face, a nose-width apart
+    # eyes: Simpsons balls half out of the face, a nose-width apart, high under the fringe
     eyes, pupils = [], []
-    look = math.radians(3)  # a calm, level gaze under the lids
+    # the camera looks down on him from about 20 degrees, so the pupils aim up to sit mid-way
+    # down the open eye and he looks out at the viewer's level
+    look = math.radians(-15)
     for x in (1, -1):
         c = Vector((EYE_X * x, EYE_Y, EYE_Z))
         eyes.append((c, (EYE_R,) * 3, (0, 0, 0)))
@@ -402,44 +404,44 @@ def build_head(coll, rig):
         pupils.append((c + d * EYE_R * 0.98, (0.011, 0.004, 0.011), (look, 0, 0)))
     skin(blobs("J_eyes", coll, mat("white", 0.93), eyes), rig, head)
     skin(blobs("J_pupils", coll, mat("black"), pupils, outline=False), rig, head, subsurf=0)
-    # upper lids: level caps over the top third of each eye, calm but awake
+    # upper lids: thin caps tipped back so, seen from the camera above, they cover only the top
+    # rim of each eye: calm and awake, like the source
     for x, side in ((1, "L"), (-1, "R")):
         c = Vector((EYE_X * x, EYE_Y, EYE_Z))
-        skin(cap(f"J_lid_{side}", coll, skin_m, c, EYE_R * 1.07, 0.48, rot=(math.radians(-10), 0, 0)), rig, head)
+        skin(cap(f"J_lid_{side}", coll, skin_m, c, EYE_R * 1.07, 0.7, rot=(math.radians(-25), 0, 0)), rig, head)
 
     # nose: the long Simpsons sausage from between the eyes, pointing forward and a little down
-    skin(sweep("J_nose", coll, skin_m, [(0, -0.115, 1.758), (0, -0.168, 1.74), (0, -0.212, 1.724)],
-               [0.022, 0.024, 0.029], n=12, ring=20), rig, head)
+    skin(sweep("J_nose", coll, skin_m, [(0, -0.12, 1.79), (0, -0.168, 1.768), (0, -0.204, 1.75)],
+               [0.019, 0.021, 0.025], n=12, ring=20), rig, head)
 
-    # handlebar moustache: thick under the nose, sweeping out over the cheeks, the ends drooping
+    # moustache: one thick straight bar across the muzzle, jutting out past the nose in profile,
+    # its blunt ends at the edges of the face (the source draws it as a dark cigar). The ends dip
+    # a little: they sit further back, so from the camera above a level bar would read as a smile
     for x, side in ((1, "L"), (-1, "R")):
         pts = [head_point(math.radians(a) * x, z) + outward(math.radians(a) * x) * off
-               for a, z, off in ((0, 1.685, 0.03), (15, 1.684, 0.034), (32, 1.674, 0.04), (48, 1.656, 0.048))]
-        # the handlebar ends leave the face: out past the cheeks, drooping, with a little upturn
-        end = pts[-1]
-        pts += [end + Vector((0.036 * x, 0.012, -0.024)), end + Vector((0.06 * x, 0.022, -0.038)),
-                end + Vector((0.075 * x, 0.03, -0.033))]
-        skin(sweep(f"J_moustache_{side}", coll, hair_m, pts, [0.037, 0.044, 0.042, 0.034, 0.024, 0.014, 0.006],
-                   n=28, ring=18, squash=0.74), rig, head)
-    # lower lip: the yellow band showing between moustache and goatee
-    lip = [head_point(math.radians(a), 1.628) + outward(math.radians(a)) * 0.004 for a in (-26, 0, 26)]
-    skin(sweep("J_lip", coll, skin_m, lip, [0.013], n=10, ring=12, squash=0.8), rig, head)
+               for a, z, off in ((0, 1.686, 0.05), (20, 1.683, 0.048), (38, 1.675, 0.044), (52, 1.666, 0.04))]
+        skin(sweep(f"J_moustache_{side}", coll, hair_m, pts, [0.028, 0.027, 0.025, 0.021],
+                   n=20, ring=18, squash=0.58), rig, head)
+    # lower lip: the yellow band just under the moustache, above the beard
+    lip = [head_point(math.radians(a), 1.645) + outward(math.radians(a)) * 0.012 for a in (-26, 0, 26)]
+    skin(sweep("J_lip", coll, skin_m, lip, [0.012], n=10, ring=12, squash=0.8), rig, head)
 
-    # goatee: a pointed tuft hanging from the chin in front of the neck, flattened front to back
+    # goatee: a short, full point of beard on the chin in front of the neck, flattened front to back
     chin = head_point(0, 1.608)
-    goatee = [(1.609, 0.052, 0.034, 0.022), (1.6, 0.06, 0.038, 0.016), (1.57, 0.058, 0.036, 0.01),
-              (1.535, 0.046, 0.03, 0.006), (1.5, 0.028, 0.022, 0.004), (1.474, 0.01, 0.01, 0.004),
-              (1.466, 0.002, 0.002, 0.004)]
+    goatee = [(1.612, 0.066, 0.036, 0.022), (1.6, 0.074, 0.04, 0.016), (1.58, 0.07, 0.038, 0.01),
+              (1.562, 0.054, 0.032, 0.006), (1.546, 0.032, 0.024, 0.004), (1.534, 0.012, 0.012, 0.004),
+              (1.53, 0.002, 0.002, 0.004)]
     skin(loft("J_goatee", coll, hair_m, [zsec(z, rx, ry, cy=chin.y + dy + ry * 0.2) for z, rx, ry, dy in goatee],
               ring=24), rig, head)
-    # beard band: along the jaw from the goatee up to the sideburns in front of the ears
+    # beard band: along the jaw from the goatee up to the sideburns in front of the ears, covering
+    # the cheeks up to the moustache (the source shows no skin between them)
     span = math.radians(98)
 
     def band_surf(u, v):  # the chin itself is under the goatee, so the band only runs from its sides
         th = math.copysign(span * (0.3 + 0.7 * abs(2 * u - 1)), 2 * u - 1)
         a = abs(th) / span
         bottom = 1.584 + 0.012 * a
-        top = 1.605 + 0.13 * smooth(0.3, 1.0, a) ** 1.2
+        top = 1.63 + 0.04 * smooth(0.3, 0.45, a) + 0.065 * smooth(0.45, 1.0, a)
         return head_point(th, bottom + (top - bottom) * v)
 
     def band_thick(u, v):  # full under the jaw, thin where it climbs to the sideburns
@@ -450,18 +452,19 @@ def build_head(coll, rig):
         skin(shell(f"J_beard_{side}", coll, hair_m, lambda u, v, h=half: band_surf(0.5 * h + 0.5 * u, v),
                    22, 8, band_thick), rig, head)
 
-    # hair: a cap with a centre parting and two fringe locks falling over the forehead corners,
-    # covering the temples down to the ears, then a long mass hanging behind the ears to just
-    # below the shoulders
+    # hair: a cap with a pointed lock dipping onto the forehead and two fringe locks over its
+    # corners, covering the temples down to the ears, then one solid mass hanging behind the ears
+    # to the shoulders (the upscaled source shows a smooth shape with a soft, even bottom edge)
     def hair_low(th):
-        a = abs(math.degrees(th))
-        parting = 0.018 * math.exp(-(a / 5) ** 2)
+        deg = math.degrees(th)
+        a = abs(deg)
+        peak = -0.05 * math.exp(-((deg + 9) / 7) ** 2)  # the pointed lock, just off centre
         arch = -0.085 * (min(a, 62) / 62) ** 1.6  # a high forehead, the hairline arching down to the sides
         locks = -0.045 * math.exp(-((a - 60) / 9) ** 2)  # locks falling at the forehead corners
         ragged = 0.007 * math.sin(15 * th) * (1 - smooth(50, 80, a))
-        hairline = 1.945 + parting + arch + locks + ragged
+        hairline = 1.955 + peak + arch + locks + ragged
         temple = hairline + (EAR_Z + 0.045 - hairline) * smooth(64, 86, a)  # over the ear tops
-        curtain = 1.345 + 0.02 * math.sin(7 * th) + 0.05 * smooth(150, 108, a)  # wavy, higher at the sides
+        curtain = 1.465 + 0.006 * math.sin(7 * th) + 0.03 * smooth(150, 108, a)  # a touch higher at the sides
         return temple + (curtain - temple) * smooth(108, 126, a)  # the long hair hangs behind the ears and neck
 
     def hair_surf(u, v):
@@ -472,44 +475,20 @@ def build_head(coll, rig):
             return head_point(th, z)
         p = head_point(th, HANG_Z)
         drop = HANG_Z - z
-        wavy = 0.05 * math.sin(drop * 24 + th * 3) * min(1.0, drop * 6)
+        wavy = 0.02 * math.sin(drop * 24 + th * 3) * min(1.0, drop * 6)
         # spreads out sideways over the shoulders, less front to back
         return Vector((p.x * (1 + 1.25 * drop + wavy), p.y * (1 + 0.45 * drop + wavy) + 0.02 * drop, z))
 
     def hair_thick(u, v):
         th = math.pi * (2 * u - 1)
         back = 0.5 - 0.5 * math.cos(th)  # 0 front, 1 back
-        wave = 0.5 + 0.5 * math.sin(11 * th)  # lumpy locks show on the silhouette
+        wave = 0.5 + 0.5 * math.sin(11 * th)  # soft lumps on the silhouette
         side = math.sin(th) ** 2 * (1 - smooth(0.0, 0.75, v))  # puffy round the face and down the sides
         volume = 0.012 * math.sin(math.pi * min(1.0, v * 1.6)) * (1 - v)  # rounds the top of the head
-        return HAIR_TOP + volume + (0.04 * back + 0.016 * side + 0.012 * wave) * (1 - v) ** 1.1  # pole closes
+        return HAIR_TOP + volume + (0.04 * back + 0.016 * side + 0.006 * wave) * (1 - v) ** 1.1  # pole closes
 
     skin(shell("J_hair", coll, hair_m, hair_surf, 84, 36, hair_thick, wrap_u=True),
          rig, blend("chest", "head", 1.45, 1.56))
-
-    # locks: flattened, wavy tubes lying on the hanging hair, ending at uneven lengths; their
-    # outlines draw the strands and break up the bottom edge, like the source's scribbly hair
-    rnd = random.Random(1998)
-    lock_parts = []
-    angles = [a for a in range(104, 181, 11)]
-    for n, deg in enumerate([d * s for d in angles for s in (1, -1) if d * s != -180]):
-        th = math.radians(deg + rnd.uniform(-3, 3))
-        u = (th / math.pi + 1) / 2
-        out = Vector((math.sin(th), -math.cos(th), 0))
-        side = out.cross(Vector((0, 0, 1)))
-        pts = []
-        for k, v in enumerate((0.5, 0.36, 0.24, 0.13, 0.05, 0.0)):
-            p = hair_surf(u, v)
-            p = p + out * (hair_thick(u, v) + 0.004) + side * 0.012 * math.sin(k * 1.7 + n)
-            pts.append(p)
-        end = pts[-1] + Vector((0, 0, -rnd.uniform(0.0, 0.06))) + side * rnd.uniform(-0.02, 0.02)
-        pts.append(end)
-        r = rnd.uniform(0.026, 0.034)
-        lock_parts.append(sweep(f"_lock{n}", coll, hair_m, pts, [r, r * 1.05, r, r * 0.9, r * 0.7, r * 0.5, r * 0.25],
-                                n=18, ring=12, squash=0.4, up=tuple(out)))
-    locks = merge("J_locks", coll, hair_m, lock_parts)
-    locks["outline_even"] = False
-    skin(locks, rig, blend("chest", "head", 1.45, 1.56))
 
     # level, so it reads as the same flat ellipse from every side, about as wide as his head
     halo = torus("J_halo", coll, mat("halo", 0.9), (0, 0, 2.19), 0.165, 0.008)
@@ -543,16 +522,16 @@ POSES = {
         "L": ((0, -186, 0), (-4, 0, 12), (-22, 0, 90)),
         "R": ((-4, 15, 0), (-34, 22, 0), (-5, 0, -30)),
     },
-    "face": {
-        "L": ((-48, -22, 0), (-145, 0, 0), (0, 0, 60)),
+    "face": {  # left hand up behind his head, scratching it; only the sleeve shows
+        "L": ((-153, -2, 55), (-110, 0, 0), (0, 0, 60)),
         "R": ((-8, 2, 0), (-42, 10, 0), (0, 0, -20)),
     },
     "beckon": {  # left hand resting across his waist, right palm down, fingers drooping
-        "L": ((-8, -5, 0), (-80, 0, -48), (0, 0, 0)),
+        "L": ((-8, -5, 0), (-80, 0, -36), (0, 0, -70)),
         "R": ((-20, 14, 0), (-64, 0, 0), (0, 0, 90)),
     },
     "beckon_b": {
-        "L": ((-8, -5, 0), (-80, 0, -48), (0, 0, 0)),
+        "L": ((-8, -5, 0), (-80, 0, -36), (0, 0, -70)),
         "R": ((-16, 18, 0), (-68, 0, 0), (0, 0, 90)),
     },
 }
@@ -621,12 +600,14 @@ def animate(rig):
     animate_hands(rig)
 
 
-# Finger curl per source frame, read off the drawings: the beckoning hand (his right) folds
-# its fingers down twice ("come here"); the other hand rests half-curled on his belly.
+# Finger curl per source frame, read off the (upscaled) drawings: the beckoning hand (his
+# right) folds its fingers down twice ("come here"); the hand on his belly beckons along with
+# it, from pointing to an open claw and back, closing into a fist in between.
 CURL = {
     "R": {0: 0.2, 11: 0.3, 12: 0.0, 13: 0.0, 14: 1.0, 15: 1.0, 16: 0.6, 17: 0.0, 18: 0.0, 19: 0.45,
           20: 0.55, 21: 1.0, 22: 1.0, 23: 0.0, 24: 0.2},
-    "L": {0: 0.0, 11: 0.15, 12: 0.3, 24: 0.3, 25: 0.0},
+    "L": {0: 0.0, 11: 0.15, 12: 0.15, 14: 0.35, 16: 0.3, 17: 0.4, 18: 0.75, 19: 0.2, 21: 0.35, 23: 0.15,
+          24: 0.3, 25: 0.0},
 }
 
 
@@ -698,7 +679,7 @@ def apply_offsets(rig, p, right=None):
 # Where his face points, read off the drawings: degrees towards screen-left, 0 facing us. In
 # every front-facing frame he looks off to screen-left, a three-quarter view, whichever way
 # his body faces. Frames not listed keep the head in line with the body (the turns).
-HEAD_YAW = {5: 70, 6: 47, 7: 47, 8: 40, 9: 35, 10: 45, 11: 45, 12: 42, 13: 42, 14: 42, 15: 42, 16: 40,
+HEAD_YAW = {3: 85, 4: 85, 5: 75, 6: 47, 7: 47, 8: 40, 9: 35, 10: 45, 11: 45, 12: 42, 13: 42, 14: 42, 15: 42, 16: 40,
             17: 40, 18: 40, 19: 42, 20: 42, 21: 42, 22: 42, 23: 42, 24: 45, 25: 40, 26: 40, 27: 35,
             28: 15, 29: 10, 30: -25, 31: -40}
 

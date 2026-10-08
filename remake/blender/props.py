@@ -180,17 +180,21 @@ def build_bell(root, coll, phase):
     animate(pivot, "rotation_euler", 1, lambda t: math.radians(-26) * tilt(t))
 
 
+# The open mouth, as the source draws it: side-on, facing screen-left, one thick lip line
+# bent into a C (upper lip, the corner at the back, lower lip) round a dark mouth. Centre
+# line in (x, z) from the upper lip's tip round to the lower lip's, half open and wide open.
+MOUTH_HALF = [(-0.4, 0.52), (-0.15, 0.555), (0.12, 0.56), (0.3, 0.53), (0.38, 0.44), (0.36, 0.34),
+              (0.24, 0.27), (0.0, 0.25), (-0.24, 0.27)]
+MOUTH_WIDE = [(-0.3, 0.66), (-0.09, 0.71), (0.1, 0.72), (0.25, 0.66), (0.3, 0.5), (0.28, 0.3),
+              (0.18, 0.14), (0.0, 0.1), (-0.16, 0.15)]
+MOUTH_R = [0.055, 0.07, 0.072, 0.065, 0.05, 0.05, 0.065, 0.072, 0.058]
+
+
 def build_lips(root, coll, phase):
-    """A shouting mouth like the source's: fat lips curving round in plan, hinged at the
-    back corners so they open like a jaw, with a dark mouth, a row of teeth riding on the
-    upper lip and a tongue on the lower. Closed, the lips face the camera; as they open they
-    turn side-on so the shout faces screen-left, as in the source."""
+    """A shouting mouth, two drawings like the source's: closed, fat lips facing the camera;
+    open, the mouth seen side-on facing screen-left, a C of lip round a dark mouth, with a row
+    of teeth under the upper lip and a tongue on the lower one when it's wide open."""
     c = cycles_per_loop(LAYOUT["cycles_s"]["lips"])
-    hinge = (0.0, 0.07, 0.39)
-    DEEP = 2.3  # how much deeper the U gets when the mouth is open: drawn, the shout is narrower than the closed lips
-    swivel = empty(root.name + "_swivel", coll, parent=root)  # turns the shout towards screen-left
-    upper_pivot = empty(root.name + "_upper", coll, loc=hinge, parent=swivel)
-    lower_pivot = empty(root.name + "_lower", coll, loc=hinge, parent=swivel)
     half = 0.43
 
     def arc(z, depth, n=7):  # a U round the front of the mouth, corners at the back
@@ -200,69 +204,64 @@ def build_lips(root, coll, phase):
             pts.append((-half * math.cos(a), 0.07 - 0.28 * depth * math.sin(a) ** 0.8, z + 0.012 * math.sin(a)))
         return pts
 
-    # lens-shaped: thin at the corners, full in the middle; the upper lip dips in a cupid's bow.
-    # An "open" shape key deepens the U, so the lips seen side-on are long bars as drawn.
-    lips = []
-    for name, z, depth, radii in (("upper", 0.455, 0.9, [0.01, 0.045, 0.085, 0.068, 0.085, 0.045, 0.01]),
-                                  ("lower", 0.315, 0.8, [0.01, 0.05, 0.1, 0.112, 0.1, 0.05, 0.01])):
-        lip = sweep(name, coll, mat("lips"), arc(z, depth), radii, n=36, ring=18, squash=1.0)
-        fat = [r * 0.85 for r in radii]  # stretched open, the lips thin into long bars
-        add_shape(lip, sweep(name, coll, mat("lips"), arc(z, depth * DEEP), fat, n=36, ring=18, squash=1.0), "open")
-        lips.append(lip)
-    upper, lower = lips
-    # the corners: thick round joints where the lips meet, so an open mouth bends like a C
-    corners = [sphere(f"corner{k}", coll, mat("lips"), (x, 0.07, 0.39), r=0.062) for k, x in enumerate((-half, half))]
-    teeth = []
-    for k in range(6):  # separate teeth hanging from the upper lip
-        u = (k + 0.5) / 6
-        x = -0.26 + 0.52 * u
-        y = -0.165 + 0.08 * (2 * u - 1) ** 2
-        teeth.append(box(f"tooth{k}", coll, mat("white", 0.85), (x, y, 0.383), (0.072, 0.04, 0.075),
-                         rot=(0, 0, math.atan2(0.16 * (2 * u - 1), 1.0)), bevel=0.014))
-    tongue = sphere("tongue", coll, mat("tongue"), (0.03, -0.1, 0.352), scale=(0.19, 0.11, 0.045))
-    # the dark back of the mouth, behind the teeth and tongue
-    # thin across the mouth, so the teeth and tongue stand in front of it when seen side-on
-    inner = sphere("inner", coll, mat("mouth", 0.8), (0.0, 0.02, 0.39), scale=(0.12, 0.07, 0.03), outline=False)
-    for p in [upper] + teeth:
-        keep_world(p, upper_pivot)
-    for p in (lower, tongue):
-        keep_world(p, lower_pivot)
-    for p in corners + [inner]:
-        keep_world(p, swivel)
-    for p in [upper, lower, tongue, inner] + teeth + corners:
+    # closed: lens-shaped lips, thin at the corners, full in the middle; a cupid's bow on top
+    front = [sweep(name, coll, mat("lips"), arc(z, depth), radii, n=36, ring=18)
+             for name, z, depth, radii in (("upper", 0.455, 0.9, [0.01, 0.045, 0.085, 0.068, 0.085, 0.045, 0.01]),
+                                           ("lower", 0.315, 0.8, [0.01, 0.05, 0.1, 0.112, 0.1, 0.05, 0.01]))]
+
+    # open: the C of lip and the dark mouth inside it, each with a "wide" shape key
+    def c_line(pts):
+        return [(x, 0.0, z) for x, z in pts]
+
+    lip = sweep("side_lip", coll, mat("lips"), c_line(MOUTH_HALF), MOUTH_R, n=40, ring=18, squash=0.7, up=(0, -1, 0))
+    add_shape(lip, sweep("side_lip", coll, mat("lips"), c_line(MOUTH_WIDE), MOUTH_R, n=40, ring=18, squash=0.7,
+                         up=(0, -1, 0)), "wide")
+    inside = slab("mouth", coll, mat("mouth", 0.8), smooth_outline(MOUTH_HALF, 48), 0.02, offset=0.045, outline=False)
+    add_shape(inside, slab("mouth", coll, mat("mouth", 0.8), smooth_outline(MOUTH_WIDE, 48), 0.02, offset=0.045,
+                           outline=False), "wide")
+    teeth = []  # a row of square teeth hanging from the upper lip
+    for k, (x, dz) in enumerate(((-0.17, 0.0), (-0.06, 0.006), (0.05, 0.006), (0.16, -0.01))):
+        teeth.append(box(f"tooth{k}", coll, mat("white", 0.85), (x, 0.012, 0.715 + dz), (0.1, 0.03, 0.11), bevel=0.018))
+    tongue = sphere("tongue", coll, mat("tongue"), (0.02, 0.02, 0.12), scale=(0.21, 0.03, 0.1))
+    side = [lip, inside, tongue] + teeth
+    for p in front + side:
+        keep_world(p, root)
         p.name = f"{root.name}_{p.name}"
 
     def shout(t):  # 0 closed .. 1 open, a quick shout each cycle
         x = saw(t, c, phase)
         return math.sin(math.pi * min(1.0, x / 0.65)) ** 0.6 if x < 0.65 else 0.0
     opening = track(root, "open", shout)
-    # As drawn, an open mouth is seen side-on facing left, like Pac-Man: the lips deepen into
-    # long bars and pull apart, and the corners stretch into the back of the mouth.
-    def deep(t):
-        return 1 + (DEEP - 1) * min(1.0, 2.5 * opening(t))
-    for lip in lips:
-        animate_value(lip.data.shape_keys.key_blocks["open"], "value", lambda t: min(1.0, 2.5 * opening(t)))
-    for part in teeth + [tongue]:  # they ride forward with the deepening lips
-        y0 = part.location.y
-        animate(part, "location", 1, lambda t, y0=y0: y0 * deep(t))
-    for tooth in teeth:  # a row of big teeth hanging under the upper lip
-        z0 = tooth.location.z
-        animate(tooth, "location", 2, lambda t, z0=z0: z0 - 0.035 * opening(t))
-        animate(tooth, "scale", 2, lambda t: 1.0 + 0.9 * opening(t))
-    animate(upper_pivot, "location", 2, lambda t: hinge[2] + 0.17 * opening(t))
-    animate(upper_pivot, "rotation_euler", 0, lambda t: math.radians(-5) * opening(t))
-    animate(lower_pivot, "location", 2, lambda t: hinge[2] - 0.15 * opening(t))
-    animate(lower_pivot, "rotation_euler", 0, lambda t: math.radians(4) * opening(t))
-    animate(tongue, "scale", 2, lambda t: 1.0 + 1.6 * opening(t))  # the tongue fills the bottom of the shout
-    animate(inner, "location", 1, lambda t: 0.07 - 0.12 * deep(t))
-    animate(inner, "scale", 1, lambda t: 1.0 + (deep(t) - 1) * 1.8)  # multipliers: the mesh is a flat lens
-    animate(inner, "scale", 2, lambda t: 1.0 + 7.0 * opening(t))
-    animate(swivel, "rotation_euler", 2, lambda t: math.radians(-84) * min(1.0, 2.5 * opening(t)) ** 0.7)
-    for corner in corners:  # pointed corners when closed, the back of the mouth when shouting
-        corner["outline_ref_scale"] = 1.0
-        for i in range(2):
-            animate(corner, "scale", i, lambda t: 0.15 + 0.85 * opening(t))
-        animate(corner, "scale", 2, lambda t: (0.15 + 0.85 * opening(t)) * (1 + 3.0 * opening(t)))
+
+    # the track: 0 closed, 0.35 half open, 0.55..1 shouting (teeth showing), by how wide
+    def wide(t):
+        return min(1.0, max(0.0, (opening(t) - 0.35) / 0.65))
+
+    def is_open(t):
+        return opening(t) > 0.15
+
+    def shouting(t):
+        return 1.0 if opening(t) >= 0.5 else 0.0
+
+    for p in front:
+        animate_value(p, "hide_render", lambda t: is_open(t))
+        animate_value(p, "hide_viewport", lambda t: is_open(t))
+    for p in side:
+        animate_value(p, "hide_render", lambda t: not is_open(t))
+        animate_value(p, "hide_viewport", lambda t: not is_open(t))
+    for p in (lip, inside):
+        animate_value(p.data.shape_keys.key_blocks["wide"], "value", wide)
+    def upper(t):  # height of the upper lip's centre line, and of the lower one's
+        return 0.557 + (0.715 - 0.557) * wide(t)
+
+    def lower(t):
+        return 0.26 + (0.12 - 0.26) * wide(t)
+
+    for tooth in teeth:  # hanging under the upper lip when he shouts, tucked inside it otherwise
+        dz = tooth.location.z - 0.715
+        animate(tooth, "location", 2, lambda t, dz=dz: upper(t) + dz - 0.075 * shouting(t))
+    animate(tongue, "location", 2, lambda t: lower(t) + 0.07 * shouting(t))  # on the lower lip
+    animate(tongue, "scale", 2, lambda t: 0.4 + 0.6 * shouting(t))
 
 
 WORM_LENGTH = 1.1

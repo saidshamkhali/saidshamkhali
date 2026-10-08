@@ -49,7 +49,7 @@ with tempfile.TemporaryDirectory() as tmp:
         sheet.paste(a, (0, 0))
         sheet.paste(b, (W + gap, 0))
         d = ImageDraw.Draw(sheet)
-        for x, text in ((8, "1998"), (W + gap + 8, "3D remake")):
+        for x, text in ((8, "Original"), (W + gap + 8, "3D remake")):
             d.text((x, H - label - 8), text, fill=(255, 255, 255), font=font(label), stroke_width=2,
                    stroke_fill=(20, 20, 24))
         sheet.save(os.path.join(tmp, f"c_{k:04d}.png"))

@@ -149,7 +149,7 @@ PALETTE = {
     "skin": "#FFD90F",
     "robe": "#D3D1E3",
     "hair": "#3B2015",
-    "sandal": "#6B3A1E",
+    "sandal": "#2B1A17",  # near black, like the hair (the source draws dark sandals)
     "halo": "#C4CDD4",
     "white": "#FFFFFF",
     "black": "#1A1A1A",

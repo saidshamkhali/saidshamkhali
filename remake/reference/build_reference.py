@@ -147,7 +147,8 @@ def norm(values, lo=None, hi=None):
     return [round(min(1.0, max(0.0, (v - lo) / (hi - lo))), 3) if hi != lo else 0.0 for v in values]
 
 
-HALF_OPEN_DARK = 175  # outline pixels of the half-open mouth (the closed one has about 160)
+HALF_OPEN_DARK = 170  # outline and mouth pixels of the half-open mouth (the closed one has about 160)
+TEETH_PX = 12  # white pixels: only the shouting drawings show their teeth
 BELL_SWING_PX = 9.0
 
 
@@ -156,12 +157,14 @@ def track_prop(kind, regions):
     frame, 0..1 or -1..1, that props.py turns into a pose."""
     import numpy as np
     tracks = {}
-    tops, leans, tilts, wings, toasts, darks = [], [], [], [], [], []
+    tops, bottoms, leans, tilts, wings, toasts, darks, whites = [], [], [], [], [], [], [], []
     for a, m in regions:
         ys, xs = np.nonzero(m)
         tops.append(ys.min() if len(ys) else m.shape[0])
+        bottoms.append(ys.max() if len(ys) else 0)
         r, g, b = a[..., 0], a[..., 1], a[..., 2]
         darks.append(int((m & (r < 90) & (g < 70) & (b < 70)).sum()))
+        whites.append(int((m & (r > 200) & (g > 200) & (b > 200)).sum()))
         if kind == "alarm_clock":  # lean: top half's centre against the bottom half's
             h = m.shape[0] // 2
             t, bt = np.nonzero(m[:h]), np.nonzero(m[h:])
@@ -179,12 +182,16 @@ def track_prop(kind, regions):
             toast = m & (r > 170) & (g > 90) & (g < 175) & (b < 110)
             ty, tx = np.nonzero(toast)
             toasts.append(-ty.min() if len(ty) else -m.shape[0])
-    if kind in ("lips", "worm"):  # how far the top edge rises above its lowest drawing
+    if kind == "worm":  # how far the top edge rises above its lowest drawing
         hi = max(tops)
-        rise = norm([hi - t for t in tops], 0)
-        if kind == "lips":  # the half-open drawing (pursed lips round a dark mouth) barely rises
-            rise = [0.35 if v < 0.25 and d >= HALF_OPEN_DARK else v for v, d in zip(rise, darks)]
-        tracks["open" if kind == "lips" else "curl"] = rise
+        tracks["curl"] = norm([hi - t for t in tops], 0)
+    if kind == "lips":  # which drawing: teeth showing = a shout (0.55..1 by how tall it is),
+        # a dark mouth without teeth = half open (0.35), otherwise closed (0)
+        span = [b - t for t, b in zip(tops, bottoms)]
+        tall = [s for s, w in zip(span, whites) if w >= TEETH_PX] or [0, 1]
+        lo, hi = min(tall), max(tall)
+        tracks["open"] = [round(0.55 + 0.45 * (s - lo) / max(1, hi - lo), 3) if w >= TEETH_PX
+                          else 0.35 if d >= HALF_OPEN_DARK else 0.0 for s, w, d in zip(span, whites, darks)]
     if kind == "alarm_clock":
         s = max(abs(v) for v in leans) or 1.0
         tracks["lean"] = [round(v / s, 3) for v in leans]

@@ -131,9 +131,10 @@ def place_prop(cam, root, box, turn=0.0):
     """Scale and move a prop so its silhouette covers the source box.
     turn: extra yaw in degrees on top of facing the camera. The prop is measured as
     the camera sees it once turned: width along the camera's horizontal, height in Z.
-    Parts flagged "no_fit" are left out of the measurement. It's measured at the frame in
-    the root's "fit_frame" (default 1), so a prop whose shape changes is sized in a set pose,
-    and without its outline shells, so re-placing an outlined prop gives the same result.
+    It's measured at the frame in the root's "fit_frame" (default 1), so a prop whose shape
+    changes is sized in a set pose, and without its outline shells, so re-placing an outlined
+    prop gives the same result. Parts flagged "no_fit", or hidden on that frame (a mouth swaps
+    drawings), are left out of the measurement.
     A root with "fit_axis" = "x" is sized by its width alone."""
     scene = bpy.context.scene
     shells = [m for o in descendants(root) if o.type == "MESH" for m in o.modifiers
@@ -157,7 +158,7 @@ def place_prop(cam, root, box, turn=0.0):
         root.rotation_euler.z = yaw + math.radians(turn)
         bpy.context.view_layer.update()
         pts = [o.matrix_world @ Vector(c) for o in descendants(root)
-               if o.type == "MESH" and not o.get("no_fit") for c in o.bound_box]
+               if o.type == "MESH" and not o.get("no_fit") and not o.hide_render for c in o.bound_box]
         rs = [p.dot(right) for p in pts]
         zs = [p.z for p in pts]
         mid_r = (min(rs) + max(rs)) / 2
