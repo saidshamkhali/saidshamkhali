@@ -1,12 +1,12 @@
 # Homer's Web Page in 3D
 
-A 3D remake of `jesus-christ-homer.gif` (41 frames, 498x318, 10 fps), toon-shaded with outlines (concept A in `concepts/`), at the original's own 10 fps.
+A 3D remake of `jesus-christ-homer.gif` (41 frames, 498x318, 10 fps), toon-shaded with outlines (concept A in `concepts/`), at the original's own 10 fps. The same scene also builds in a second, modern look (concept C): see [The soft look](#the-soft-look).
 
 ## Layout
 
 | Path | What |
 |---|---|
-| `concepts/` | Style concepts. A (toon + outlines) is the chosen one |
+| `concepts/` | Style concepts. A (toon + outlines) is the remake; C (soft feature) is the soft look |
 | `reference/layout.json` | Prop positions (each prop's outline in frame 0), figure yaw/pose timeline and prop cycle lengths, measured from the GIF. The Blender script reads this |
 | `reference/prop_tracks.json` | Each prop's state in every frame of the GIF (mouth open, bell tilt, wing, toast, clock lean, worm loop), written by `build_reference.py` |
 | `reference/build_reference.py` | Regenerates the reference sheets, `reference/frames/` and the figure's silhouettes (`frames/masks.npz`) |
@@ -22,6 +22,8 @@ A 3D remake of `jesus-christ-homer.gif` (41 frames, 498x318, 10 fps), toon-shade
 | `blender/kit.py` | Shared settings, toon materials, mesh builders, keyframe helpers |
 | `blender/fit_pose.py` | Fits the figure's pose to the original, frame by frame, region by region |
 | `blender/homers_web_page.blend` | The scene. Tracked, and the source of truth once edited in the UI |
+| `blender/homers_web_page_soft.blend` | The same scene in the soft look (`REMAKE_STYLE=soft`). Not tracked: the scripts rebuild it |
+| `homers_web_page_soft.webp` | The soft look's loop, 30 fps, 1200 px |
 | `blender/render.py` | Renders the tracked .blend as it is |
 | `blender/tweaks.py` | Carries UI edits across a rebuild, and writes `scene_manifest.txt` |
 | `blender/scene_manifest.txt` | Text summary of the .blend, so its changes show up in diffs |
@@ -67,6 +69,29 @@ With the Blender app instead: `blender --background --python remake/blender/buil
 The profile README shows `jesus-christ-homer-3d.webp` in the repo root, a copy of `render/homers_web_page.webp` (`python remake/make_gif.py --width 1200 --formats webp --out remake/render/homers_web_page`, rendered at `--percent 150`). Copy it over after re-rendering.
 
 The script writes `remake/blender/homers_web_page.blend`, so you can open the scene and keep working in the UI.
+
+## The soft look
+
+`REMAKE_STYLE=soft` builds the same scene as a modern feature-animation still life, concept C in `concepts/`: a vinyl-toy Jesus among floating chrome toasters and brass bells under studio light. It keeps the layout, the model, the rig and every fitted pose. It changes the look and the motion:
+
+- **Materials:** the toon ramp becomes a physically based material per palette key (`kit.SOFT_LOOK`):
+  - skin with a little subsurface and a light coat, like painted vinyl;
+  - a linen robe with sheen and a fine weave;
+  - brushed chrome toasters, brass bells, glossy lips and eyes;
+  - a glowing gold halo.
+- **No outlines:** the ink shells aren't added.
+- **Light:** three disk area lights (a big warm key from the upper left, a cool fill, a rim) over a sky-blue floor, so every floating prop drops a soft shadow. Rendered in Cycles, denoised, with a touch of motion blur. The Standard view keeps the Simpsons yellow and sky blue; AgX greys them.
+- **Props:** modelled instead of traced drawings, which only hold up from the front.
+- **Motion:** 30 fps over the same 4.1 s (123 frames). The figure eases through the fitted poses (`jesus.ease`): the held beats are dropped, rotations blend the short way round and the loop closes on its first pose. The props follow their measured tracks on every frame.
+- **Title:** extruded and bevelled, so it catches the light.
+
+```bash
+REMAKE_STYLE=soft blender -b --python remake/blender/build_scene.py
+blender -b remake/blender/homers_web_page_soft.blend --python remake/blender/render.py -- --render
+python remake/make_gif.py --frames remake/render/soft_frames --fps 30 --width 1200 --formats webp,mp4 --out remake/render/homers_web_page_soft
+```
+
+`render.py` renders a Cycles scene on the GPU when there is one (OptiX, else CUDA); on an RTX 4070 Super a frame takes about 4 s. The toon build is unchanged by the switch: it still renders pixel for pixel the same.
 
 ## The figure
 

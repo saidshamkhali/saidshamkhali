@@ -15,7 +15,7 @@ import os
 import bpy
 from mathutils import Euler, Vector
 
-from kit import (LAYOUT, REMAKE, add_shape, blobs, constant, cap, hitch, hold, loft, mat, merge, remake_frame, shell, slab, smooth_outline,
+from kit import (LAYOUT, LOOP, REMAKE, SOFT, add_shape, blobs, constant, cap, hitch, hold, loft, mat, merge, remake_frame, shell, slab, smooth_outline,
                  step_frames, sweep, torus, zsec)
 
 RIG = "Jesus_Rig"
@@ -667,7 +667,10 @@ def animate(rig):
         aim_head(rig)
         apply_head_fit(rig)
         apply_reuse(rig)
-        hitch(rig)
+        if SOFT:
+            ease(rig)  # the modern look moves smoothly through the drawn poses
+        else:
+            hitch(rig)
     animate_hands(rig)
 
 
@@ -703,7 +706,45 @@ def animate_hands(rig):
         bag = ad.action.layers[0].strips[0].channelbag(ad.action_slot) if ad and ad.action else None
         for fc in (bag.fcurves if bag else []):
             for kp in fc.keyframe_points:
-                kp.interpolation = "CONSTANT"
+                kp.interpolation = "BEZIER" if SOFT else "CONSTANT"
+
+
+def ease(obj):
+    """The soft look: ease through the drawn poses instead of holding each one. The held
+    beats (whole-frame repeats in the original) are dropped, each bone's rotation keys stay on
+    one side of the quaternion sphere so they blend the short way round, the loop's last key
+    repeats its first, and every key gets smooth (auto-clamped Bezier) handles."""
+    from kit import fcurves
+    held = {round(remake_frame(k), 3) for k in LAYOUT["source"].get("held_frames", [])}
+    curves = fcurves(obj)
+    quats = {}
+    for fc in curves:
+        if fc.data_path.endswith("rotation_quaternion"):
+            quats.setdefault(fc.data_path, {})[fc.array_index] = fc
+    for fcs in quats.values():  # keyed together, so the four curves share their key times
+        if len(fcs) < 4:
+            continue
+        keys = [fcs[i].keyframe_points for i in range(4)]
+        prev = None
+        for j in range(len(keys[0])):
+            q = [keys[i][j].co.y for i in range(4)]
+            if prev is not None and sum(a * b for a, b in zip(q, prev)) < 0:
+                for i in range(4):
+                    keys[i][j].co.y = -q[i]
+                q = [-c for c in q]
+            prev = q
+    for fc in curves:
+        drop = [i for i, kp in enumerate(fc.keyframe_points) if round(kp.co.x, 3) in held]
+        for i in reversed(drop):  # from the end, so the indices left still hold
+            fc.keyframe_points.remove(fc.keyframe_points[i])
+        pts = fc.keyframe_points
+        first = min(pts, key=lambda kp: kp.co.x)
+        for kp in pts:
+            if abs(kp.co.x - (LOOP + 1)) < 1e-3:
+                kp.co.y = first.co.y  # seamless: the loop ends where it starts
+            kp.interpolation = "BEZIER"
+            kp.handle_left_type = kp.handle_right_type = "AUTO_CLAMPED"
+        fc.update()
 
 
 # --------------------------------------------------------------------------- fitted offsets

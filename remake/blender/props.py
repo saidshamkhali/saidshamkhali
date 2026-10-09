@@ -9,12 +9,13 @@ import json
 import math
 import os
 
-from kit import (LAYOUT, LOOP, REMAKE, SRC_FRAMES, add_shape, bake, box, constant, cycles_per_loop, cylinder, empty, hitch,
+from kit import (LAYOUT, LOOP, REMAKE, SOFT, SRC_FRAMES, add_shape, bake, box, constant, cycles_per_loop, cylinder, empty, hitch,
                  inflate, keep_world, lathe, mat, saw, slab, smooth_outline, sphere, step_frames, sweep, toon, unrle, wave)
 
 # Cartoon timing, like the figure (jesus.STEPPED): the props are keyed once per source frame
-# and hold each pose, as the 10 fps original does. False = keyed on every frame, smooth.
-STEPPED = True
+# and hold each pose, as the 10 fps original does. False = keyed on every frame, smooth, as
+# in the soft look.
+STEPPED = not SOFT
 
 
 def animate(obj, path, index, fn):
@@ -245,7 +246,7 @@ def traced_or(build):
     """Build the prop from its traced drawings when reference/prop_drawings.json has them,
     otherwise from scratch with `build`."""
     def run(root, coll, phase):
-        spec = load_drawings().get("props", {}).get(root.name)
+        spec = None if SOFT else load_drawings().get("props", {}).get(root.name)  # the soft look models them
         if spec:
             build_traced(root, coll, load_drawings(), spec)
         else:

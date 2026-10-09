@@ -26,7 +26,7 @@ from mathutils import Vector
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import jesus  # noqa: E402
-from kit import (FPS, HERE, LAYOUT, LENS, LOOP, PALETTE, REMAKE, RES_X, RES_Y,  # noqa: E402
+from kit import (FPS, HERE, LAYOUT, LENS, LOOP, PALETTE, REMAKE, RES_X, RES_Y, SOFT,  # noqa: E402
                  SENSOR, SRC_H, SRC_W, add_outlines, empty, finish, flat, new_collection, toon)
 from props import BUILDERS, TURN  # noqa: E402
 
@@ -42,7 +42,7 @@ def parse_args():
         argv = []
     else:
         argv = sys.argv[1:]
-    opts = {"save": os.path.join(HERE, "homers_web_page.blend"), "still": [],
+    opts = {"save": os.path.join(HERE, "homers_web_page_soft.blend" if SOFT else "homers_web_page.blend"), "still": [],
             "render": False, "percent": 100, "font": None}
     i = 0
     while i < len(argv):
@@ -238,11 +238,34 @@ def build_title(cam, coll, font_path):
     font = find_font(font_path)
     if font:
         curve.font = font
+    if SOFT:  # a solid, bevelled title that catches the studio light
+        curve.extrude = 0.06
+        curve.bevel_depth = 0.012
+        curve.bevel_resolution = 3
     obj = bpy.data.objects.new("Title", curve)
     coll.objects.link(obj)
     obj.data.materials.append(flat("TitleInk", "#111111"))
     obj.visible_shadow = False
     fit_title(obj, cam)
+
+
+def soft_lights(cam):
+    """The soft look's studio: a big warm key from the upper left, a cool fill from the right,
+    a rim from behind, under a pale blue sky."""
+    target = on_plane(cam, *LAYOUT["figure"]["feet"], 0.0) + Vector((0.0, 0.0, 0.9))  # his middle
+    for name, energy, size, colour, where in (
+            ("Key", 4800.0, 9.0, (1.0, 0.95, 0.88), Vector((-9.0, -11.0, 13.0))),
+            ("Fill", 1500.0, 12.0, (0.85, 0.92, 1.0), Vector((12.0, -9.0, 6.0))),
+            ("Rim", 2500.0, 6.0, (1.0, 0.98, 0.95), Vector((3.0, 14.0, 10.0)))):
+        data = bpy.data.lights.new(name, "AREA")
+        data.energy = energy
+        data.shape = "DISK"
+        data.size = size
+        data.color = colour
+        light = bpy.data.objects.new(name, data)
+        bpy.context.scene.collection.objects.link(light)
+        light.location = target + where
+        light.rotation_euler = (target - light.location).to_track_quat("-Z", "Y").to_euler()
 
 
 def world_and_lights():
@@ -256,9 +279,11 @@ def world_and_lights():
         bg = nt.nodes.new("ShaderNodeBackground")
         out = nt.nodes.new("ShaderNodeOutputWorld")
         nt.links.new(bg.outputs["Background"], out.inputs["Surface"])
-    bg.inputs["Color"].default_value = (0.02, 0.02, 0.02, 1)
-    bg.inputs["Strength"].default_value = 1.0
+    bg.inputs["Color"].default_value = (0.55, 0.72, 0.9, 1) if SOFT else (0.02, 0.02, 0.02, 1)
+    bg.inputs["Strength"].default_value = 0.15 if SOFT else 1.0
     bpy.context.scene.world = world
+    if SOFT:
+        return  # lit by soft_lights once the camera is placed
 
     sun_data = bpy.data.lights.new("Sun", "SUN")
     sun_data.energy = 3.0
@@ -275,6 +300,41 @@ def floor(coll):
     obj.name = "Floor"
     finish(obj, toon("floor", PALETTE["bg"], shadow=0.84, threshold=0.06, softness=0.04),
            coll, outline=False, smooth=False)
+
+
+def use_gpu():
+    """Render Cycles on the GPU when there is one (OptiX, else CUDA); the CPU otherwise."""
+    prefs = bpy.context.preferences.addons["cycles"].preferences
+    for kind in ("OPTIX", "CUDA", "HIP", "METAL", "ONEAPI"):
+        try:
+            prefs.compute_device_type = kind
+        except TypeError:
+            continue
+        prefs.get_devices()
+        gpus = [d for d in prefs.devices if d.type == kind]
+        if gpus:
+            for d in prefs.devices:
+                d.use = d.type == kind
+            bpy.context.scene.cycles.device = "GPU"
+            return kind
+    bpy.context.scene.cycles.device = "CPU"
+    return "CPU"
+
+
+def soft_render_settings():
+    """Cycles with soft studio light, denoised, and a touch of motion blur. The Standard view
+    keeps the Simpsons' saturated yellow and sky blue (AgX greys them)."""
+    scene = bpy.context.scene
+    scene.render.engine = "CYCLES"
+    use_gpu()
+    cy = scene.cycles
+    cy.samples = 128
+    cy.use_denoising = True
+    cy.max_bounces = 8
+    scene.view_settings.view_transform = "Standard"
+    scene.view_settings.look = "None"
+    scene.render.use_motion_blur = True
+    scene.render.motion_blur_shutter = 0.35
 
 
 def render_settings(percent):
@@ -299,6 +359,8 @@ def render_settings(percent):
     ee.taa_render_samples = 32
     if hasattr(ee, "use_raytracing"):
         ee.use_raytracing = False
+    if SOFT:
+        soft_render_settings()
 
 
 def build(opts):
@@ -306,6 +368,8 @@ def build(opts):
     render_settings(opts["percent"])
     world_and_lights()
     cam = camera_setup()
+    if SOFT:
+        soft_lights(cam)
 
     set_coll = new_collection("Set")
     props_coll = new_collection("Props")

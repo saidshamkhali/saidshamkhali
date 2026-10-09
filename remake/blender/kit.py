@@ -17,11 +17,18 @@ SRC_W = LAYOUT["source"]["width"]
 SRC_H = LAYOUT["source"]["height"]
 SRC_FRAMES = LAYOUT["source"]["frames"]
 
-# The original's own timing: 41 frames at 10 fps (4.1 s), one of ours per source frame,
-# with the same frames held (LAYOUT["source"]["held_frames"]). Every prop runs a whole
-# number of cycles per loop, so the loop is seamless.
-FPS = 10
-LOOP = 41
+# Two looks from the same scene, rig and fitted poses (REMAKE_STYLE):
+# "toon" (the default) remakes the original: flat colour, ink outlines, and its own timing,
+#   41 frames at 10 fps (4.1 s), one of ours per source frame, with the same frames held
+#   (LAYOUT["source"]["held_frames"]).
+# "soft" re-imagines it as a modern feature-animation still life: real materials under
+#   studio light, rendered in Cycles, no outlines, modelled props instead of the traced
+#   drawings, and 30 fps easing through the same drawn poses (the same 4.1 s).
+# Every prop runs a whole number of cycles per loop, so either loop is seamless.
+STYLE = os.environ.get("REMAKE_STYLE", "toon")
+SOFT = STYLE == "soft"
+FPS = 30 if SOFT else 10
+LOOP = 123 if SOFT else 41
 RES_X, RES_Y = 1200, 768  # 1.5625:1, same shape as the 498x318 original
 
 LENS = 85.0
@@ -95,9 +102,12 @@ def new_material(name):
 
 
 def toon(name, hex_color, shadow=0.72, threshold=0.12, softness=0.03):
-    """Flat colour lit by a 2-band ramp: full colour in light, colour*shadow in shade."""
+    """Flat colour lit by a 2-band ramp: full colour in light, colour*shadow in shade.
+    In the soft look, a physically based material instead (soft_material)."""
     if name in MATS:
         return MATS[name]
+    if SOFT:
+        return soft_material(name, hex_color)
     mat = new_material(name)
     nt = mat.node_tree
     n, l = nt.nodes, nt.links
@@ -127,6 +137,8 @@ def toon(name, hex_color, shadow=0.72, threshold=0.12, softness=0.03):
 def flat(name, hex_color):
     if name in MATS:
         return MATS[name]
+    if SOFT:
+        return soft_material(name, hex_color)
     mat = new_material(name)
     n, l = mat.node_tree.nodes, mat.node_tree.links
     out = n.new("ShaderNodeOutputMaterial")
@@ -141,6 +153,76 @@ def flat(name, hex_color):
 def outline_material():
     mat = flat("Outline", "#141414")
     mat.use_backface_culling = True
+    return mat
+
+
+# The soft look's materials, by palette key: a vinyl-toy figure (soft subsurface skin and
+# hair with a light coat, a linen robe with sheen and a fine weave), brushed chrome
+# toasters, brass bells, glossy lips. Colour overrides (hex) where the toon flat colour
+# reads wrong under real light; "weave" adds a fine bump.
+SOFT_LOOK = {
+    "skin": dict(rough=0.42, sss=0.12, coat=0.15),
+    "robe": dict(color="#C9C3D3", rough=0.8, sheen=0.6, weave=0.3),
+    "hair": dict(rough=0.45, coat=0.25),
+    "sandal": dict(color="#4A2C1E", rough=0.55, coat=0.1),
+    "halo": dict(color="#FFD45C", rough=0.25, metal=1.0, glow=2.5),
+    "white": dict(rough=0.2, coat=0.6),
+    "black": dict(rough=0.15, coat=0.6),
+    "metal": dict(color="#D8DADF", rough=0.2, metal=1.0),
+    "slot": dict(rough=0.6),
+    "toast": dict(color="#D99540", rough=0.85, weave=0.6),
+    "clock": dict(rough=0.3, metal=0.4, coat=0.3),
+    "clockface": dict(rough=0.25, coat=0.4),
+    "gold": dict(color="#F0BE4A", rough=0.22, metal=1.0),
+    "lips": dict(color="#E0588F", rough=0.22, coat=0.7, sss=0.1),
+    "mouth": dict(rough=0.6),
+    "tongue": dict(color="#E0485A", rough=0.3, sss=0.2),
+    "worm": dict(color="#EFA9CC", rough=0.45, sss=0.2, coat=0.2),
+    "floor": dict(color="#4FA6DC", rough=0.9),
+    "TitleInk": dict(color="#121214", rough=0.28, coat=0.8),
+}
+
+
+def soft_material(name, hex_color):
+    """A Principled BSDF for the soft look, tuned by SOFT_LOOK[name]."""
+    look = SOFT_LOOK.get(name, {})
+    mat = new_material(name)
+    nt = mat.node_tree
+    n, l = nt.nodes, nt.links
+    out = n.new("ShaderNodeOutputMaterial")
+    bsdf = n.new("ShaderNodeBsdfPrincipled")
+    color = srgb(look.get("color", hex_color)) + (1,)
+    inputs = bsdf.inputs
+    inputs["Base Color"].default_value = color
+    inputs["Roughness"].default_value = look.get("rough", 0.5)
+    inputs["Metallic"].default_value = look.get("metal", 0.0)
+    if look.get("sss"):
+        inputs["Subsurface Weight"].default_value = look["sss"]
+        inputs["Subsurface Radius"].default_value = (1.0, 0.55, 0.3)
+        inputs["Subsurface Scale"].default_value = 0.05
+    if look.get("coat"):
+        inputs["Coat Weight"].default_value = look["coat"]
+        inputs["Coat Roughness"].default_value = 0.15
+    if look.get("sheen"):
+        inputs["Sheen Weight"].default_value = look["sheen"]
+        inputs["Sheen Roughness"].default_value = 0.4
+    if look.get("glow"):
+        inputs["Emission Color"].default_value = color
+        inputs["Emission Strength"].default_value = look["glow"]
+    if look.get("weave"):  # a fine weave (linen) or grain (toast) as bump
+        tex = n.new("ShaderNodeTexNoise")
+        tex.inputs["Scale"].default_value = 260.0
+        tex.inputs["Detail"].default_value = 6.0
+        coord = n.new("ShaderNodeTexCoord")
+        l.new(coord.outputs["Object"], tex.inputs["Vector"])
+        bump = n.new("ShaderNodeBump")
+        bump.inputs["Strength"].default_value = look["weave"]
+        bump.inputs["Distance"].default_value = 0.002
+        l.new(tex.outputs["Fac"], bump.inputs["Height"])
+        l.new(bump.outputs["Normal"], inputs["Normal"])
+    l.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
+    mat.diffuse_color = color
+    MATS[name] = mat
     return mat
 
 
@@ -692,7 +774,10 @@ def add_outline(obj, cam, px=None):
 
 def add_outlines(cam):
     """Outline every object built so far, sized as they stand on frame 1 (animated parts move,
-    so sizing on whatever frame the scene is on would make builds differ)."""
+    so sizing on whatever frame the scene is on would make builds differ). The soft look has
+    no ink lines."""
+    if SOFT:
+        return
     scene = bpy.context.scene
     current = scene.frame_current
     scene.frame_set(1)

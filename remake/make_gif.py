@@ -1,8 +1,10 @@
 """Turn the rendered loop into looping animations with ffmpeg.
 
     python remake/make_gif.py [--width 800] [--colors 256] [--formats gif,webp,mp4] [--out remake/render/preview]
+                              [--frames remake/render/frames] [--fps 10]
 
-Reads remake/render/frames/frame_####.png (from build_scene.py --render or render.py --render)
+Reads remake/render/frames/frame_####.png (from build_scene.py --render or render.py --render;
+the soft look renders to remake/render/soft_frames at 30 fps)
 and writes OUT.gif, OUT.webp and/or OUT.mp4:
   gif   256 colours, for anywhere. Plays at 10 fps like the original: GIF delays are whole
         1/100 s, so 10/100 s is exact.
@@ -21,9 +23,10 @@ ap.add_argument("--colors", type=int, default=256)
 ap.add_argument("--fps", type=int, default=10)
 ap.add_argument("--formats", default="gif,webp")
 ap.add_argument("--out", default=os.path.join(HERE, "render", "preview"))
+ap.add_argument("--frames", default=os.path.join(HERE, "render", "frames"))
 args = ap.parse_args()
 
-src = ["-framerate", str(args.fps), "-i", os.path.join(HERE, "render", "frames", "frame_%04d.png")]
+src = ["-framerate", str(args.fps), "-i", os.path.join(args.frames, "frame_%04d.png")]
 scale = f"scale={args.width}:-2:flags=lanczos"
 jobs = {
     "gif": ["-vf", f"{scale},split[a][b];[a]palettegen=max_colors={args.colors}:stats_mode=full[p];"

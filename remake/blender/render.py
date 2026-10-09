@@ -70,6 +70,11 @@ def main():
     scene = bpy.context.scene
     if opts["percent"]:
         scene.render.resolution_percentage = opts["percent"]
+    soft = scene.render.engine == "CYCLES"  # the soft look (REMAKE_STYLE=soft)
+    if soft:
+        sys.path.insert(0, HERE)
+        from build_scene import use_gpu
+        print("cycles on", use_gpu())
     if scene.render.image_settings.file_format != "PNG":
         print("output format", scene.render.image_settings.file_format, "-> PNG for this run")
         scene.render.image_settings.file_format = "PNG"
@@ -83,7 +88,7 @@ def main():
             bpy.ops.render.render(write_still=True)
             print("rendered", scene.render.filepath)
     if opts["render"]:
-        out = os.path.join(REMAKE, "render", "frames")
+        out = os.path.join(REMAKE, "render", "soft_frames" if soft else "frames")
         os.makedirs(out, exist_ok=True)
         scene.render.filepath = os.path.join(out, "frame_")
         bpy.ops.render.render(animation=True)
