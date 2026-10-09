@@ -136,7 +136,7 @@ def place_prop(cam, root, box, turn=0.0):
     prop gives the same result. Parts flagged "no_fit", or hidden on that frame (a mouth swaps
     drawings), are left out of the measurement.
     A root with "fit_axis" = "x" is sized by its width alone; one with "face_camera" (a traced
-    drawing) is also tipped back to face the camera square on."""
+    drawing) is also tipped back to face the camera square on; "fit_scale" scales the result."""
     scene = bpy.context.scene
     shells = [m for o in descendants(root) if o.type == "MESH" for m in o.modifiers
               if m.name == "Outline" and m.show_viewport]
@@ -171,6 +171,7 @@ def place_prop(cam, root, box, turn=0.0):
         sx = (x1 - x0) * units_per_px / (max(rs) - min(rs))
         s = sx if root.get("fit_axis") == "x" else min(sx, (y1 - y0) * units_per_px / (max(zs) - min(zs)))
         pos = on_plane(cam, cx, cy, s * (min(zs) + max(zs)) / 2)
+    s *= root.get("fit_scale", 1.0)  # a prop whose bounding box runs wider than what shows
     root.scale = (s, s, s)
     root.location = (pos.x - right.x * mid_r * s, pos.y - right.y * mid_r * s, 0.0)
     for m in shells:

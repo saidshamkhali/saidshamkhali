@@ -82,7 +82,7 @@ The script writes `remake/blender/homers_web_page.blend`, so you can open the sc
 - **No outlines:** the ink shells aren't added.
 - **Light:** three disk area lights (a big warm key from the upper left, a cool fill, a rim) over a sky-blue floor, so every floating prop drops a soft shadow. Rendered in Cycles, denoised, with a touch of motion blur. The Standard view keeps the Simpsons yellow and sky blue; AgX greys them.
 - **Props:** modelled instead of traced drawings, which only hold up from the front, and given the detail a close look needs:
-  - **Mouths** (`props.build_mouth_soft`): closed, one almond of lip with a cupid's bow and a dark crease. Open, thick lips round a deep mouth with an overbite, a row of upper teeth that comes down as he shouts, and a fat tongue whose tip curls up. The switch between the closed and the open drawing keeps the original's 10 fps beat, so a closed mouth never flashes for a single frame.
+  - **Mouths** (`props.build_mouth_soft`): sized like the original's, open and closed, to within a few pixels. Closed, one almond of lip with a cupid's bow and a dark crease. Open, thick lips round a deep mouth with an overbite, a row of upper teeth that comes down as he shouts, and a fat tongue whose tip curls up. The switch between the closed and the open drawing keeps the original's 10 fps beat, so a closed mouth never flashes for a single frame.
   - **Clocks:** hour marks, the quarters bolder, and a chrome ring round the face.
   - **Worms:** two little eyes on the head end.
 - **Figure:** a few parts change to stand up under real light:

@@ -430,9 +430,22 @@ def build_mouth_soft(root, coll, phase):
                                                     (-0.17, 0.0, 0.14)],
                    [0.1, 0.14, 0.135, 0.095], n=28, ring=20, squash=0.85, up=(0, -1, 0))
     side = [lip, inside, tongue] + teeth
-    for p in front + side:
+    # the prop is sized by its closed drawing; drawn side-on, the open mouth is narrower than
+    # the closed lips (32 x 36 GIF px against 42 wide), so the open parts hang off an empty
+    # that scales them down about their middle
+    opened = empty(f"{root.name}_open", coll, loc=(-0.05, 0.0, 0.43), parent=root)
+    for p in front:
         keep_world(p, root)
+    for p in side:
+        keep_world(p, opened)
+    for p in front + side:
         p.name = f"{root.name}_{p.name}"
+    opened.scale = (0.69, 0.8, 0.73)
+    # face the camera square on, like the drawings, and size by width: seen from above, the open
+    # mouth's height is foreshortened, which made a mouth sized on an open frame come out small
+    root["face_camera"] = True
+    root["fit_axis"] = "x"
+    root["fit_scale"] = 1.08  # the lips' bounding box runs wider than the lips: measured on the renders
 
     def shout(t):  # 0 closed .. 1 open, a quick shout each cycle
         x = saw(t, c, phase)
