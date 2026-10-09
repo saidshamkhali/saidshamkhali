@@ -304,7 +304,9 @@ def build_sandal(coll, side, x):
 def build_arms(coll, rig):
     robe_m = mat("robe", 0.78)
     # Each sleeve is two rigid tubes with round ends meeting at the elbow pivot, so a
-    # hard bend (hand to face) can't fold the mesh into itself and flip its outline.
+    # hard bend (hand to face) can't fold the mesh into itself and flip its outline. The soft
+    # look has no outlines, and under its light the tubes' round ends show as a ball at the
+    # elbow, so there the sleeve is one tube that bends smoothly at the elbow.
     er = 0.066  # sleeve radius at the elbow
 
     def dome(cx, z, r, down):
@@ -318,13 +320,19 @@ def build_arms(coll, rig):
         upper = [zsec(sz + 0.045, 0.03, 0.03, cx=(sx - 0.03) * x), zsec(sz + 0.025, 0.055, 0.055, cx=(sx - 0.008) * x),
                  zsec(sz - 0.03, 0.064, 0.064, cx=sx * x), zsec(sz - 0.13, 0.066, 0.066, cx=(sx + 0.016) * x),
                  zsec(ez, er, er, cx=ex * x)]
-        skin(loft(f"J_sleeve_{side}", coll, robe_m, upper + dome(ex * x, ez, er, True), ring=24),
-             rig, rigid(f"upper_arm.{side}"))
         lower = [zsec(ez, er, er, cx=ex * x), zsec(ez - 0.13, 0.068, 0.068, cx=(ex + 0.009) * x),
                  zsec(wz + 0.03, 0.08, 0.08, cx=(wx - 0.003) * x), zsec(wz, 0.086, 0.086, cx=wx * x),
                  zsec(wz - 0.004, 0.055, 0.055, cx=wx * x)]
-        skin(loft(f"J_cuff_{side}", coll, robe_m, dome(ex * x, ez, er, False)[::-1] + lower, ring=24),
-             rig, rigid(f"forearm.{side}"))
+        if SOFT:
+            sleeve = upper[:-1] + [zsec(ez + 0.05, er, er, cx=(ex - 0.006) * x), zsec(ez, er, er, cx=ex * x),
+                                   zsec(ez - 0.05, 0.067, 0.067, cx=(ex + 0.004) * x)] + lower[1:]
+            skin(loft(f"J_sleeve_{side}", coll, robe_m, sleeve, ring=24),
+                 rig, blend(f"forearm.{side}", f"upper_arm.{side}", ez - 0.07, ez + 0.07))
+        else:
+            skin(loft(f"J_sleeve_{side}", coll, robe_m, upper + dome(ex * x, ez, er, True), ring=24),
+                 rig, rigid(f"upper_arm.{side}"))
+            skin(loft(f"J_cuff_{side}", coll, robe_m, dome(ex * x, ez, er, False)[::-1] + lower, ring=24),
+                 rig, rigid(f"forearm.{side}"))
         skin(build_hand(coll, side, x), rig, rigid(f"hand.{side}"))
 
 
@@ -449,8 +457,10 @@ def build_head(coll, rig):
             v.co.y -= muzzle(v.co.z) * c ** 3
     skin(skull, rig, head)
 
-    # Simpsons ears: a C-shaped rim opening towards the face, lying on the side of the head
-    for x, side in ((1, "L"), (-1, "R")):
+    # Simpsons ears: a C-shaped rim opening towards the face, lying on the side of the head.
+    # The drawings never show them, the hair covers them; under the soft look's light the rim
+    # catches the eye through the hair from behind, so that look leaves them out.
+    for x, side in (() if SOFT else ((1, "L"), (-1, "R"))):
         th = math.radians(93) * x
         base = head_point(th, EAR_Z)
         rim = []
@@ -492,9 +502,15 @@ def build_head(coll, rig):
                for a, z, off in ((0, 1.686, 0.05), (20, 1.683, 0.048), (38, 1.675, 0.044), (52, 1.666, 0.04))]
         skin(sweep(f"J_moustache_{side}", coll, hair_m, pts, [0.028, 0.027, 0.025, 0.021],
                    n=20, ring=18, squash=0.58), rig, head)
-    # lower lip: the yellow band just under the moustache, above the beard
-    lip = [head_point(math.radians(a), 1.645) + outward(math.radians(a)) * 0.012 for a in (-26, 0, 26)]
-    skin(sweep("J_lip", coll, skin_m, lip, [0.012], n=10, ring=12, squash=0.8), rig, head)
+    # lower lip: the yellow band just under the moustache, above the beard. Under the soft look's
+    # light a thin one reads as a ridge stacked on the chin, so there it's one full, rounder lip
+    if SOFT:
+        lip = [head_point(math.radians(a), 1.643) + outward(math.radians(a)) * 0.016 for a in (-28, -14, 0, 14, 28)]
+        skin(sweep("J_lip", coll, skin_m, lip, [0.012, 0.019, 0.021, 0.019, 0.012], n=16, ring=16, squash=0.75),
+             rig, head)
+    else:
+        lip = [head_point(math.radians(a), 1.645) + outward(math.radians(a)) * 0.012 for a in (-26, 0, 26)]
+        skin(sweep("J_lip", coll, skin_m, lip, [0.012], n=10, ring=12, squash=0.8), rig, head)
 
     # goatee: a short, full point of beard on the chin in front of the neck, flattened front to back
     chin = head_point(0, 1.608)

@@ -81,17 +81,26 @@ The script writes `remake/blender/homers_web_page.blend`, so you can open the sc
   - a glowing gold halo.
 - **No outlines:** the ink shells aren't added.
 - **Light:** three disk area lights (a big warm key from the upper left, a cool fill, a rim) over a sky-blue floor, so every floating prop drops a soft shadow. Rendered in Cycles, denoised, with a touch of motion blur. The Standard view keeps the Simpsons yellow and sky blue; AgX greys them.
-- **Props:** modelled instead of traced drawings, which only hold up from the front.
+- **Props:** modelled instead of traced drawings, which only hold up from the front, and given the detail a close look needs:
+  - **Mouths** (`props.build_mouth_soft`): closed, one almond of lip with a cupid's bow and a dark crease. Open, thick lips round a deep mouth with an overbite, a row of upper teeth that comes down as he shouts, and a fat tongue whose tip curls up. The switch between the closed and the open drawing keeps the original's 10 fps beat, so a closed mouth never flashes for a single frame.
+  - **Clocks:** hour marks, the quarters bolder, and a chrome ring round the face.
+  - **Worms:** two little eyes on the head end.
+- **Figure:** a few parts change to stand up under real light:
+  - **Sleeves:** each is one tube that bends at the elbow; the toon look's two tubes meeting there show as a ball.
+  - **Ears:** left out. The drawings never show them, and the rim caught the light through his hair.
+  - **Lower lip:** fuller and rounder, not a thin ridge.
+  - **Hair:** matte.
+  - **Shadows:** the fill light is warm and the skin lets a little light through, so his yellow stays yellow in the shade instead of turning green.
 - **Motion:** 30 fps over the same 4.1 s (123 frames). The figure eases through the fitted poses (`jesus.ease`): the held beats are dropped, rotations blend the short way round and the loop closes on its first pose. The props follow their measured tracks on every frame.
 - **Title:** extruded and bevelled, so it catches the light.
 
 ```bash
 REMAKE_STYLE=soft blender -b --python remake/blender/build_scene.py
-blender -b remake/blender/homers_web_page_soft.blend --python remake/blender/render.py -- --render
+blender -b remake/blender/homers_web_page_soft.blend --python remake/blender/render.py -- --render --percent 150
 python remake/make_gif.py --frames remake/render/soft_frames --fps 30 --width 1200 --formats webp,mp4 --out remake/render/homers_web_page_soft
 ```
 
-`render.py` renders a Cycles scene on the GPU when there is one (OptiX, else CUDA); on an RTX 4070 Super a frame takes about 4 s. The toon build is unchanged by the switch: it still renders pixel for pixel the same.
+`render.py` renders a Cycles scene on the GPU when there is one (OptiX, else CUDA); on an RTX 4070 Super a frame takes about 9 s at `--percent 150`. The toon build is unchanged by the switch: it still renders pixel for pixel the same.
 
 ## The figure
 

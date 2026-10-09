@@ -9,8 +9,9 @@ import json
 import math
 import os
 
-from kit import (LAYOUT, LOOP, REMAKE, SOFT, SRC_FRAMES, add_shape, bake, box, constant, cycles_per_loop, cylinder, empty, hitch,
-                 inflate, keep_world, lathe, mat, saw, slab, smooth_outline, sphere, step_frames, sweep, toon, unrle, wave)
+from kit import (LAYOUT, LOOP, REMAKE, SOFT, SRC_FRAMES, add_shape, bake, blobs, box, constant, cycles_per_loop, cylinder, empty, hitch,
+                 inflate, keep_world, lathe, mat, saw, slab, smooth_outline, sphere, step_frames, sweep, toon, torus, unrle,
+                 wave)
 
 # Cartoon timing, like the figure (jesus.STEPPED): the props are keyed once per source frame
 # and hold each pose, as the 10 fps original does. False = keyed on every frame, smooth, as
@@ -129,6 +130,15 @@ def build_clock(root, coll, phase):
         cylinder("leg_l", coll, mat("clock"), (-0.25, 0, 0.08), 0.05, 0.16, rot=(0, math.radians(-25), 0)),
         cylinder("leg_r", coll, mat("clock"), (0.25, 0, 0.08), 0.05, 0.16, rot=(0, math.radians(25), 0)),
     ]
+    if SOFT:  # close up, a real clock: a ring of hour marks, the quarters bolder, and a glass dome
+        for k in range(12):
+            a = math.radians(30 * k)
+            big = k % 3 == 0
+            r = 0.315 if big else 0.325
+            parts.append(box(f"mark{k}", coll, mat("black"), (r * math.sin(a), -0.123, 0.5 + r * math.cos(a)),
+                             (0.024 if big else 0.014, 0.008, 0.07 if big else 0.045), rot=(0, a, 0), outline=False))
+        parts.append(torus("bezel", coll, mat("metal"), (0, -0.115, 0.5), 0.395, 0.026,
+                           rot=(math.pi / 2, 0, 0), outline=False))
     # long hands from the centre (0, 0.5): hour points to 12, minute to 7; they rattle too
     centre = (0, -0.128, 0.5)
     hands = []
@@ -329,6 +339,162 @@ def build_lips(root, coll, phase):
     animate(tongue, "scale", 2, lambda t: 0.4 + 0.6 * shouting(t))
 
 
+# The soft look's mouth: fleshy lips round a deep mouth, after the five drawings the original
+# flips between. Side-on it's a C facing screen-left (-X): the upper lip juts out past the
+# lower one, an overbite, and both are thick, thinning only at the back corner. Centre line
+# of the lip band from the upper lip's front, over the top, round the back corner and along
+# the bottom to the lower lip's front, half open and shouting.
+SOFT_MOUTH_HALF = [(-0.46, 0.6), (-0.2, 0.64), (0.08, 0.64), (0.28, 0.6), (0.4, 0.45), (0.37, 0.3),
+                   (0.22, 0.2), (0.0, 0.17), (-0.22, 0.2)]
+SOFT_MOUTH_WIDE = [(-0.4, 0.8), (-0.14, 0.86), (0.1, 0.86), (0.28, 0.79), (0.38, 0.5), (0.34, 0.2),
+                   (0.2, 0.04), (0.0, 0.0), (-0.18, 0.04)]
+SOFT_MOUTH_R = [0.095, 0.12, 0.115, 0.095, 0.065, 0.075, 0.105, 0.12, 0.1]
+SOFT_TEETH_X = (-0.33, -0.21, -0.09, 0.03, 0.14)
+
+
+def closed_lips_soft(coll, half=0.45, z_mid=0.38, nx=48, ring=36):
+    """Closed lips seen from the front, one almond body: pointed corners, the upper lip lower
+    and dipped in the middle (the cupid's bow), the lower one fuller, and a crease where they
+    press together."""
+    import bmesh
+    import bpy
+    from kit import finish
+    bm = bmesh.new()
+    rings = []
+    for i in range(nx + 1):
+        u = -0.97 + 1.94 * i / nx                      # across the mouth, corner to corner
+        x = u * half
+        w = max(0.0, 1 - u * u)
+        top = 0.16 * w ** 0.7 * (1 - 0.2 * math.exp(-(u / 0.13) ** 2))  # the bow dips in the middle
+        bot = 0.21 * w ** 0.6
+        depth = 0.13 * w ** 0.5 + 0.006
+        yc = 0.06 - 0.12 * w                            # the middle comes forward, the corners go back
+        pts = []
+        for j in range(ring):
+            a = 2 * math.pi * j / ring
+            s, c = math.sin(a), math.cos(a)
+            h = top if s >= 0 else bot
+            d = depth * (1 - 0.3 * math.exp(-(s / 0.16) ** 2) * max(0.0, c))  # the crease, in front
+            pts.append(bm.verts.new((x, yc - d * c, z_mid + h * s)))
+        rings.append(pts)
+    for a, b in zip(rings, rings[1:]):
+        for j in range(ring):
+            bm.faces.new((a[j], a[(j + 1) % ring], b[(j + 1) % ring], b[j]))
+    for pts, end in ((rings[0], -1), (rings[-1], 1)):  # close each corner on a point
+        tip = bm.verts.new((end * half, 0.06, z_mid))
+        for j in range(ring):
+            f = (pts[j], pts[(j + 1) % ring], tip)
+            bm.faces.new(f if end > 0 else f[::-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    mesh = bpy.data.meshes.new("lips_closed")
+    bm.to_mesh(mesh)
+    bm.free()
+    obj = bpy.data.objects.new("lips_closed", mesh)
+    return finish(obj, mat("lips"), coll)
+
+
+def build_mouth_soft(root, coll, phase):
+    """The soft look's shouting mouth, modelled after the original's drawings: closed, fat
+    lips seen from the front, a cupid's bow on the upper one; open, the mouth side-on facing
+    screen-left: thick lips round a deep, dark mouth, a row of upper teeth along the upper lip
+    and a big tongue rising from the lower one as he shouts."""
+    c = cycles_per_loop(LAYOUT["cycles_s"]["lips"])
+    half = 0.45
+
+    # closed: one almond of lip, and a dark line along the crease where they press together
+    front = [closed_lips_soft(coll, half)]
+    seam = [(x, 0.06 - 0.12 * max(0.0, 1 - (x / half) ** 2) - (0.13 * max(0.0, 1 - (x / half) ** 2) ** 0.5 + 0.006) * 0.72,
+             0.38) for x in (-0.42, -0.3, -0.15, 0.0, 0.15, 0.3, 0.42)]
+    front.append(sweep("seam", coll, mat("mouth", 0.8), seam, [0.003, 0.009, 0.012, 0.012, 0.012, 0.009, 0.003],
+                       n=40, ring=10))
+
+    # open: the lip band and the mouth inside it, each with a "wide" shape key
+    def c_line(pts):
+        return [(x, 0.0, z) for x, z in pts]
+
+    lip = sweep("side_lip", coll, mat("lips"), c_line(SOFT_MOUTH_HALF), SOFT_MOUTH_R, n=48, ring=22, squash=0.85,
+                up=(0, -1, 0))
+    add_shape(lip, sweep("side_lip", coll, mat("lips"), c_line(SOFT_MOUTH_WIDE), SOFT_MOUTH_R, n=48, ring=22,
+                         squash=0.85, up=(0, -1, 0)), "wide")
+    inside = slab("mouth", coll, mat("mouth", 0.8), smooth_outline(SOFT_MOUTH_HALF, 64), 0.05, offset=0.07,
+                  outline=False)
+    add_shape(inside, slab("mouth", coll, mat("mouth", 0.8), smooth_outline(SOFT_MOUTH_WIDE, 64), 0.05,
+                           offset=0.07, outline=False), "wide")
+    # a row of upper teeth, each a little wider than its spacing so the row reads as one band
+    # with notches along its edge
+    teeth = [box(f"tooth{k}", coll, mat("white", 0.85), (x, -0.01, 0.0), (0.128, 0.075, 0.13), bevel=0.038)
+             for k, x in enumerate(SOFT_TEETH_X)]
+    # a fat tongue lying in the bottom of the mouth, its tip curling up at the front: the red
+    # curl the drawings show under the teeth
+    tongue = sweep("tongue", coll, mat("tongue"), [(0.22, 0.04, -0.02), (0.08, 0.02, 0.0), (-0.06, 0.0, 0.05),
+                                                    (-0.17, 0.0, 0.14)],
+                   [0.1, 0.14, 0.135, 0.095], n=28, ring=20, squash=0.85, up=(0, -1, 0))
+    side = [lip, inside, tongue] + teeth
+    for p in front + side:
+        keep_world(p, root)
+        p.name = f"{root.name}_{p.name}"
+
+    def shout(t):  # 0 closed .. 1 open, a quick shout each cycle
+        x = saw(t, c, phase)
+        return math.sin(math.pi * min(1.0, x / 0.65)) ** 0.6 if x < 0.65 else 0.0
+    opening = track(root, "open", shout)
+    drawn = load_tracks().get(root.name, {}).get("open")
+
+    def opening_held(t):
+        """The opening as drawn, held for each of the original's frames: the switch between the
+        closed and the open mouth keeps the original's beat (a closed drawing lasts a tenth of a
+        second) instead of flashing for a single frame at 30 fps."""
+        return drawn[int(t * len(drawn) + 1e-6) % len(drawn)] if drawn else shout(t)
+
+    # the track: 0 closed, 0.35 half open, 0.55..1 shouting (teeth showing), by how wide
+    def wide(t):
+        return min(1.0, max(0.0, (opening(t) - 0.35) / 0.65))
+
+    def is_open(t):
+        return opening_held(t) > 0.15
+
+    def line(t, x, upper):
+        """Height of the lip band's centre line at x, and its radius there, for this frame."""
+        w = wide(t)
+        idx = (0, 1, 2, 3) if upper else (8, 7, 6, 5)
+        pts = [(SOFT_MOUTH_HALF[i][0] + (SOFT_MOUTH_WIDE[i][0] - SOFT_MOUTH_HALF[i][0]) * w,
+                SOFT_MOUTH_HALF[i][1] + (SOFT_MOUTH_WIDE[i][1] - SOFT_MOUTH_HALF[i][1]) * w, SOFT_MOUTH_R[i]) for i in idx]
+        for (x0, z0, r0), (x1, z1, r1) in zip(pts, pts[1:]):
+            if x0 <= x <= x1:
+                f = (x - x0) / (x1 - x0)
+                return z0 + (z1 - z0) * f, r0 + (r1 - r0) * f
+        x0, z0, r0 = pts[0] if x < pts[0][0] else pts[-1]
+        return z0, r0
+
+    def teeth_show(t):  # the teeth come down from under the upper lip as the mouth opens
+        return min(1.0, max(0.0, (opening(t) - 0.42) / 0.2))
+
+    def tongue_show(t):  # the tongue rises as he shouts
+        return min(1.0, max(0.0, (opening(t) - 0.5) / 0.35))
+
+    for p in front:
+        animate_value(p, "hide_render", lambda t: is_open(t))
+        animate_value(p, "hide_viewport", lambda t: is_open(t))
+    for p in side:
+        animate_value(p, "hide_render", lambda t: not is_open(t))
+        animate_value(p, "hide_viewport", lambda t: not is_open(t))
+    for p in (lip, inside):
+        animate_value(p.data.shape_keys.key_blocks["wide"], "value", wide)
+    for tooth, x in zip(teeth, SOFT_TEETH_X):
+        def tooth_z(t, x=x):
+            z, r = line(t, x, True)
+            return z - r * 0.45 - 0.06 * teeth_show(t)
+        animate(tooth, "location", 2, tooth_z)
+        animate(tooth, "scale", 2, lambda t: 0.35 + 0.65 * teeth_show(t))
+
+    def tongue_z(t):
+        z, r = line(t, 0.0, False)
+        return z + r * 0.5 + 0.09 * tongue_show(t)
+    animate(tongue, "location", 2, tongue_z)
+    for axis in range(3):  # none while the mouth is only half open, as drawn
+        animate(tongue, "scale", axis, lambda t: max(0.001, tongue_show(t)))
+
+
 WORM_LENGTH = 1.1
 WORM_LOOP = 0.7      # share of the body that curls up into the loop
 WORM_CURL = 1.5      # radians the body turns at the loop's sides: an arch with a small hole under it
@@ -385,6 +551,14 @@ def build_worm(root, coll, phase):
                         rot=(0, math.pi / 2, 0), outline=False)
         keep_world(band, root)
         bands.append((band, u, r))
+    if SOFT:  # close up, a face: two little eyes on the head end, looking out at us
+        head, _, hr = segs[-1]
+        hx = WORM_LENGTH / 2
+        for k, dx in enumerate((-0.02, 0.06)):
+            eye = sphere(f"{root.name}_eye{k}", coll, mat("white", 0.93), (hx + dx, -0.085, hr + 0.075), r=0.042)
+            pupil = sphere(f"{root.name}_pupil{k}", coll, mat("black"), (hx + dx + 0.008, -0.12, hr + 0.07), r=0.02)
+            keep_world(eye, head)
+            keep_world(pupil, head)
 
     def loop(t):  # flat for a moment, then up into the loop and back down
         x = saw(t, c, phase)
@@ -427,6 +601,6 @@ BUILDERS = {
     "toaster": held(traced_or(build_toaster)),
     "alarm_clock": held(traced_or(build_clock)),
     "bell": held(traced_or(build_bell)),
-    "lips": held(traced_or(build_lips)),
+    "lips": held(build_mouth_soft if SOFT else traced_or(build_lips)),
     "worm": held(traced_or(build_worm)),
 }

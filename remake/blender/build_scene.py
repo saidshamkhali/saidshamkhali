@@ -255,7 +255,7 @@ def soft_lights(cam):
     target = on_plane(cam, *LAYOUT["figure"]["feet"], 0.0) + Vector((0.0, 0.0, 0.9))  # his middle
     for name, energy, size, colour, where in (
             ("Key", 4800.0, 9.0, (1.0, 0.95, 0.88), Vector((-9.0, -11.0, 13.0))),
-            ("Fill", 1500.0, 12.0, (0.85, 0.92, 1.0), Vector((12.0, -9.0, 6.0))),
+            ("Fill", 1500.0, 12.0, (1.0, 0.96, 0.9), Vector((12.0, -9.0, 6.0))),  # warm: yellow in cool shade turns green
             ("Rim", 2500.0, 6.0, (1.0, 0.98, 0.95), Vector((3.0, 14.0, 10.0)))):
         data = bpy.data.lights.new(name, "AREA")
         data.energy = energy

@@ -161,9 +161,9 @@ def outline_material():
 # toasters, brass bells, glossy lips. Colour overrides (hex) where the toon flat colour
 # reads wrong under real light; "weave" adds a fine bump.
 SOFT_LOOK = {
-    "skin": dict(rough=0.42, sss=0.12, coat=0.15),
+    "skin": dict(rough=0.42, sss=0.25, coat=0.15),  # light through the vinyl keeps its shade warm
     "robe": dict(color="#C9C3D3", rough=0.8, sheen=0.6, weave=0.3),
-    "hair": dict(rough=0.45, coat=0.25),
+    "hair": dict(rough=0.62, sheen=0.25),  # matte, sculpted vinyl: no highlight on the crown
     "sandal": dict(color="#4A2C1E", rough=0.55, coat=0.1),
     "halo": dict(color="#FFD45C", rough=0.25, metal=1.0, glow=2.5),
     "white": dict(rough=0.2, coat=0.6),
@@ -175,8 +175,8 @@ SOFT_LOOK = {
     "clockface": dict(rough=0.25, coat=0.4),
     "gold": dict(color="#F0BE4A", rough=0.22, metal=1.0),
     "lips": dict(color="#E0588F", rough=0.22, coat=0.7, sss=0.1),
-    "mouth": dict(rough=0.6),
-    "tongue": dict(color="#E0485A", rough=0.3, sss=0.2),
+    "mouth": dict(color="#2C0810", rough=0.55),
+    "tongue": dict(color="#D63446", rough=0.38, sss=0.3, coat=0.15),
     "worm": dict(color="#EFA9CC", rough=0.45, sss=0.2, coat=0.2),
     "floor": dict(color="#4FA6DC", rough=0.9),
     "TitleInk": dict(color="#121214", rough=0.28, coat=0.8),
