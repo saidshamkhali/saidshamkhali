@@ -1,0 +1,81 @@
+{
+  "source": {
+    "file": "jesus-christ-homer.gif",
+    "width": 498,
+    "height": 318,
+    "frames": 41,
+    "frame_ms": 100,
+    "held_frames": [1, 7, 13, 15, 20, 26, 32, 38],
+    "held_note": "whole-frame duplicates of the frame before: the original's hitch, about every half second"
+  },
+  "background": "#86C5E3",
+  "title": {
+    "text": "Homer’s Web Page",
+    "box": [88, 8, 408, 27],
+    "box_note": "tight box around the dark glyph pixels, H top to g bottom"
+  },
+  "figure": {
+    "box": [196, 79, 283, 254],
+    "feet": [242, 242],
+    "head_top": 108,
+    "feet_note": "feet: where the floor point between his heels projects (the sandal toes reach y~247); head_top: top of the hair, frames 12-24",
+    "yaw_note": "degrees; 0 = facing camera, +90 = facing screen-left, 180/-180 = back to camera",
+    "timeline": [
+      {"frame": 0,    "yaw": 180,  "pose": "up"},
+      {"frame": 2,    "yaw": 176,  "pose": "up"},
+      {"frame": 3,    "yaw": 105,  "pose": "up"},
+      {"frame": 4,    "yaw": 92,   "pose": "up"},
+      {"frame": 5,    "yaw": 55,   "pose": "up"},
+      {"frame": 6,    "yaw": 22,   "pose": "up"},
+      {"frame": 7,    "yaw": 8,    "pose": "wave_a"},
+      {"frame": 8,    "yaw": 4,    "pose": "wave_b"},
+      {"frame": 9,    "yaw": 2,    "pose": "wave_a"},
+      {"frame": 10,   "yaw": 0,    "pose": "wave_b"},
+      {"frame": 11,   "yaw": 18,   "pose": "face"},
+      {"frame": 12.5, "yaw": 36,   "pose": "beckon"},
+      {"frame": 15,   "yaw": 40,   "pose": "beckon_b"},
+      {"frame": 18,   "yaw": 36,   "pose": "beckon"},
+      {"frame": 21,   "yaw": 40,   "pose": "beckon_b"},
+      {"frame": 23,   "yaw": 36,   "pose": "beckon"},
+      {"frame": 24,   "yaw": 18,   "pose": "face"},
+      {"frame": 25.5, "yaw": 6,    "pose": "up"},
+      {"frame": 26.5, "yaw": 2,    "pose": "wave_a"},
+      {"frame": 27.5, "yaw": 0,    "pose": "wave_b"},
+      {"frame": 28.5, "yaw": -4,   "pose": "wave_a"},
+      {"frame": 29.5, "yaw": -14,  "pose": "up"},
+      {"frame": 30,   "yaw": -40,  "pose": "up"},
+      {"frame": 31,   "yaw": -72,  "pose": "up"},
+      {"frame": 32,   "yaw": -86,  "pose": "up"},
+      {"frame": 33,   "yaw": -95,  "pose": "up"},
+      {"frame": 34,   "yaw": -100, "pose": "up"},
+      {"frame": 35,   "yaw": -118, "pose": "up"},
+      {"frame": 36,   "yaw": -150, "pose": "up"},
+      {"frame": 37,   "yaw": -172, "pose": "up"},
+      {"frame": 41,   "yaw": -180, "pose": "up"}
+    ]
+  },
+  "cycles_s": {
+    "alarm_clock": 0.6,
+    "toaster": 0.6,
+    "bell": 0.6,
+    "lips": 0.9,
+    "worm": 0.95
+  },
+  "props_note": "box: the prop's outline in frame 0, less one pixel all round (our outline adds it back)",
+  "props": [
+    {"id": "clock_tl",   "type": "alarm_clock", "box": [75, 42, 97, 67],   "phase": 0.0},
+    {"id": "toaster_tr", "type": "toaster",     "box": [401, 76, 430, 97], "phase": 0.3},
+    {"id": "toaster_s",  "type": "toaster",     "box": [134, 111, 162, 133], "phase": 0.6},
+    {"id": "worm_r",     "type": "worm",        "box": [341, 128, 370, 131], "phase": 0.5},
+    {"id": "worm_l",     "type": "worm",        "box": [59, 128, 82, 132],  "phase": 0.0},
+    {"id": "lips_l",     "type": "lips",        "box": [127, 166, 169, 183], "phase": 0.0},
+    {"id": "toaster_l",  "type": "toaster",     "box": [55, 158, 100, 193], "phase": 0.0},
+    {"id": "lips_r",     "type": "lips",        "box": [405, 164, 437, 194], "phase": 0.5},
+    {"id": "bell_r",     "type": "bell",        "box": [342, 162, 362, 196], "phase": 0.5},
+    {"id": "clock_c",    "type": "alarm_clock", "box": [135, 218, 164, 254], "phase": 0.5},
+    {"id": "bell_l",     "type": "bell",        "box": [76, 226, 95, 249], "phase": 0.0},
+    {"id": "toaster_b",  "type": "toaster",     "box": [325, 241, 369, 275], "phase": 0.5},
+    {"id": "clock_br",   "type": "alarm_clock", "box": [410, 259, 431, 286], "phase": 0.25},
+    {"id": "worm_b",     "type": "worm",        "box": [55, 302, 85, 305],  "phase": 0.25}
+  ]
+}

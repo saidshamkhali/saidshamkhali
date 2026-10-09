@@ -1,0 +1,4 @@
+# The hook is a POSIX shell script: CRLF line endings would break its #! line.
+tools/pre-commit text eol=lf
+*.blend binary
+*.ttf binary
