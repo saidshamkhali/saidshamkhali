@@ -7,12 +7,14 @@ Options:
                      frames are skipped, they copy)
     --loss L         "regions" (default when reference/frames/regions.npz exists) or "silhouette"
     --iters N        CMA-ES generations per frame (default 60)
-    --out PATH       where to write the offsets (default remake/reference/pose_fit.json; a
-                     partial run writes PATH with only its frames, merge them with --merge)
+    --out PATH       where to write the offsets (default remake/reference/pose_fit.json, where only the
+                     frames fitted change; a file of its own holds only its frames: merge such parts with --merge)
     --fix N=V,...    hold these offsets at fixed values instead of fitting them (e.g. yaw=0
                      where the drawing alone would rather turn him than move an arm)
     --part robe      a second pass over the hips and robe alone (ROBE_PARAMS), scored on the lower
                      half of the figure (averaged with the whole), the rest of the pose held at the fitted values
+    --only N,...     refit only these offsets, the rest held at their pose_fit.json values (e.g. one arm,
+                     after a hand's flap changed where its wrist should be)
     --merge A B ...  merge partial result files into --out and stop
 
 For each source frame the figure is rendered from the scene camera and compared with the GIF.
@@ -25,7 +27,8 @@ win pixels by tucking a hand behind the robe. The "silhouette" loss compares the
 with reference/frames/masks.npz.
 
 The offsets in jesus.FIT_PARAMS are searched together with CMA-ES (covariance matrix adaptation,
-the usual tool for a few dozen coupled parameters), starting from the existing pose_fit.json,
+the usual tool for a few dozen coupled parameters), all but the few set by hand (jesus.HAND_SET: the
+hands' flaps and the feet's turn), which it holds at their values, starting from the existing pose_fit.json,
 with a small penalty for straying from the designed pose (a quarter of it for the shape
 controls in LIGHT): a wide search, then a narrow one from the best pose found. jesus.animate() bakes the result in.
 
@@ -56,6 +59,8 @@ BOUND = {
     "footL_x": 0.22, "footL_y": 0.25, "footR_x": 0.22, "footR_y": 0.25,
     "sway": 0.14, "thrust": 0.1, "lean": 15.0, "skirt_x": 25.0, "skirt_y": 25.0, "flare": 0.4,
     "wristL": 60.0, "wristR": 60.0, "hipL": 0.12, "hipR": 0.12, "girth": 0.3, "hipgirth": 0.3, "kneeL": 0.15, "kneeR": 0.15,
+    # set by hand (jesus.HAND_SET): the fit holds them at their pose_fit.json values
+    "flapL": 90.0, "flapR": 90.0, "feet_turn": 60.0,
 }
 PENALTY = 0.02          # cost of an offset at its bound, in IoU
 ROBE_PARAMS = ("sway", "thrust", "tilt", "skirt_x", "skirt_y", "flare", "hipL", "hipR", "girth", "hipgirth",
@@ -69,14 +74,14 @@ CLASSES = {1: "skin", 2: "dark", 3: "robe"}
 COLOURS = {1: (1, 0, 0, 1), 2: (0, 1, 0, 1), 3: (0, 0, 1, 1)}
 HAND_COLOURS = {"L": (1, 0, 0.15, 1), "R": (1, 0.15, 0, 1)}  # skin, each hand told apart by a touch of another colour
 HAND_WEIGHT = 0.5  # each visible hand's term, against 1 for each region
-MATERIAL_CLASS = {"skin": 1, "white": 1, "black": 1, "hair": 2, "sandal": 2, "robe": 3}  # eyes read as skin, as drawn
+MATERIAL_CLASS = {"skin": 1, "white": 1, "black": 1, "collar": 1, "hair": 2, "sandal": 2, "robe": 3}  # eyes read as skin, as drawn
 
 
 def parse_args():
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     regions = os.path.exists(os.path.join(REMAKE, "reference", "frames", "regions.npz"))
     opts = {"frames": list(range(41)), "loss": "regions" if regions else "silhouette", "iters": 60,
-            "out": jesus.FIT_FILE, "merge": None, "fix": {}, "part": "all"}
+            "out": jesus.FIT_FILE, "merge": None, "fix": {}, "part": "all", "only": None}
     i = 0
     while i < len(argv):
         a = argv[i]
@@ -91,6 +96,8 @@ def parse_args():
             opts["fix"] = {n: float(v) for n, v in (kv.split("=") for kv in argv[i + 1].split(","))}; i += 2
         elif a == "--part":
             opts["part"] = argv[i + 1]; i += 2
+        elif a == "--only":
+            opts["only"] = argv[i + 1].split(","); i += 2
         elif a == "--out":
             opts["out"] = os.path.abspath(argv[i + 1]); i += 2
         elif a == "--merge":
@@ -156,8 +163,8 @@ def cmaes(f, x0, sigma=0.15, iters=60, seed=0):
 
 
 class Fitter:
-    def __init__(self, loss, part="all"):
-        self.loss, self.part = loss, part
+    def __init__(self, loss, part="all", only=None):
+        self.loss, self.part, self.only = loss, part, only
         self.scene = bpy.context.scene
         self.rig = bpy.data.objects[jesus.RIG]
         ref = os.path.join(REMAKE, "reference", "frames")
@@ -202,6 +209,8 @@ class Fitter:
         self.right = jesus.screen_right()
         self.reanimate_without_fit()
         self.renders = 0
+        self.prior = jesus.load_fit()
+        self.planted = None
 
     def reanimate_without_fit(self):
         saved = jesus.FIT_FILE
@@ -245,8 +254,8 @@ class Fitter:
 
     def pose(self, params):
         """The pose jesus.animate() would bake for these offsets: the body's, then the head
-        re-aimed as aim_head does (the face keeps pointing where HEAD_YAW says while the fitted
-        yaw turns the body), then the head's own."""
+        re-aimed as aim_head does (the face keeps pointing where HEAD_YAW says whatever the fitted
+        yaw, twist, lean and pitch do to the body), then the head's own."""
         rig = self.rig
         loc, rot, bones = self.base
         rig.location, rig.rotation_euler = loc, rot
@@ -254,10 +263,30 @@ class Fitter:
             pb = rig.pose.bones[name]
             pb.location, pb.rotation_quaternion, pb.scale = l, q, s
         jesus.apply_offsets(rig, params, self.right)
-        if self.k in jesus.HEAD_YAW and params.get("yaw"):
-            head = rig.pose.bones["head"]
-            head.rotation_quaternion = jesus.bone_rotation(head, (0, 0, params["yaw"])) @ head.rotation_quaternion
-        jesus.apply_head_offsets(rig, params)
+        if self.planted:  # the build keeps these feet where they stood on another frame (jesus.PLANT)
+            jesus.put_feet(rig, self.planted)
+        if self.k in jesus.HEAD_YAW:
+            jesus.face_to(rig, jesus.HEAD_YAW[self.k])
+        jesus.apply_head_offsets(rig, params, self.k)
+
+    def plant(self, k):
+        """Where the feet stand in the world on the frame frame k keeps them from (jesus.PLANT), posed
+        with that frame's fitted offsets, or None."""
+        self.planted = None
+        j = jesus.PLANT.get(k)
+        if j is None:
+            return
+        self.capture(j)
+        anim = self.rig.animation_data
+        act, slot = anim.action, anim.action_slot
+        anim.action = None
+        try:
+            self.pose(self.prior.get(j, {}))
+            bpy.context.view_layer.update()
+            self.planted = jesus.feet_world(self.rig)
+        finally:
+            anim.action = act
+            anim.action_slot = slot
 
     def render(self):
         bpy.ops.render.render(write_still=True)
@@ -317,18 +346,21 @@ class Fitter:
         return ious
 
     def fit(self, k, guess, iters, fix):
+        self.plant(k)
         self.capture(k)
         anim = self.rig.animation_data
         act, slot = anim.action, anim.action_slot
         anim.action = None
         self.measure_hands()
         robe = self.part == "robe"
-        names = [n for n in (ROBE_PARAMS if robe else jesus.FIT_PARAMS) if n not in fix]
+        held = robe or bool(self.only)  # these passes hold the rest of the pose at its fitted values
+        names = [n for n in (self.only or (ROBE_PARAMS if robe else jesus.FIT_PARAMS)) if n not in fix and n not in jesus.HAND_SET]
         penalty = ROBE_PENALTY if robe else PENALTY
         weight = np.array([0.25 if n in LIGHT and not robe else 1.0 for n in names])
         try:
             def params(x):
-                p = dict(guess) if robe else {}  # the robe pass holds the rest of the pose
+                # a pass over a few offsets holds the rest of the pose; all hold the offsets set by hand
+                p = dict(guess) if held else {n: guess[n] for n in jesus.HAND_SET if n in guess}
                 p.update({n: v * BOUND[n] for n, v in zip(names, x)})
                 p.update(fix)
                 return p
@@ -338,6 +370,8 @@ class Fitter:
 
             x0 = np.array([max(-1.0, min(1.0, guess.get(n, 0.0) / BOUND[n])) for n in names])
             before = self.score(params(x0))
+            if not names:  # everything asked for is held (--fix, or set by hand): nothing to search
+                return params(x0), before, before
             # a wide search, then a narrow one from the best pose it found: from a pose that
             # already fits well, wide steps that move every offset at once rarely beat it
             c, x = cmaes(cost, x0, sigma=0.12, iters=iters // 2, seed=k)
@@ -349,6 +383,15 @@ class Fitter:
             anim.action_slot = slot
 
 
+def with_held(frames):
+    """Held frames repeat the one before them."""
+    frames = dict(frames)
+    for k in sorted(LAYOUT["source"].get("held_frames", [])):
+        if k - 1 in frames:
+            frames[k] = dict(frames[k - 1])
+    return frames
+
+
 def main():
     opts = parse_args()
     if opts["merge"]:
@@ -356,14 +399,10 @@ def main():
         for path in opts["merge"]:
             with open(path, encoding="utf-8") as f:
                 frames.update({int(k): v for k, v in json.load(f)["frames"].items()})
-        held = LAYOUT["source"].get("held_frames", [])
-        for k in sorted(held):  # held frames repeat the one before
-            if k - 1 in frames:
-                frames[k] = dict(frames[k - 1])
-        write(opts["out"], frames)
+        write(opts["out"], with_held(frames))
         print(f"merged {len(opts['merge'])} files into {opts['out']}")
         return
-    fitter = Fitter(opts["loss"], opts["part"])
+    fitter = Fitter(opts["loss"], opts["part"], opts["only"])
     prior = jesus.load_fit()
     skip = set(LAYOUT["source"].get("held_frames", [])) | set(jesus.REUSE)
     out = {}
@@ -375,7 +414,9 @@ def main():
         out[k] = p
         print(f"frame {k:2d}: match {before:.3f} -> {score:.3f}  " +
               " ".join(f"{n}={v:+.3g}" for n, v in p.items() if abs(v) > 1e-6), flush=True)
-        write(opts["out"], out)
+        # fitting straight into pose_fit.json keeps every frame not refitted; a part file (--out) holds
+        # only its own frames, for --merge
+        write(opts["out"], with_held({**prior, **out}) if opts["out"] == jesus.FIT_FILE else out)
     print(f"{fitter.renders} renders in {time.time() - t0:.0f} s")
 
 

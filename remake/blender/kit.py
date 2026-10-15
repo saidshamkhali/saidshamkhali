@@ -26,7 +26,7 @@ RES_X, RES_Y = 1200, 768  # 1.5625:1, same shape as the 498x318 original
 
 LENS = 85.0
 SENSOR = 36.0
-OUTLINE_PX = 2.2       # outline width at RES_X
+OUTLINE_PX = 1.9       # outline width at RES_X: with the coloured lines, about the original's weight of ink
 
 
 # --------------------------------------------------------------------------- utils
@@ -94,7 +94,7 @@ def new_material(name):
     return mat
 
 
-def toon(name, hex_color, shadow=0.72, threshold=0.12, softness=0.03):
+def toon(name, hex_color, shadow=0.72, threshold=0.12, softness=0.008):
     """Flat colour lit by a 2-band ramp: full colour in light, colour*shadow in shade."""
     if name in MATS:
         return MATS[name]
@@ -138,19 +138,37 @@ def flat(name, hex_color):
     return mat
 
 
-def outline_material():
-    mat = flat("Outline", "#141414")
+# The drawings' lines aren't black: each takes a dark shade of the colour it rings. The robe's
+# edge is one GIF pixel of slate (#5F6F83; the upscale's line cores #20303F to #424A5C), the face,
+# hands and legs are ringed in dark brown, the worms in slate. One line colour per material, keyed
+# by its name; anything else (the traced props' ink, the eyes) keeps the near-black ink.
+INK = "#141414"
+LINE = {
+    "robe": "#4A5166",
+    "skin": "#4E3212",
+    "hair": "#140C0E",
+    "sandal": "#140C0E",
+    "halo": "#46525F",  # a slate line, so the slate hoop doesn't read as a wire ring
+    "worm": "#3A4658",
+}
+
+
+def outline_material(key=None):
+    """The outline shells' material for objects whose own material is `key`: flat, and culled
+    from the front, so only the shell's inside, behind the object, shows round its edge."""
+    mat = flat(f"Outline_{key}", LINE[key]) if key in LINE else flat("Outline", INK)
     mat.use_backface_culling = True
     return mat
 
 
 PALETTE = {
     "bg": "#86C5E3",
-    "skin": "#FFD90F",
-    "robe": "#D3D1E3",
-    "hair": "#3B2015",
+    # the figure's colours are the GIF's own, measured (the lit side renders at about 0.965 of the hex)
+    "skin": "#DCB014",  # the drawings' deep gold, the same as their bells (GIF #D0AA10)
+    "robe": "#C1C2D3",  # lavender grey (GIF #B9B9CA)
+    "hair": "#2C191C",  # near-black plum, for the hair, beard and moustache (GIF #2A181B)
     "sandal": "#2B1A17",  # near black, like the hair (the source draws dark sandals)
-    "halo": "#C4CDD4",
+    "halo": "#6A8296",  # a slate hoop, darker than the sky (GIF #5F6F83 edge-on, #6B95A7 open)
     "white": "#FFFFFF",
     "black": "#1A1A1A",
     "metal": "#C6C8CC",
@@ -163,11 +181,15 @@ PALETTE = {
     "mouth": "#1E0B0E",
     "tongue": "#C8303F",
     "worm": "#B4AFC0",
+    "collar": "#4E3212",  # the V-neck's edge, drawn in the skin's line colour
 }
 
 
-def mat(key, shadow=0.72):
-    return toon(key, PALETTE[key], shadow)
+SHADE = {"skin": 0.88}  # a fainter toon band where the drawings are flat: no dark stripe down his legs
+
+
+def mat(key, shadow=None):
+    return toon(key, PALETTE[key], SHADE.get(key, 0.72) if shadow is None else shadow)
 
 
 # --------------------------------------------------------------------------- meshes
@@ -668,7 +690,8 @@ def add_outline(obj, cam, px=None):
     (default OUTLINE_PX, or the object's own "outline_px")."""
     px = px or obj.get("outline_px", OUTLINE_PX)
     bpy.context.view_layer.update()
-    om = outline_material()
+    base = obj.data.materials[0] if len(obj.data.materials) else None
+    om = outline_material(base.name.split(".")[0] if base else None)
     half_w = SENSOR / 2 / LENS
     fwd = cam.matrix_world.to_3x3() @ Vector((0, 0, -1))
     depth = max(0.5, (obj.matrix_world.translation - cam.matrix_world.translation).dot(fwd))
@@ -687,7 +710,6 @@ def add_outline(obj, cam, px=None):
     m.use_quality_normals = True
     m.use_rim = False
     m.material_offset = list(obj.data.materials).index(om)
-    obj.visible_shadow = True
 
 
 def add_outlines(cam):

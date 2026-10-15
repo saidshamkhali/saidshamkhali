@@ -173,10 +173,14 @@ def export_regions():
 
 
 DRAWING_CELL = 3   # traced drawings: three cells per GIF pixel
-DRAWING_PAD = 12   # GIF pixels around a prop's box, room for its bigger drawings
+DRAWING_PAD = 15   # GIF pixels around a prop's box, room for its bigger drawings (a shout reaches 12 above it)
+GROUP_REACH = 12   # GIF pixels past its box that a prop's silhouette is followed when grouping its frames
 # a drawing's parts, by colour: the ink (the whole drawing, its dark line-art showing between
-# the coloured parts) at the back, then the colours
-PART_NAMES = ("ink", "grey", "white", "yellow", "pink", "red")
+# the coloured parts) at the back, then the colours. Two only some props have: the toast's dark
+# crust down in a toaster's slot, and the dark band round a bell's lip
+PART_NAMES = ("ink", "grey", "white", "yellow", "pink", "red", "crust", "rim")
+COLOURS = tuple(range(2, len(PART_NAMES) + 1))  # the colours' labels (colour_labels)
+OTHER = len(PART_NAMES) + 1  # the label of a pixel that matches no part
 # traced: the worms stay modelled (at three pixels tall their drawings trace into noise)
 TRACED_TYPES = ("lips", "toaster", "alarm_clock", "bell")
 SAME_DRAWING = 0.9  # silhouette overlap above which two frames show the same drawing
@@ -193,57 +197,418 @@ def rle(mask):
     return ";".join(rows)
 
 
-def colour_labels(rgb):
-    """Each pixel's colour: 0 sky, then 1 + the index in PART_NAMES, 7 anything else."""
+def colour_labels(rgb, kind=None):
+    """Each pixel's colour: 0 sky, then 1 + the index in PART_NAMES, OTHER anything else.
+    kind: the prop's type, for the colours only some props have (a toaster's crust, a bell's rim)."""
     import numpy as np
     a = rgb.astype(int)
     r, g, b = a[..., 0], a[..., 1], a[..., 2]
     mx, mn = a.max(-1), a.min(-1)
     bg = (b > 150) & (b - r > 30)
-    lab = np.full(r.shape, 7, np.uint8)
+    lab = np.full(r.shape, OTHER, np.uint8)
     lab[bg] = 0
-    lab[(mx - mn < 45) & (mn > 90) & (mx <= 205) & ~bg] = 2      # grey: metal, clock faces, worms
-    lab[(mn > 205) & ~bg] = 3                                     # white: wings, teeth
-    lab[(r > 150) & (g > 100) & (b < 110) & (r - b > 70)] = 4     # yellow: bells, toast, clock bells
+    # the greys run on into the whites: the toasters' pale top faces and rims are grey, not
+    # wing white and not "anything else" (which used to turn them into black lids)
+    neutral = (mx - mn < 45) & (mn > 90) & ~bg
+    lab[neutral] = 2                                              # grey: metal, clock faces, worms
+    lab[((mn > 205) | (neutral & (a.mean(-1) > 212))) & ~bg] = 3  # white: wings, teeth
+    gold = (r > 150) & (g > 100) & (b < 110) & (r - b > 70)
+    lab[gold] = 4                                                 # yellow: bells, toast, clock bells
     lab[(r > 150) & (r - g > 50) & (b > 90) & ~bg] = 5            # pink: lips
     lab[(r > 150) & (g < 90) & (b < 100)] = 6                     # red: tongues
-    lab[mx < 100] = 1                                             # ink: outlines, slots, handles, mouths
+    # the toast's brown and pink crust is toast too (lips are pink with more blue than green)
+    lab[(lab == OTHER) & (r > 110) & (r - b > 45) & (g - b > 15)] = 4
+    ink = mx < 100                                                # ink: outlines, slots, handles, mouths
+    if kind == "toaster":
+        # the toast's dark red-brown crust, down in the slot: dark enough for ink, which made
+        # the toast in the slot a black lid with a dot or two of yellow
+        crust = ((lab == OTHER) | ink) & ~bg & (r > 70) & (r - b > 35) & (r - g > 12)
+        lab[crust], ink = 7, ink & ~crust
+    if kind == "bell":
+        # the band round the lip, a dark mauve or brown grey inside the ink's outline (the ink
+        # alone made the bell stand on a heavy black slab). Blue tells it from where the gold
+        # blurs into the ink (a dark yellow), and red from where the ink blurs into the sky.
+        mean = a.mean(-1)
+        loose = (lab == OTHER) | ((lab == 4) & ~gold) | ink  # not one of the drawing's clean colours
+        rim = loose & ~bg & (mean >= 45) & (mean <= 125) & (r - g >= 5) & (b >= 0.4 * r)
+        lab[rim], ink = 8, ink & ~rim
+    lab[ink] = 1
     return lab
+
+
+SPECK = 12  # cells: a smaller patch of a colour is noise (a GIF pixel is nine cells)
+HOLE = 60   # cells: a smaller hole in a colour is texture or noise, filled
+# cells: a smaller patch of sky inside a drawing is a pale blue highlight on chrome, not a gap
+# through it (the biggest, on toaster_b's side, is 76; none of the drawings has a real gap)
+GAP = 4 * HOLE
+TICKS = 12  # tick marks round a clock face, as long and wide as drawn: these shares of the face's radius
+TICK_LEN = 0.13
+TICK_WIDTH = 0.085
+# only the big clock has tick marks: the band round its face's edge is 3-5% marks darker than
+# the face, the small clocks' plain faces under 1%
+TICK_MARKED = 0.015
+
+
+def components(mask):
+    """The 4-connected patches of a boolean mask: each cell's patch number (0 outside the mask)
+    and each patch's size in cells (index 0 unused)."""
+    import numpy as np
+    h, w = mask.shape
+    inside = mask.ravel().tolist()
+    lab = [0] * (h * w)
+    sizes = [0]
+    for start in np.flatnonzero(mask).tolist():
+        if lab[start]:
+            continue
+        n = len(sizes)
+        lab[start] = n
+        todo, count = [start], 0
+        while todo:
+            k = todo.pop()
+            count += 1
+            y, x = divmod(k, w)
+            for nb, ok in ((k - w, y > 0), (k + w, y < h - 1), (k - 1, x > 0), (k + 1, x < w - 1)):
+                if ok and inside[nb] and not lab[nb]:
+                    lab[nb] = n
+                    todo.append(nb)
+        sizes.append(count)
+    return np.array(lab).reshape(h, w), np.array(sizes)
+
+
+def fill_holes(mask, cells):
+    """mask with every hole in it (a patch outside it that doesn't reach the edge) smaller than
+    `cells` filled in."""
+    import numpy as np
+    lab, sizes = components(~mask)
+    small = sizes < cells
+    small[0] = False
+    small[np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))] = False
+    return mask | small[lab]
+
+
+def regrow(lab, cells, labels, steps=None):
+    """Give each of `cells` the label of a neighbour with one of `labels`, growing in from the
+    edges of the patch, one cell per step (all the way, or `steps` cells). Returns the new labels
+    and the cells left over."""
+    import numpy as np
+    lab, todo = lab.copy(), cells.copy()
+    lab[todo] = 255
+    k = 0
+    while todo.any() and (steps is None or k < steps):
+        k += 1
+        new = lab.copy()
+        for dy, dx in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+            nb = np.full_like(lab, 255)
+            nb[max(dy, 0):lab.shape[0] + min(dy, 0), max(dx, 0):lab.shape[1] + min(dx, 0)] = \
+                lab[max(-dy, 0):lab.shape[0] + min(-dy, 0), max(-dx, 0):lab.shape[1] + min(-dx, 0)]
+            take = todo & (new == 255) & np.isin(nb, labels)
+            new[take] = nb[take]
+        grown = todo & (new != 255)
+        if not grown.any():
+            break
+        lab, todo = new, todo & ~grown
+    return lab, todo
+
+
+def morph(m, grow):
+    """Grow (grow > 0) or shrink a boolean mask by `grow` cells (a square)."""
+    import numpy as np
+    from PIL import Image, ImageFilter
+    im = Image.fromarray((m * 255).astype(np.uint8))
+    f = ImageFilter.MaxFilter(grow * 2 + 1) if grow > 0 else ImageFilter.MinFilter(-grow * 2 + 1)
+    return np.asarray(im.filter(f)) > 0
+
+
+def clean_labels(rgb, kind):
+    """The drawing's colour labels (colour_labels), cleaned: each colour a few clean patches
+    and the ink only where the drawing has lines.
+    - Pale pixels that match no colour (the anti-aliasing between two colours, a highlight) take
+      the colour next to them; dark ones are ink. Patches of sky inside the drawing (a pale blue
+      highlight on chrome) are treated the same way, so they don't show the sky through it.
+    - A mode filter merges the upscaler's speckle into its surroundings.
+    - Specks of a colour, and thin red (the texture lines on lips; a tongue is thick), take the
+      colour round them. Closed lips have no tongue: all their red is lip.
+    - A toaster's dark crust is cleaned as toast, then gets its own colour back where it was
+      drawn: it's a thin ring round the toast down in the slot, which the mode filter would eat.
+      Crust round no toast is ink.
+    - Small holes in a colour (the texture lines and dots inside closed lips, a dark speck) are
+      filled with it. Thin strips of colour (a toaster's rim, a row of teeth, the toast standing
+      in its slot) are kept: they're the drawing, and used to turn into ink."""
+    import numpy as np
+    from PIL import Image, ImageFilter
+    lab = colour_labels(rgb, kind)
+    sky, _ = components(lab == 0)
+    sizes = np.bincount(sky.ravel())
+    edge = np.unique(np.concatenate([sky[0], sky[-1], sky[:, 0], sky[:, -1]]))
+    small = sizes < GAP
+    small[0] = False
+    small[edge] = False
+    lab[small[sky]] = OTHER
+    a = rgb.astype(int)
+    pale = (lab == OTHER) & (a @ np.array([0.3, 0.59, 0.11]) >= 135)
+    lab, _ = regrow(lab, pale, COLOURS, steps=4)
+    lab[(lab == OTHER) | (lab == 255)] = 1
+    crust = np.zeros(lab.shape, bool)
+    if kind == "toaster":  # the toast is one colour: its pink and red crust is toast
+        lab[(lab == 5) | (lab == 6)] = 4
+        crust = lab == 7
+        lab[crust] = 4
+    if kind == "lips":  # grey in a mouth is the teeth's shade
+        lab[lab == 2] = 3
+    lab = np.asarray(Image.fromarray(lab).filter(ImageFilter.ModeFilter(3))).copy()
+    red = lab == 6
+    noise = red & ~morph(morph(red, -2), 2)
+    if kind == "lips" and morph(morph(rgb.max(-1) < 70, -2), 2).sum() <= 200:
+        noise = red
+    for c in COLOURS:
+        patches, sizes = components(lab == c)
+        noise |= (sizes < SPECK)[patches] & (patches > 0)
+    lab, left = regrow(lab, noise, (1,) + COLOURS)
+    lab[left] = 1
+    if kind == "bell":
+        # the lip's band is broad and long: a thin line of its colour is the outline drawn a
+        # little light, and a scrap of it a smudge in the ink
+        rim = (lab == 8) & morph(morph(lab == 8, -1), 1)
+        patches, sizes = components(rim)
+        lab[(lab == 8) & ~(rim & (sizes >= 3 * SPECK)[patches])] = 1
+    for c in COLOURS:
+        m = lab == c
+        lab[fill_holes(m, HOLE) & ~m & (lab != 0)] = c
+    lab[(lab == 4) & crust] = 7
+    if crust.any():  # crust that rings no toast is a smudge (the upscaler tints a wing's edge): ink
+        patches, _ = components((lab == 4) | (lab == 7))
+        toast = np.unique(patches[lab == 4])
+        lab[(lab == 7) & ~np.isin(patches, toast)] = 1
+    if kind == "alarm_clock":
+        lab = clock_face(lab, rgb)
+    return lab
+
+
+def clock_face(lab, rgb):
+    """An alarm clock's face, redrawn clean. The upscaler leaves it lumpy and the mode filter
+    eats its tick marks (they're a GIF pixel each), which makes the ring round it look heavy and
+    uneven. The face becomes the ellipse that fits it best, with the hands (the ink through its
+    middle) kept as drawn, and, if the drawing (rgb) has them, TICKS small notches round its
+    edge, the first one towards the bells, so they lean with the clock."""
+    import math
+
+    import numpy as np
+    face = lab == 2
+    if face.sum() < 200:
+        return lab
+    disc = fill_holes(morph(morph(face, 3), -3), face.size)  # the face with the hands closed over
+    ys, xs = np.nonzero(disc)
+    cy, cx = ys.mean(), xs.mean()
+    evals, axes = np.linalg.eigh(np.cov(np.stack([ys - cy, xs - cx])))
+    radii = 2 * np.sqrt(evals)  # a solid ellipse's second moments are a quarter of its radii squared
+    yy, xx = np.mgrid[:lab.shape[0], :lab.shape[1]]
+    rel = np.stack([yy - cy, xx - cx], -1).astype(float)
+    ell = (((rel @ axes) / radii) ** 2).sum(-1)
+    inside = ell <= 1
+    patches, _ = components(inside & ~face)
+    hands = np.isin(patches, np.unique(patches[(ell <= 0.5) & (patches > 0)])) & (patches > 0)
+    lab = lab.copy()
+    lab[face & ~inside] = 1
+    lab[inside & ~hands] = 2
+    lab[inside & hands] = 1
+    lum = rgb.astype(int) @ np.array([0.3, 0.59, 0.11])
+    band = (ell > 0.72 ** 2) & (ell < 0.92 ** 2) & ~morph(hands, 2)  # where the ticks are, away from the hands
+    plain = np.median(lum[face & (ell < 0.6 ** 2)])
+    if not band.any() or (lum[band] < plain - 40).mean() < TICK_MARKED:
+        return lab
+    by, bx = np.nonzero(lab == 4)
+    top = math.atan2(by.mean() - cy, bx.mean() - cx) if len(by) else -math.pi / 2
+    r = radii.mean()
+    for k in range(TICKS):
+        a = top + 2 * math.pi * k / TICKS
+        d = np.array([math.sin(a), math.cos(a)])
+        edge = 1 / math.sqrt((((d @ axes) / radii) ** 2).sum())
+        along = rel @ d
+        across = np.abs(rel @ np.array([-d[1], d[0]]))
+        lab[inside & (along > edge - TICK_LEN * r) & (across <= TICK_WIDTH * r / 2)] = 1
+    return lab
+
+
+REP_SLACK = 0.02  # a drawing is traced from its most typical frame, or one this close that's cleaner
+
+
+def blotches(rgb):
+    """Cells of other colours or ink enclosed by a colour: the texture and noise the upscaler
+    drew into a frame (the closed lips' wrinkles in some frames, none in others)."""
+    lab = colour_labels(rgb)
+    return int(sum((fill_holes(lab == c, 4 * HOLE) & (lab != c) & (lab != 0)).sum() for c in (2, 3, 4, 5, 6)))
 
 
 def drawing_parts(rgb, kind):
     """A drawing split into its parts (boolean masks, PART_NAMES): the ink is the whole drawing,
-    every colour lies on it as drawn, so the line-art shows between them. Specks merge into
-    their surroundings; parts too small to read are dropped."""
-    import numpy as np
-    from PIL import Image, ImageFilter
-    raw = colour_labels(rgb)
-    lab = np.asarray(Image.fromarray(raw).filter(ImageFilter.ModeFilter(5)))
+    every colour lies on it as drawn, so the line-art shows between them. The labels are cleaned
+    first (clean_labels); parts too small to read are dropped. The crust is the toast's whole
+    patch, under the toast as the ink is under the colours: as thin as it's drawn, a ring of
+    crust on its own would round off to almost nothing in 3D (props.py)."""
+    lab = clean_labels(rgb, kind)
+    return label_parts(lab, morph(fill_holes(lab != 0, GAP), -1), 30)
 
-    def morph(m, grow):
-        im = Image.fromarray((m * 255).astype(np.uint8))
-        f = ImageFilter.MaxFilter(grow * 2 + 1) if grow > 0 else ImageFilter.MinFilter(-grow * 2 + 1)
-        return np.asarray(im.filter(f)) > 0
 
-    whole = morph(lab != 0, -1)
+def label_parts(lab, whole, least):
+    """Cleaned labels to parts: the ink is `whole`, then each colour of at least `least` cells,
+    and the crust under the toast (drawing_parts)."""
     parts = {"ink": whole}
     for i, name in enumerate(PART_NAMES[1:], start=2):
-        m = morph(morph(lab == i, -1), 1) & whole  # open: drop specks thinner than a couple of cells
-        if name == "red":  # a tongue is thick and sits in an open mouth; closed lips have thin red texture lines
-            m = morph(morph(lab == i, -2), 2) & whole
-            if kind == "lips" and morph(morph(rgb.max(-1) < 70, -2), 2).sum() <= 200:
-                m[:] = False
-        if m.sum() >= 30:
+        m = (lab == i) & whole
+        if m.sum() >= least:
             parts[name] = m
+    if "crust" in parts:
+        parts["crust"] = ((lab == 4) | (lab == 7)) & whole
     return parts
+
+
+def silhouette(crop, steps=None):
+    """A prop's own silhouette in a crop of DRAWING_PAD round its box: what isn't sky inside the
+    box, grown out through what isn't sky, `steps` cells at most (all the way with None)."""
+    import numpy as np
+    m = ~((crop[..., 2].astype(int) > 150) & (crop[..., 2].astype(int) - crop[..., 0] > 30))
+    keep = np.zeros_like(m)
+    pad = DRAWING_PAD * DRAWING_CELL
+    keep[pad:m.shape[0] - pad, pad:m.shape[1] - pad] = m[pad:m.shape[0] - pad, pad:m.shape[1] - pad]
+    k = 0
+    while steps is None or k < steps:
+        k += 1
+        grown = keep.copy()
+        grown[1:] |= keep[:-1]
+        grown[:-1] |= keep[1:]
+        grown[:, 1:] |= keep[:, :-1]
+        grown[:, :-1] |= keep[:, 1:]
+        grown &= m
+        if (grown == keep).all():
+            break
+        keep = grown
+    return keep
+
+
+def unrle(runs, w, h):
+    """The boolean mask back from rle()."""
+    import numpy as np
+    m = np.zeros((h, w), bool)
+    for i, row in enumerate(runs.split(";")):
+        v = [int(x) for x in row.split(",")] if row else []
+        for a, k in zip(v[::2], v[1::2]):
+            m[i, a:a + k] = True
+    return m
+
+
+# props too small to trace cleanly, and the bigger prop whose drawings they show (borrow_drawings)
+BORROWED = {"toaster_s": "toaster_l", "toaster_tr": "toaster_l"}
+BORROW_SCALES = [0.55 + 0.01 * k for k in range(31)]  # a copied prop's size against the one it copies
+BORROW_SHIFT = 4  # cells a copied drawing may move from where its silhouette's centre puts it
+BORROW_COLOUR = 0.35  # share of a scaled-down cell a colour needs to cover to colour it (borrow_drawings)
+
+
+def borrow_drawings(spec, sil, groups, source):
+    """Fill in spec (a prop's origin and size) with the drawings of `source`, scaled down: the
+    small toasters are the big toaster's drawing at about two thirds of its size, and at 30 GIF
+    pixels wide the upscaler invents their detail, so their own drawings trace into dark lumpy
+    blobs. One scale fits every frame (the one whose drawings cover the frames' silhouettes
+    best). The prop keeps its own drawings' timing: each group of its frames that show one
+    drawing (groups) gets the source drawing, and the place, that covers them best. Frame by
+    frame the small silhouettes are too noisy to tell two wings apart. sil: the prop's
+    silhouette in every frame."""
+    import numpy as np
+    from collections import Counter
+    w, h = spec["size"]
+    sw, sh = source["size"]
+    drawings = [{name: unrle(runs, sw, sh) for name, runs in dr["parts"].items()} for dr in source["drawings"]]
+
+    def put(grid, dx, dy):  # a scaled grid centred on the prop's grid, moved by (dx, dy)
+        nh, nw = grid.shape
+        placed = np.zeros((h, w), grid.dtype)
+        x0, y0 = (w - nw) // 2 + dx, (h - nh) // 2 + dy
+        ax, ay = max(0, x0), max(0, y0)
+        bx, by = min(w, x0 + nw), min(h, y0 + nh)
+        placed[ay:by, ax:bx] = grid[ay - y0:by - y0, ax - x0:bx - x0]
+        return placed
+
+    def place(mask, s, dx, dy):  # the source grid scaled by s, centred on the prop's grid, moved by (dx, dy)
+        return put(np.asarray(Image.fromarray(mask).resize((round(sw * s), round(sh * s)), Image.NEAREST)), dx, dy)
+
+    def shrink(parts, s):
+        """A source drawing's parts scaled by s, as labels (colour_labels' numbers). Each cell
+        takes what covers most of it, not what its centre lands on (which keeps the ink's share
+        of the drawing and breaks a toaster's thin grey rims into specks that turn into ink, so
+        the small toasters came out heavy and dark, with black lids). The drawing is what covers
+        half of a cell; a colour needs only BORROW_COLOUR of it, so a thin rim stays a rim. The
+        colours then grow back into the thick ink a cell (a line drawn as wide at 30 pixels as
+        at 45 is lighter than the big one's lines scaled down), and their specks are dropped."""
+        size = (round(sw * s), round(sh * s))
+
+        def cover(m):
+            return np.asarray(Image.fromarray(m.astype(np.uint8) * 255).resize(size, Image.BOX)) / 255
+        own = dict(parts)
+        if "crust" in own and "yellow" in own:  # the crust lies under the toast: its own cells ring it
+            own["crust"] = own["crust"] & ~own["yellow"]
+        lab = (cover(parts["ink"]) >= 0.5).astype(np.uint8)
+        names = [name for name in PART_NAMES[1:] if name in parts]
+        share = np.stack([cover(own[name]) for name in names])
+        top = share.argmax(0)
+        for j, name in enumerate(names):
+            lab[(lab == 1) & (top == j) & (share[j] >= BORROW_COLOUR)] = PART_NAMES.index(name) + 1
+        ink = lab == 1
+        lab, _ = regrow(lab, ink & morph(morph(ink, -1), 1), COLOURS, steps=1)  # only ink 3 cells thick or more
+        lab[lab == 255] = 1
+        noise = np.zeros(lab.shape, bool)
+        for c in COLOURS:
+            patches, sizes = components(lab == c)
+            noise |= (sizes < SPECK)[patches] & (patches > 0)
+        lab, left = regrow(lab, noise, (1,) + COLOURS)
+        lab[left] = 1
+        return lab
+
+    def centre(m):
+        ys, xs = np.nonzero(m)
+        return xs.mean(), ys.mean()
+
+    def fits(s, shift):
+        """[frame][drawing] = (overlap, dx, dy): where each source drawing covers each frame best."""
+        table = [[(0.0, 0, 0)] * len(drawings) for _ in sil]
+        for i, parts in enumerate(drawings):
+            base = place(parts["ink"], s, 0, 0)
+            bx, by = centre(base)
+            for k, m in enumerate(sil):
+                mx, my = centre(m)
+                cx, cy = round(mx - bx), round(my - by)
+                for dy in range(cy - shift, cy + shift + 1):
+                    for dx in range(cx - shift, cx + shift + 1):
+                        moved = np.zeros_like(base)
+                        moved[max(0, dy):h + min(0, dy), max(0, dx):w + min(0, dx)] = \
+                            base[max(0, -dy):h + min(0, -dy), max(0, -dx):w + min(0, -dx)]
+                        iou = (moved & m).sum() / max(1, (moved | m).sum())
+                        if iou > table[k][i][0]:
+                            table[k][i] = (iou, dx, dy)
+        return table
+
+    s = max(BORROW_SCALES, key=lambda s: sum(max(f[0] for f in row) for row in fits(s, 1)))
+    table = fits(s, BORROW_SHIFT)
+    spec["palette"] = source["palette"]
+    spec["drawings"], spec["frame_drawing"] = [], [0] * len(sil)
+    for g, grp in enumerate(groups):
+        i = max(range(len(drawings)), key=lambda i: sum(table[k][i][0] for k in grp))
+        where = Counter(table[k][i][1:] for k in grp).most_common(1)[0][0]
+        lab = put(shrink(drawings[i], s), *where)
+        spec["drawings"].append({"frame": grp[0], "from": source["drawings"][i]["frame"], "frames": grp,
+                                 "parts": {name: rle(m) for name, m in label_parts(lab, lab != 0, 1).items()}})
+        for k in grp:
+            spec["frame_drawing"][k] = g
+    # only the colours left at this size (the toast's thin ring of crust doesn't survive it)
+    spec["palette"] = {name: hexc for name, hexc in source["palette"].items()
+                       if any(name in dr["parts"] for dr in spec["drawings"])}
 
 
 def export_prop_drawings():
     """prop_drawings.json: every prop's drawings, traced off the upscaled frames (frames/x4/).
-    Each prop flips between a few drawings; frames are grouped by their silhouettes, the most
-    typical frame of each group is traced into coloured parts (drawing_parts), with the colours
-    measured off the original, and every frame records which drawing it shows. props.py
-    inflates the parts into 3D. Skipped without frames/x4/."""
+    Each prop flips between a few drawings; frames are grouped by their silhouettes, and the
+    most typical frame of each group (or one nearly as typical with fewer blotches) is traced
+    into coloured parts (drawing_parts), with the colours measured off the original. Every frame
+    records which drawing it shows. The props in BORROWED show a bigger prop's drawings instead
+    (borrow_drawings). props.py inflates the parts into 3D. Skipped without frames/x4/."""
     import numpy as np
     src = os.path.join(HERE, "frames", "x4")
     if not os.path.isdir(src):
@@ -252,6 +617,7 @@ def export_prop_drawings():
     n = LAYOUT["source"]["frames"]
     full = [Image.open(os.path.join(src, f"frame_{k:02d}.png")).convert("RGB") for k in range(n)]
     out = {"cell": DRAWING_CELL, "props": {}}
+    sils = {}
     for p in LAYOUT["props"]:
         if p["type"] not in TRACED_TYPES:
             continue
@@ -260,24 +626,7 @@ def export_prop_drawings():
         size = ((x1 - x0) * DRAWING_CELL, (y1 - y0) * DRAWING_CELL)
         crops = [np.asarray(im.crop((x0 * 4, y0 * 4, x1 * 4, y1 * 4)).resize(size, Image.LANCZOS)) for im in full]
         # only the prop itself: the connected silhouette under its box (neighbours stay out)
-        sil = []
-        for c in crops:
-            m = ~((c[..., 2].astype(int) > 150) & (c[..., 2].astype(int) - c[..., 0] > 30))
-            keep = np.zeros_like(m)
-            b0, b1 = DRAWING_PAD * DRAWING_CELL, size[0] - DRAWING_PAD * DRAWING_CELL
-            r0, r1 = DRAWING_PAD * DRAWING_CELL, size[1] - DRAWING_PAD * DRAWING_CELL
-            keep[r0:r1, b0:b1] = m[r0:r1, b0:b1]
-            for _ in range(DRAWING_PAD * DRAWING_CELL):  # grow back into the pad, through the prop only
-                grown = keep.copy()
-                grown[1:] |= keep[:-1]
-                grown[:-1] |= keep[1:]
-                grown[:, 1:] |= keep[:, :-1]
-                grown[:, :-1] |= keep[:, 1:]
-                grown &= m
-                if (grown == keep).all():
-                    break
-                keep = grown
-            sil.append(keep)
+        sil = [silhouette(c, GROUP_REACH * DRAWING_CELL) for c in crops]
         groups = []
         for k, m in enumerate(sil):
             for grp in groups:
@@ -287,13 +636,22 @@ def export_prop_drawings():
                     break
             else:
                 groups.append([k])
+        if p["id"] in BORROWED:  # filled in below, once the prop it copies is traced
+            sils[p["id"]] = (sil, groups)
+            out["props"][p["id"]] = {"type": p["type"], "origin": [x0, y0], "size": list(size)}
+            continue
         drawings, frame_drawing, colours = [], [0] * n, {}
         for i, grp in enumerate(groups):
             def typical(k):
                 return np.mean([(sil[k] & sil[j]).sum() / max(1, (sil[k] | sil[j]).sum()) for j in grp])
-            rep = max(grp, key=typical)
-            parts = {name: m & sil[rep] for name, m in drawing_parts(crops[rep], p["type"]).items()}
-            raw = colour_labels(crops[rep])
+            best = max(typical(k) for k in grp)
+            near = [k for k in grp if typical(k) >= best - REP_SLACK]
+            rep = min(near, key=lambda k: (blotches(crops[k] * sil[k][..., None]), -typical(k)))
+            # the traced drawing is all of the prop: a shout's lip reaches further from the box than
+            # the grouping looks (silhouette), and a pale highlight the sky test took for a hole is filled
+            solid = fill_holes(silhouette(crops[rep]), GAP)
+            parts = {name: m & solid for name, m in drawing_parts(crops[rep], p["type"]).items()}
+            raw = colour_labels(crops[rep], p["type"])
             for j, name in enumerate(PART_NAMES, start=1):
                 if name in parts:
                     colours.setdefault(name, []).append(crops[rep][(raw == j) & sil[rep]].reshape(-1, 3))
@@ -307,6 +665,9 @@ def export_prop_drawings():
                 palette[name] = "#%02X%02X%02X" % tuple(int(v) for v in np.median(px, 0))
         out["props"][p["id"]] = {"type": p["type"], "origin": [x0, y0], "size": list(size), "palette": palette,
                                  "drawings": drawings, "frame_drawing": frame_drawing}
+    for p in LAYOUT["props"]:
+        if p["id"] in BORROWED:
+            borrow_drawings(out["props"][p["id"]], *sils[p["id"]], out["props"][BORROWED[p["id"]]])
     with open(os.path.join(HERE, "prop_drawings.json"), "w", encoding="utf-8") as f:
         json.dump(out, f, separators=(",", ":"))
 
@@ -389,11 +750,36 @@ def track_prop(kind, regions):
     return tracks
 
 
+# worms whose curl is read off the upscaled frames: worm_l's arch is the smallest, and in the
+# dithered GIF its top edge jumps by whole pixels, so its track there comes out squashed (arches
+# the drawings show nearly full read as half). The others read the same either way.
+X4_CURL = ("worm_l",)
+
+
+def x4_curl(box):
+    """A worm's curl per frame off frames/x4/: how far its top edge rises (to a quarter pixel),
+    0 at its lowest, 1 at its highest. None without the upscaled frames."""
+    import numpy as np
+    src = os.path.join(HERE, "frames", "x4")
+    if not os.path.isdir(src):
+        return None
+    x0, y0, x1, y1 = box
+    rise = []
+    for k in range(LAYOUT["source"]["frames"]):
+        a = np.asarray(Image.open(os.path.join(src, f"frame_{k:02d}.png")).convert("RGB")).astype(int)
+        a = a[(y0 - 18) * 4:(y1 + 4) * 4, (x0 - 4) * 4:(x1 + 4) * 4]  # room above for the arch
+        body = ~((a[..., 2] > 150) & (a[..., 2] - a[..., 0] > 30))
+        rise.append(-np.nonzero(body.sum(1) >= 2)[0].min() / 4)
+    return norm(rise)
+
+
 def export_prop_tracks(frames):
     """prop_tracks.json: every prop's state per frame, so the props move drawing for drawing."""
     out = {}
     for p in LAYOUT["props"]:
         out[p["id"]] = track_prop(p["type"], prop_masks(frames, p["box"], pad=10))  # room to swing
+        if p["id"] in X4_CURL:
+            out[p["id"]]["curl"] = x4_curl(p["box"]) or out[p["id"]]["curl"]
     with open(os.path.join(HERE, "prop_tracks.json"), "w", encoding="utf-8") as f:
         f.write("{\n" + ",\n".join(
             f' "{pid}": {{' + ", ".join(f'"{k}": {json.dumps(v)}' for k, v in t.items()) + "}"
