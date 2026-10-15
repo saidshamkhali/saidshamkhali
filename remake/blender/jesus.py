@@ -13,7 +13,7 @@ import math
 import os
 
 import bpy
-from mathutils import Euler, Vector
+from mathutils import Euler, Quaternion, Vector
 
 from kit import (LAYOUT, REMAKE, add_shape, blobs, constant, cap, hitch, hold, lathe, loft, mat, merge, remake_frame, shell, slab, smooth_outline,
                  step_frames, sweep, toon, zsec)
@@ -673,7 +673,9 @@ def build_head(coll, rig):
         arch = -0.085 * (min(a, 62) / 62) ** 1.6  # a high forehead, the hairline arching down to the sides
         locks = -0.02 * math.exp(-((a - 60) / 9) ** 2)  # small locks at the forehead corners: a clean hairline
         hairline = 1.955 + peak + arch + locks
-        temple = hairline + (SIDEBURN - hairline) * smooth(64, 86, a)  # down the temples to the beard
+        # down the temples to the beard, starting well back: a profile shows the forehead, eye and cheek,
+        # then a narrow sideburn in front of the ear, as drawn
+        temple = hairline + (SIDEBURN - hairline) * smooth(78, 98, a)
         # the long hair hangs behind the ears and neck, lower at the sides than at the back: seen from
         # above, that reads as a level cut over the shoulders. A few pointed locks at the bottom
         curtain = 1.425 + 0.04 * smooth(115, 170, a) + 0.006 * math.sin(7 * th)
@@ -748,8 +750,8 @@ POSES = {
         "L": ((0, -186, 0), (-4, 0, 12), (-22, 0, 90)),
         "R": ((-4, 15, 0), (-34, 22, 0), (-5, 0, -30)),
     },
-    "face": {  # left hand up behind his head, scratching it; only the sleeve shows
-        "L": ((-153, -2, 55), (-110, 0, 0), (0, 0, 60)),
+    "face": {  # left hand on his cheek, fingers up, the elbow tucked in front so the sleeve rises close by his face
+        "L": ((-74, -34, 15), (-146, -20, 34), (21, -30, 55)),
         "R": ((-8, 2, 0), (-42, 10, 0), (0, 0, -20)),
     },
     "beckon": {  # left hand resting across his waist, right palm down, fingers drooping
@@ -819,6 +821,7 @@ def animate(rig):
     animate_body(rig)
     if STEPPED:  # sample the smooth motion once per source frame and hold it
         hold(rig, step_frames())
+        apply_hand_turns(rig)
         apply_fit(rig)
         aim_head(rig)
         apply_head_fit(rig)
@@ -856,34 +859,91 @@ def animate_halo(rig):
     constant(rig)
 
 
-# Finger curl per source frame, read off the (upscaled) drawings: the beckoning hand (his
-# right) folds its fingers down twice ("come here"); the hand on his belly beckons along with
-# it, from pointing to an open claw and back, closing into a fist in between.
+# The hands' shapes per source frame, read off the (upscaled) drawings, each value held until the
+# next key. Two shape keys, 0 being the open hand: "curl" folds the fingers together, down into a
+# fist; "claw" fans them and hooks them down, the beckoning "come here". The beckoning hand (his
+# right) hooks and opens twice; the hand on his belly beckons along with it, pointing, opening
+# into a claw and closing into a fist. The raised hand cups or claws on the beats of the wave, and
+# the lowered one hooks its fingers or makes a fist at his side. Reused and held frames read the
+# frame they repeat.
 CURL = {
-    "R": {0: 0.2, 11: 0.3, 12: 0.0, 13: 0.0, 14: 1.0, 15: 1.0, 16: 0.6, 17: 0.0, 18: 0.0, 19: 0.45,
-          20: 0.55, 21: 1.0, 22: 1.0, 23: 0.0, 24: 0.2},
-    "L": {0: 0.0, 11: 0.15, 12: 0.15, 14: 0.35, 16: 0.3, 17: 0.4, 18: 0.75, 19: 0.2, 21: 0.35, 23: 0.15,
-          24: 0.3, 25: 0.0},
+    "R": {0: 0.2, 3: 0.8, 4: 0.2, 8: 0.8, 12: 0.5, 14: 0.0, 28: 0.8, 30: 0.6, 33: 0.9, 37: 0.8, 40: 0.2},
+    "L": {0: 0.0, 3: 0.3, 5: 0.0, 10: 0.5, 11: 0.15, 12: 0.15, 14: 0.0, 17: 1.0, 18: 0.4, 28: 0.0, 29: 0.8, 30: 0.3,
+          31: 0.5, 33: 0.3, 34: 0.0},
+}
+CLAW = {
+    "R": {0: 0.0, 14: 1.0, 16: 0.7, 17: 0.9, 18: 0.0},
+    "L": {0: 0.0, 8: 0.3, 9: 0.0, 14: 0.8, 16: 0.6, 17: 0.0, 28: 0.4, 29: 0.0, 34: 0.25, 35: 0.0},
+}
+FLICK = 30  # degrees the beckoning wrist drops (about the rest pose's X) as the fingers claw
+# the hands' own turns per source frame (rest-pose axes, degrees), on top of the poses: the belly
+# hand turns up into an open claw (+z), over into a fist (-z) or hangs from the wrist (+x); lying
+# flat, the beckoning hand turns the back of the hand to us, as drawn, and the raised hand turns
+# its broad side to us in the back views (0-2), where it would show edge-on
+HAND_TURN = {
+    "L": {0: (0, 0, 40), 2: (0, 0, -90), 14: (0, 0, 130), 16: (0, 0, 30), 17: (0, 0, -100), 18: (40, 0, 0)},
+    "R": {12: (0, 0, 45), 18: (0, 0, 45)},
 }
 
 
-def animate_hands(rig):
-    """Key each hand's curl shape key on every source frame, held like the rest."""
+def hand_value(table, k):
+    """A CURL or CLAW table's value on source frame k (each key holds until the next)."""
+    return table[max(x for x in table if x <= k)]
+
+
+def beckoning(k):
+    """Whether source frame k is one of the beckoning beats (the timeline's beckon poses)."""
+    keys = [(t["frame"], t["pose"]) for t in LAYOUT["figure"]["timeline"]]
+    beck = [f for f, p in keys if p.startswith("beckon")]
+    return min(beck) - 1 < k <= max(beck)
+
+
+def apply_hand_turns(rig):
+    """Key the hands' own turns (HAND_TURN) and the beckoning wrist's flick into the held poses,
+    before the fit, so the fitter starts from them too."""
+    pb = rig.pose.bones
+    scene = bpy.context.scene
     n = LAYOUT["source"]["frames"]
-    for side, table in CURL.items():
+    for k in range(n):
+        turns = {side: HAND_TURN[side].get(k) for side in ("L", "R")}
+        if beckoning(k):
+            x, y, z = turns["R"] or (0, 0, 0)
+            turns["R"] = (x + FLICK * hand_value(CLAW["R"], k), y, z)
+        if not any(turns.values()):
+            continue
+        f = remake_frame(k)
+        scene.frame_set(int(f), subframe=f - int(f))
+        for side, rot in turns.items():
+            if rot and any(rot):
+                b = pb[f"hand.{side}"]
+                b.rotation_quaternion = bone_rotation(b, rot) @ b.rotation_quaternion
+                b.keyframe_insert("rotation_quaternion", frame=f)
+    constant(rig)
+
+
+def animate_hands(rig):
+    """Key each hand's shape keys on every source frame, held like the rest. Until a hand has its
+    "claw" key, the curl's droop stands in for it."""
+    n = LAYOUT["source"]["frames"]
+    held = set(LAYOUT["source"].get("held_frames", []))
+    for side in ("L", "R"):
         hand = bpy.data.objects.get(f"J_hand_{side}")
         if hand is None or hand.data.shape_keys is None:
             continue
-        kb = hand.data.shape_keys.key_blocks["curl"]
-        keys = sorted(table)
-        held = set(LAYOUT["source"].get("held_frames", []))
+        blocks = hand.data.shape_keys.key_blocks
+        has_claw = "claw" in blocks
         for k in range(n + 1):
-            src = REUSE.get(k % n, (k % n,))[0]
-            while src in held:  # a held frame repeats the one before it
+            src = k % n
+            while src in held:  # a held frame repeats the one before it, which may itself be reused
                 src -= 1
-            prev = max(x for x in keys if x <= src)
-            kb.value = table[prev]
-            kb.keyframe_insert("value", frame=remake_frame(k))
+            src = REUSE.get(src, (src,))[0]
+            curl, claw = hand_value(CURL[side], src), hand_value(CLAW[side], src)
+            if not has_claw:
+                curl = max(curl, claw)
+            for name, v in (("curl", curl), ("claw", claw)):
+                if name in blocks:
+                    blocks[name].value = v
+                    blocks[name].keyframe_insert("value", frame=remake_frame(k))
         ad = hand.data.shape_keys.animation_data
         bag = ad.action.layers[0].strips[0].channelbag(ad.action_slot) if ad and ad.action else None
         for fc in (bag.fcurves if bag else []):
@@ -900,10 +960,16 @@ def animate_hands(rig):
 # feet stand. They sit on top of the designed poses above, so the poses stay readable and the
 # fit only nudges them. Degrees for angles, units for the slide, dip, sway, thrust and feet,
 # a fraction for stretch and flare.
+# Three of them are set by hand, read off the drawings, and the fitter holds them (HAND_SET): too
+# few pixels change for its score to find them. flapL turns the raised hand in the picture's plane
+# (+ tips its top to screen-right), flapR bends the lowered hand out at the wrist, and feet_turn
+# turns both feet towards screen-left (the drawings show the sandals side-on while he faces us).
 FIT_PARAMS = ("slide", "yaw", "dip", "tilt", "pitch", "twist", "head_x", "head_y", "head_z",
               "armL_x", "armL_y", "armL_z", "elbowL", "stretchL", "armR_x", "armR_y", "armR_z", "elbowR", "stretchR",
               "footL_x", "footL_y", "footR_x", "footR_y",
-              "sway", "thrust", "lean", "skirt_x", "skirt_y", "flare", "wristL", "wristR", "hipL", "hipR", "girth", "hipgirth", "kneeL", "kneeR")
+              "sway", "thrust", "lean", "skirt_x", "skirt_y", "flare", "wristL", "wristR", "hipL", "hipR", "girth", "hipgirth", "kneeL", "kneeR",
+              "flapL", "flapR", "feet_turn")
+HAND_SET = ("flapL", "flapR", "feet_turn")
 HEAD_PARAMS = ("head_x", "head_y", "head_z")  # applied after aim_head, on top of where it points the face
 FIT_FILE = os.path.join(REMAKE, "reference", "pose_fit.json")
 
@@ -949,7 +1015,10 @@ def apply_offsets(rig, p, right=None):
                       ("upper_arm.L", (get("armL_x"), get("armL_y"), get("armL_z"))), ("forearm.L", (get("elbowL"), 0, 0)),
                       ("hand.L", (get("wristL"), 0, 0)),
                       ("upper_arm.R", (get("armR_x"), get("armR_y"), get("armR_z"))), ("forearm.R", (get("elbowR"), 0, 0)),
-                      ("hand.R", (get("wristR"), 0, 0))):
+                      # flapR bends the lowered hand out sideways (about the rest pose's Y): the drawings
+                      # stick it out flat from the cuff, back up, pointing away from his side
+                      ("hand.R", (get("wristR"), get("flapR"), 0)),
+                      ("foot.L", (0, 0, -get("feet_turn"))), ("foot.R", (0, 0, -get("feet_turn")))):
         if any(rot):
             pb[name].rotation_quaternion = bone_rotation(pb[name], rot) @ pb[name].rotation_quaternion
     for side, x in (("L", 1), ("R", -1)):
@@ -980,11 +1049,36 @@ def apply_offsets(rig, p, right=None):
         if x or y:  # +x to his left, +y forward
             foot = pb[f"foot.{side}"]
             foot.location += foot.bone.matrix_local.to_3x3().normalized().inverted() @ Vector((x, -y, 0))
+    if get("flapL"):
+        flap(rig, "hand.L", get("flapL"))
 
 
-def apply_head_offsets(rig, p):
-    """The head's fitted nod, roll and turn (+ towards screen-left), on top of aim_head."""
-    rot = (p.get("head_x", 0.0), p.get("head_y", 0.0), -p.get("head_z", 0.0))
+def flap(rig, name, deg):
+    """Turn a hand about the camera's line of sight through its wrist, + clockwise on screen: the
+    drawings flap the raised hand in the picture's plane. Which of the bone's own axes does that
+    depends on how he faces and how the palm is twisted to the viewer, so the axis is found from
+    where the bone stands now."""
+    bpy.context.view_layer.update()
+    cam = bpy.context.scene.camera
+    if cam is None:
+        return
+    pb = rig.pose.bones[name]
+    m = rig.matrix_world @ pb.matrix
+    sight = m.translation - cam.matrix_world.translation
+    # the bone's frame before its own rotation, in the world: a rotation in it pre-multiplies
+    frame = m.to_3x3().normalized() @ pb.rotation_quaternion.to_matrix().inverted()
+    axis = (frame.inverted() @ sight).normalized()
+    pb.rotation_quaternion = Quaternion(axis, math.radians(deg)) @ pb.rotation_quaternion
+
+
+def apply_head_offsets(rig, p, k=None):
+    """The head's fitted nod, roll and turn (+ towards screen-left), on top of aim_head. On the
+    profiles (source frame k) the turn is held to a few degrees: the drawings are clean profiles,
+    and a fit that turns the face back towards us finds more yellow but draws both eyes."""
+    turn = p.get("head_z", 0.0)
+    if abs(HEAD_YAW.get(k, 0)) >= PROFILE:
+        turn = max(-PROFILE_TURN, min(PROFILE_TURN, turn))
+    rot = (p.get("head_x", 0.0), p.get("head_y", 0.0), -turn)
     if any(rot):
         pb = rig.pose.bones["head"]
         pb.rotation_quaternion = bone_rotation(pb, rot) @ pb.rotation_quaternion
@@ -992,24 +1086,45 @@ def apply_head_offsets(rig, p):
 
 # Where his face points, read off the drawings: degrees towards screen-left, 0 facing us. In
 # every front-facing frame he looks off to screen-left, a three-quarter view, whichever way
-# his body faces. Frames not listed keep the head in line with the body (the turns).
-HEAD_YAW = {3: 85, 4: 85, 5: 75, 6: 47, 7: 47, 8: 40, 9: 35, 10: 45, 11: 45, 12: 42, 13: 42, 14: 42, 15: 42, 16: 40,
+# his body faces, and in the turns (3-5, 33-35) he's drawn in profile. Frames not listed keep the
+# head in line with the body.
+HEAD_YAW = {3: 82, 4: 84, 5: 75, 6: 47, 7: 47, 8: 40, 9: 35, 10: 45, 11: 45, 12: 42, 13: 42, 14: 42, 15: 42, 16: 40,
             17: 40, 18: 40, 19: 42, 20: 42, 21: 42, 22: 42, 23: 42, 24: 45, 25: 40, 26: 40, 27: 35,
-            28: 15, 29: 10, 30: -25, 31: -40}
+            28: 15, 29: 10, 30: -25, 31: -40, 33: -80, 34: -84, 35: -90}
+PROFILE, PROFILE_TURN = 75, 5  # from this HEAD_YAW on the face is a profile; the fit may turn it this much
+
+
+def face_yaw(rig):
+    """Where the face points now, in degrees towards screen-left (0: facing the camera, along -Y), read
+    off the head bone as posed: the body's turn, the fitted twist of the spine and chest and the head's
+    own turn all count."""
+    pb = rig.pose.bones["head"]
+    front = pb.bone.matrix_local.to_3x3().inverted() @ Vector((0, -1, 0))  # the face's rest front, in the bone
+    f = (rig.matrix_world @ pb.matrix).to_3x3() @ front
+    return math.degrees(math.atan2(-f.x, -f.y))
+
+
+def face_to(rig, target):
+    """Turn the head about the neck until the face points at target (degrees, as HEAD_YAW). A
+    second pass takes up what the chest's lean and pitch made of the first."""
+    pb = rig.pose.bones["head"]
+    for _ in range(2):
+        bpy.context.view_layer.update()
+        turn = (target - face_yaw(rig) + 180) % 360 - 180
+        pb.rotation_quaternion = bone_rotation(pb, (0, 0, -turn)) @ pb.rotation_quaternion
 
 
 def aim_head(rig):
-    """Turn the head (about the neck) so the face points where HEAD_YAW says, given the
-    body's own turn on that frame."""
+    """Turn the head so the face points where HEAD_YAW says, whatever the body and the fitted twist
+    of his spine did on that frame (reading only the body's turn let the twist leak into the face,
+    so the profiles came out three-quarter views)."""
     from kit import fcurves
     scene = bpy.context.scene
     pb = rig.pose.bones["head"]
     for k, target in HEAD_YAW.items():
         f = remake_frame(k)
         scene.frame_set(int(f), subframe=f - int(f))
-        body = -math.degrees(rig.rotation_euler.z)
-        turn = (target - body + 180) % 360 - 180
-        pb.rotation_quaternion = bone_rotation(pb, (0, 0, -turn)) @ pb.rotation_quaternion
+        face_to(rig, target)
         pb.keyframe_insert("rotation_quaternion", frame=f)
     for fc in fcurves(rig):
         if fc.data_path.endswith('"head"].rotation_quaternion'):
@@ -1017,10 +1132,12 @@ def aim_head(rig):
                 kp.interpolation = "CONSTANT"
 
 
-# The second wave reuses the first wave's drawings, slid across: frame: (drawing reused,
-# shift in source pixels, extra fit offsets), measured by matching the GIF's silhouettes to
-# each other and tracking where the head went.
-REUSE = {24: (11, 5, {}), 27: (9, 0, {})}
+# Drawings the original uses twice, slid across: frame: (drawing reused, shift in source pixels,
+# extra fit offsets), measured by matching the GIF's silhouettes to each other and tracking where
+# the head went. The beckon is a ping-pong, its return beats the outgoing ones played backwards
+# (23 = 12, 22 = 14, 21 = 16, 19 = 17), and the second wave reuses the first's drawings.
+REUSE = {19: (17, 1, {}), 21: (16, 2, {}), 22: (14, 2, {}), 23: (12, 2, {}), 24: (11, 5, {}), 25: (10, 3, {}),
+         27: (9, 0, {})}
 
 
 def source_px():
@@ -1094,7 +1211,7 @@ def apply_head_fit(rig):
     for k, p in sorted(fit.items()):
         f = remake_frame(k)
         scene.frame_set(int(f), subframe=f - int(f))
-        apply_head_offsets(rig, p)
+        apply_head_offsets(rig, p, k)
         pb.keyframe_insert("rotation_quaternion", frame=f)
     constant(rig)
 
