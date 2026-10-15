@@ -229,11 +229,16 @@ def find_font(path):
 
 # The source title is a heavy, wide display serif. Ultra, emboldened and tracked out, then
 # fitted to the source glyph box in width and height separately, matches it.
-# How much the letters are thickened all round (the curve's offset, in font units): enough to
-# close the slits Ultra cuts between neighbouring serifs and strokes (the feet of m, the tops of
-# W, beside the crossbars of H and e), which the source's fatter letters don't have. 0.012 only
-# narrowed them to light hairline cracks. It gives the source's weight of ink, within 5%.
-TITLE_BOLD = 0.02
+# How much the letters are thickened all round (the curve's offset, in font units). Ultra cuts slits
+# between neighbouring serifs and strokes (the feet of m, the tops of W, beside the crossbars of H
+# and e), which the source's fatter letters don't have, and they read as hairline cracks. An offset
+# big enough to close them (0.02) also filled the counters: a slit for the e's eye, a dot for the a's
+# bowl. So the letters are only thickened a little, to the source's weight of ink (within 5%), and
+# the slits are closed on their own (close_slits): a closing of TITLE_CLOSE fills gaps narrower than
+# twice that, while the counters, wider, keep their size.
+TITLE_BOLD = 0.008
+TITLE_CLOSE = 0.015
+TITLE_VOXEL = 0.008  # the closing's grid: finer only adds time (0.004 took ~10 s) for the same letters
 TITLE_TRACKING = 1.12
 TITLE_WORD_SPACE = 1.2
 
@@ -280,7 +285,38 @@ def build_title(cam, coll, font_path):
     coll.objects.link(obj)
     obj.data.materials.append(flat("TitleInk", "#111111"))
     obj.visible_shadow = False
+    if TITLE_CLOSE > 0:
+        close_slits(obj, obj.data.materials[0])
     fit_title(obj, cam)
+
+
+def close_slits(obj, material):
+    """Fill the slits narrower than 2 * TITLE_CLOSE (font units) and leave the rest of the letters as they
+    are: a morphological closing, grown by TITLE_CLOSE and shrunk back by as much, on the letters'
+    distance field (a Geometry Nodes modifier, so the title stays a text object). Wider gaps (the
+    counters of e, a, g and o) come back at their own size."""
+    nt = bpy.data.node_groups.new("TitleClose", "GeometryNodeTree")
+    nt.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+    nt.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+    n, link = nt.nodes, nt.links.new
+    gin, gout = n.new("NodeGroupInput"), n.new("NodeGroupOutput")
+    sdf = n.new("GeometryNodeMeshToSDFGrid")
+    sdf.inputs["Voxel Size"].default_value = TITLE_VOXEL
+    sdf.inputs["Band Width"].default_value = math.ceil(TITLE_CLOSE / TITLE_VOXEL) + 3
+    grow, shrink = n.new("GeometryNodeSDFGridOffset"), n.new("GeometryNodeSDFGridOffset")
+    grow.inputs["Distance"].default_value = TITLE_CLOSE
+    shrink.inputs["Distance"].default_value = -TITLE_CLOSE
+    mesh = n.new("GeometryNodeGridToMesh")
+    mesh.inputs["Threshold"].default_value = 0.0
+    setmat = n.new("GeometryNodeSetMaterial")
+    setmat.inputs["Material"].default_value = material
+    link(gin.outputs["Geometry"], sdf.inputs["Mesh"])
+    link(sdf.outputs[0], grow.inputs["Grid"])
+    link(grow.outputs[0], shrink.inputs["Grid"])
+    link(shrink.outputs[0], mesh.inputs["Grid"])
+    link(mesh.outputs["Mesh"], setmat.inputs["Geometry"])
+    link(setmat.outputs["Geometry"], gout.inputs["Geometry"])
+    obj.modifiers.new("CloseSlits", "NODES").node_group = nt
 
 
 def world_and_lights():
@@ -416,25 +452,131 @@ def contact_shadow(rig, coll):
 
 
 # The drawings line each hanging sleeve all the way down where it lies on the robe (the back views,
-# the waves, the turns). The outline shells can't draw that: the sleeve sinks a little into the
-# robe there, so its shell is buried. Line Art draws the line where a surface sinks into the robe
-# instead (their intersection): down the sleeves, and as a bonus along both edges of the V-neck
-# and under the hair. Not where the two tubes of a sleeve meet at the elbow, nor where the legs
-# cross the hem. False skips it (it about doubles the render time of a frame).
+# the waves, the turns), and the outline shells can't draw every line they have. A Grease Pencil
+# Line Art object draws the rest, in passes:
+# - where a sleeve sinks a little into the robe (their intersection), its shell is buried: a slate line
+#   down the sleeve. Only there: the robe's other intersections (under the hair, the V-neck and the
+#   collar) doubled lines the shells already draw, and a hand's left slate scraps round it.
+# - where a hand sinks into the robe, its shell is buried too: a line in the skin's brown, as the rest
+#   of the hand has.
+# - edge marks, in slate: the hem across his legs (jesus.flat_hem: its cap is edge-on, so its shell
+#   draws nothing there) and each cuff's end, where the hand comes out (jesus.build_arms: the hand
+#   covers the shell there).
+# Not where the two tubes of a sleeve meet at the elbow, nor where the legs cross the hem. False skips
+# it (it about doubles the render time of a frame).
 INNER_LINES = True
 SLEEVES = ("J_sleeve_", "J_cuff_")
+HANDS = ("J_hand_",)
+MARKED = ("J_robe", "J_cuff_")  # the parts with edge marks
 BELOW_HEM = ("J_leg_", "J_foot_", "J_sandal_")
+# Line Art tags an intersection with the masks of the collections of the two parts it lies between,
+# and a pass in match mode keeps only the lines tagged exactly with its own: robe and sleeve (1+2),
+# robe and hand (1+4). One bit per group of parts, each in a collection of its own inside the figure's
+MASK_BITS = {"robe": 0, "sleeves": 1, "hands": 2}
+# strokes shorter than this (pixels at RES_X) are dropped: the ticks, dashes and hooks a sleeve leaves
+# where it starts and ends against the robe (the shoulder, the curl near a hand)
+MIN_STROKE_PX = 6.0
+
+
+def mask_collection(fig_coll, group, prefixes):
+    """A collection inside the figure's holding these parts too (they stay in the figure's collection),
+    with its own intersection mask bit: Line Art reads the masks from collections, not objects."""
+    c = new_collection(f"Lines {group}", fig_coll)
+    c.lineart_use_intersection_mask = True
+    c.lineart_intersection_mask[MASK_BITS[group]] = True
+    for o in list(fig_coll.objects):
+        if o.name.startswith(prefixes):
+            c.objects.link(o)
+    return c
+
+
+def marks_off_shells(obj):
+    """The outline shell (kit.add_outline, a Solidify) copies the edge marks onto its own copy of each
+    edge, a second line 2 px out from the first. Clear them on the shell's faces (those with the
+    outline material) after it, so only the part's own edges are drawn."""
+    shell = obj.modifiers.get("Outline")
+    if shell is None:
+        return
+    name = f"ShellMarks{shell.material_offset}"  # one group per shell material slot
+    nt = bpy.data.node_groups.get(name)
+    if nt is None:
+        nt = bpy.data.node_groups.new(name, "GeometryNodeTree")
+        nt.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+        nt.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+        n, link = nt.nodes, nt.links.new
+        gin, gout = n.new("NodeGroupInput"), n.new("NodeGroupOutput")
+        on_shell = n.new("FunctionNodeCompare")  # the edge's faces have the shell's material
+        on_shell.data_type, on_shell.operation = "FLOAT", "GREATER_THAN"
+        link(n.new("GeometryNodeInputMaterialIndex").outputs[0], on_shell.inputs["A"])
+        on_shell.inputs["B"].default_value = shell.material_offset - 0.5
+        clear = n.new("GeometryNodeStoreNamedAttribute")
+        clear.data_type, clear.domain = "BOOLEAN", "EDGE"
+        clear.inputs["Name"].default_value = "freestyle_edge"
+        clear.inputs["Value"].default_value = False
+        link(gin.outputs["Geometry"], clear.inputs["Geometry"])
+        link(on_shell.outputs["Result"], clear.inputs["Selection"])
+        link(clear.outputs["Geometry"], gout.inputs["Geometry"])
+    obj.modifiers.new("ShellMarks", "NODES").node_group = nt
+
+
+def drop_short_strokes(obj, length):
+    """Delete the strokes shorter than `length` (world units) from the Line Art's output."""
+    nt = bpy.data.node_groups.new("ShortStrokes", "GeometryNodeTree")
+    nt.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+    nt.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+    n, link = nt.nodes, nt.links.new
+    gin, gout = n.new("NodeGroupInput"), n.new("NodeGroupOutput")
+    short = n.new("FunctionNodeCompare")
+    short.data_type, short.operation = "FLOAT", "LESS_THAN"
+    link(n.new("GeometryNodeSplineLength").outputs["Length"], short.inputs["A"])
+    short.inputs["B"].default_value = length
+    delete = n.new("GeometryNodeDeleteGeometry")
+    delete.domain = "CURVE"
+    link(gin.outputs["Geometry"], delete.inputs["Geometry"])
+    link(short.outputs["Result"], delete.inputs["Selection"])
+    link(delete.outputs["Geometry"], gout.inputs["Geometry"])
+    mod = obj.modifiers.new("ShortStrokes", "NODES")
+    mod.node_group = nt
+    mod.show_viewport = False
+
+
+def line_pass(obj, name, layer, hex_color, fig_coll, radius, groups, edge_marks=False, cache=False):
+    """One Line Art pass onto its own layer, in its own colour: the intersections between exactly these
+    groups of parts (MASK_BITS), and the edge marks if asked."""
+    gp = obj.data
+    gp.layers.new(layer).frames.new(bpy.context.scene.frame_start)
+    ink = bpy.data.materials.new(f"InnerInk_{layer}")
+    bpy.data.materials.create_gpencil_data(ink)
+    ink.grease_pencil.color = srgb(hex_color) + (1.0,)
+    gp.materials.append(ink)
+    m = obj.modifiers.new(name, "LINEART")
+    m.source_type = "COLLECTION"
+    m.source_collection = fig_coll
+    m.target_layer = layer
+    m.target_material = ink
+    for kind in ("contour", "loose", "crease", "material"):
+        setattr(m, f"use_{kind}", False)
+    m.use_intersection = True
+    m.use_edge_mark = edge_marks
+    for g in groups:
+        m.use_intersection_mask[MASK_BITS[g]] = True
+    m.use_intersection_match = True
+    m.radius = radius
+    m.use_cache = cache  # the second pass reuses the first one's lines instead of computing them again
+    # render only: the fitter and every frame change in the UI would otherwise recompute it
+    m.show_viewport = False
+    return m
 
 
 def inner_lines(cam, rig, fig_coll, coll):
-    """A Grease Pencil Line Art object drawing where the figure's parts sink into the robe, in the
-    robe's line colour and the outline's weight. Everything else only hides lines behind it."""
+    """A Grease Pencil Line Art object drawing the figure's inner lines (see INNER_LINES), in the
+    outline's weight. Everything else only hides lines behind it."""
     for o in fig_coll.all_objects:
         if o.type != "MESH":
             continue
         if o.hide_render or o.get("helper") or o.name.startswith(BELOW_HEM):
             # the legs cross the robe near the hem in the turns, a broken dashed line; and below
-            # the hem they can't hide a sleeve
+            # the hem they can't hide a sleeve. Not hiding anything, they let the hem's line cross them
             o.lineart.usage = "EXCLUDE"
         elif o.name == "J_robe":
             o.lineart.usage = "FORCE_INTERSECTION"  # meets the sleeves, which draw no lines of their own
@@ -442,28 +584,28 @@ def inner_lines(cam, rig, fig_coll, coll):
             o.lineart.usage = "NO_INTERSECTION"  # so not where the two tubes meet at the elbow
         else:
             o.lineart.usage = "OCCLUSION_ONLY"
+        if o.name.startswith(MARKED):
+            marks_off_shells(o)
+    mask_collection(fig_coll, "robe", ("J_robe",))
+    mask_collection(fig_coll, "sleeves", SLEEVES)
+    mask_collection(fig_coll, "hands", HANDS)
     gp = bpy.data.grease_pencils.new("InnerLines")
     obj = bpy.data.objects.new("InnerLines", gp)
     coll.objects.link(obj)
-    gp.layers.new("Lines").frames.new(bpy.context.scene.frame_start)
-    ink = bpy.data.materials.new("InnerInk")
-    bpy.data.materials.create_gpencil_data(ink)
-    ink.grease_pencil.color = srgb(LINE["robe"]) + (1.0,)
-    gp.materials.append(ink)
-    m = obj.modifiers.new("LineArt", "LINEART")
-    m.source_type = "COLLECTION"
-    m.source_collection = fig_coll
-    m.target_layer = "Lines"
-    m.target_material = ink
-    for kind in ("contour", "loose", "crease", "edge_mark", "material"):
-        setattr(m, f"use_{kind}", False)
-    m.use_intersection = True
-    # the stroke's radius is in world units: the outline's weight at his distance from the camera
+    # Line Art already hides each line behind the parts in front of it, so draw its lines over the
+    # render: where a knee pokes through the robe in the turns, the render's own depth test cut the
+    # hem's line short behind it
+    obj.show_in_front = True
+    # the outline's weight at his distance from the camera, in world units. Measured on the renders, a
+    # Line Art stroke comes out as wide as its radius
     fwd = cam.matrix_world.to_3x3() @ Vector((0, 0, -1))
     depth = (rig.matrix_world.translation + Vector((0, 0, 1.0)) - cam.matrix_world.translation).dot(fwd)
-    m.radius = 0.5 * OUTLINE_PX * 2 * depth * (SENSOR / 2 / LENS) / RES_X
-    # render only: the fitter and every frame change in the UI would otherwise recompute it
-    m.show_viewport = False
+    world_px = 2 * depth * (SENSOR / 2 / LENS) / RES_X
+    line_pass(obj, "LineArt", "Lines", LINE["robe"], fig_coll, OUTLINE_PX * world_px, ("robe", "sleeves"),
+              edge_marks=True)
+    line_pass(obj, "LineArtHands", "Hands", LINE["skin"], fig_coll, OUTLINE_PX * world_px, ("robe", "hands"),
+              cache=True)
+    drop_short_strokes(obj, MIN_STROKE_PX * world_px)
 
 
 def render_settings(percent):
