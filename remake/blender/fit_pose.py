@@ -7,8 +7,8 @@ Options:
                      frames are skipped, they copy)
     --loss L         "regions" (default when reference/frames/regions.npz exists) or "silhouette"
     --iters N        CMA-ES generations per frame (default 60)
-    --out PATH       where to write the offsets (default remake/reference/pose_fit.json; a
-                     partial run writes PATH with only its frames, merge them with --merge)
+    --out PATH       where to write the offsets (default remake/reference/pose_fit.json, where only the
+                     frames fitted change; a file of its own holds only its frames: merge such parts with --merge)
     --fix N=V,...    hold these offsets at fixed values instead of fitting them (e.g. yaw=0
                      where the drawing alone would rather turn him than move an arm)
     --part robe      a second pass over the hips and robe alone (ROBE_PARAMS), scored on the lower
@@ -346,6 +346,8 @@ class Fitter:
 
             x0 = np.array([max(-1.0, min(1.0, guess.get(n, 0.0) / BOUND[n])) for n in names])
             before = self.score(params(x0))
+            if not names:  # everything asked for is held (--fix, or set by hand): nothing to search
+                return params(x0), before, before
             # a wide search, then a narrow one from the best pose it found: from a pose that
             # already fits well, wide steps that move every offset at once rarely beat it
             c, x = cmaes(cost, x0, sigma=0.12, iters=iters // 2, seed=k)
@@ -357,6 +359,15 @@ class Fitter:
             anim.action_slot = slot
 
 
+def with_held(frames):
+    """Held frames repeat the one before them."""
+    frames = dict(frames)
+    for k in sorted(LAYOUT["source"].get("held_frames", [])):
+        if k - 1 in frames:
+            frames[k] = dict(frames[k - 1])
+    return frames
+
+
 def main():
     opts = parse_args()
     if opts["merge"]:
@@ -364,11 +375,7 @@ def main():
         for path in opts["merge"]:
             with open(path, encoding="utf-8") as f:
                 frames.update({int(k): v for k, v in json.load(f)["frames"].items()})
-        held = LAYOUT["source"].get("held_frames", [])
-        for k in sorted(held):  # held frames repeat the one before
-            if k - 1 in frames:
-                frames[k] = dict(frames[k - 1])
-        write(opts["out"], frames)
+        write(opts["out"], with_held(frames))
         print(f"merged {len(opts['merge'])} files into {opts['out']}")
         return
     fitter = Fitter(opts["loss"], opts["part"], opts["only"])
@@ -383,7 +390,9 @@ def main():
         out[k] = p
         print(f"frame {k:2d}: match {before:.3f} -> {score:.3f}  " +
               " ".join(f"{n}={v:+.3g}" for n, v in p.items() if abs(v) > 1e-6), flush=True)
-        write(opts["out"], out)
+        # fitting straight into pose_fit.json keeps every frame not refitted; a part file (--out) holds
+        # only its own frames, for --merge
+        write(opts["out"], with_held({**prior, **out}) if opts["out"] == jesus.FIT_FILE else out)
     print(f"{fitter.renders} renders in {time.time() - t0:.0f} s")
 
 
