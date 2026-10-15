@@ -127,6 +127,33 @@ def descendants(obj):
     return out
 
 
+DRAWING_FLOOR = 0.02  # a traced drawing's lowest point stands this far above the floor
+
+
+def place_drawing(cam, root):
+    """Put a traced drawing (props.build_traced) back exactly where it was traced. Its grid is
+    turned parallel to the image plane, so it projects as an undistorted copy at one scale
+    wherever it is in the frame, centred on the ray through the grid's centre (where it lay in
+    the GIF), at the depth where one of its GIF pixels covers one pixel of the frame. That
+    depth is the one where its lowest drawn point clears the floor: every drawing then lands
+    at its traced place and size, the bigger ones (a wing up, a shout) included."""
+    from mathutils import Matrix
+    ox, oy = root["grid_origin_px"]
+    gw, gh = root["grid_px"]
+    root.location, root.scale = (0, 0, 0), (1, 1, 1)
+    # the grid's -Y towards the camera, its Z along the camera's up
+    root.rotation_euler = (cam.matrix_world.to_3x3() @ Matrix.Rotation(-math.pi / 2, 3, "X")).to_euler()
+    bpy.context.view_layer.update()
+    low = min((o.matrix_world @ Vector(c)).z for o in descendants(root) if o.type == "MESH" for c in o.bound_box)
+    eye, ray = screen_ray(cam, ox + gw / 2, oy + gh / 2)
+    fwd = cam.matrix_world.to_3x3() @ Vector((0, 0, -1))
+    # at distance t along the ray the scale is k*t (one GIF pixel covers 2*depth*tan/SRC_W units)
+    k = 2 * ray.dot(fwd) * (SENSOR / 2) / LENS / SRC_W / root["px_units"]
+    t = (DRAWING_FLOOR - eye.z) / (ray.z + k * low)
+    root.scale = (k * t,) * 3
+    root.location = eye + ray * t
+
+
 def place_prop(cam, root, box, turn=0.0):
     """Scale and move a prop so its silhouette covers the source box.
     turn: extra yaw in degrees on top of facing the camera. The prop is measured as
@@ -135,13 +162,20 @@ def place_prop(cam, root, box, turn=0.0):
     changes is sized in a set pose, and without its outline shells, so re-placing an outlined
     prop gives the same result. Parts flagged "no_fit", or hidden on that frame (a mouth swaps
     drawings), are left out of the measurement.
-    A root with "fit_axis" = "x" is sized by its width alone; one with "face_camera" (a traced
-    drawing) is also tipped back to face the camera square on."""
+    A root with "fit_axis" = "x" is sized by its width alone. One with "level" lies along the
+    camera's horizontal instead of facing the camera, so it reads level anywhere in the frame
+    (a worm off to the side would slant). A traced drawing ("face_camera") isn't fitted to the
+    box at all: place_drawing puts it back where it was traced."""
     scene = bpy.context.scene
     shells = [m for o in descendants(root) if o.type == "MESH" for m in o.modifiers
               if m.name == "Outline" and m.show_viewport]
     for m in shells:
         m.show_viewport = False
+    if root.get("face_camera"):
+        place_drawing(cam, root)
+        for m in shells:
+            m.show_viewport = True
+        return
     fit = root.get("fit_frame", 1.0)
     scene.frame_set(int(fit), subframe=fit - int(fit))
     x0, y0, x1, y1 = box
@@ -155,11 +189,10 @@ def place_prop(cam, root, box, turn=0.0):
     pos = on_plane(cam, cx, cy, 0.5)
     s, mid_r = 1.0, 0.0
     for _ in range(4):
-        yaw = math.atan2(cam.location.x - pos.x, -(cam.location.y - pos.y))
-        root.rotation_euler.z = yaw + (0.0 if root.get("face_camera") else math.radians(turn))
-        if root.get("face_camera"):  # a traced drawing: square on to the camera, which looks down on it
-            off = cam.location - pos
-            root.rotation_euler.x = -math.atan2(off.z, math.hypot(off.x, off.y))
+        if root.get("level"):
+            root.rotation_euler.z = math.atan2(right.y, right.x)
+        else:
+            root.rotation_euler.z = math.atan2(cam.location.x - pos.x, -(cam.location.y - pos.y)) + math.radians(turn)
         bpy.context.view_layer.update()
         pts = [o.matrix_world @ Vector(c) for o in descendants(root)
                if o.type == "MESH" and not o.get("no_fit") and not o.hide_render for c in o.bound_box]
