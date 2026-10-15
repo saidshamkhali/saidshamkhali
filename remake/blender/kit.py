@@ -146,11 +146,12 @@ def outline_material():
 
 PALETTE = {
     "bg": "#86C5E3",
-    "skin": "#E8C214",  # between Simpsons lemon and the GIF's gold (#D0AA10)
-    "robe": "#C1C1D3",  # the GIF's lavender grey (#B9B9CA), a touch lighter for the lit side
-    "hair": "#2A181B",  # the GIF's near-black plum, for the hair, beard and moustache
+    # the figure's colours are the GIF's own, measured (the lit side renders at about 0.965 of the hex)
+    "skin": "#DCB014",  # the drawings' deep gold, the same as their bells (GIF #D0AA10)
+    "robe": "#C1C2D3",  # lavender grey (GIF #B9B9CA)
+    "hair": "#2C191C",  # near-black plum, for the hair, beard and moustache (GIF #2A181B)
     "sandal": "#2B1A17",  # near black, like the hair (the source draws dark sandals)
-    "halo": "#8E9BA8",  # a slate-grey hoop, darker than the sky, as drawn
+    "halo": "#6A8296",  # a slate hoop, darker than the sky (GIF #5F6F83 edge-on, #6B95A7 open)
     "white": "#FFFFFF",
     "black": "#1A1A1A",
     "metal": "#C6C8CC",
