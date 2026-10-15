@@ -64,7 +64,7 @@ python remake/make_gif.py
 
 With the Blender app instead: `blender --background --python remake/blender/build_scene.py -- --render`.
 
-The profile README shows `jesus-christ-homer-3d.webp` in the repo root, a copy of `render/homers_web_page.webp` (`python remake/make_gif.py --width 1200 --formats webp --out remake/render/homers_web_page`, rendered at `--percent 150`). Copy it over after re-rendering.
+The profile README shows `jesus-christ-homer-3d.gif` in the repo root, a copy of `render/homers_web_page.gif` (`python remake/make_gif.py --width 1200 --formats gif --out remake/render/homers_web_page`, rendered at `--percent 150`): a GIF plays everywhere the repo is shown. `jesus-christ-homer-3d.webp` is the same loop in full colour (`--formats webp`). Copy them over after re-rendering.
 
 The script writes `remake/blender/homers_web_page.blend`, so you can open the scene and keep working in the UI.
 
