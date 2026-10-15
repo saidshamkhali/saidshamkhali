@@ -15,8 +15,8 @@ import os
 import bpy
 from mathutils import Euler, Vector
 
-from kit import (LAYOUT, REMAKE, add_shape, blobs, constant, cap, hitch, hold, loft, mat, merge, remake_frame, shell, slab, smooth_outline,
-                 step_frames, sweep, torus, zsec)
+from kit import (LAYOUT, REMAKE, add_shape, blobs, constant, cap, hitch, hold, lathe, loft, mat, merge, remake_frame, shell, slab, smooth_outline,
+                 step_frames, sweep, zsec)
 
 RIG = "Jesus_Rig"
 
@@ -37,6 +37,8 @@ BONES = {
     "hip.R": ((-0.15, 0, 0.94), (-0.15, 0, 0.8), "hips"),
     # the skirt of the robe, hanging from the waist: swings the hem and flares it (bone scale)
     "skirt": ((0, 0, 1.0), (0, 0, 0.45), "hips"),
+    # the halo rides on the head but keeps level, tipping towards the camera on some drawings
+    "halo": ((0, 0, 2.19), (0, 0, 2.29), "head"),
 }
 SHOULDER = (0.222, 1.42)  # (x, z) of the joints on his left side
 ELBOW = (0.262, 1.13)
@@ -290,14 +292,16 @@ def build_sandal(coll, side, x):
             (0.0, 0.272), (-0.05, 0.26), (-0.082, 0.21), (-0.088, 0.12), (-0.08, 0.0), (-0.058, -0.074)]
     pts = smooth_outline(sole, 40)
     s = slab(f"_sole_{side}", coll, sole_m, [(a, f) for a, f in pts], 0.034, plane="XZ", offset=0.0, bevel=0.01)
-    # slab() lays the outline in XZ; turn it flat and into place
+    # slab() lays the outline in XZ; turn it flat and into place, a hair above the floor: a sole lying
+    # on it z-fights, and its outline frays into a sawtooth along the ground
+    lift = 0.008
     for v in s.data.vertices:
         a, depth, f = v.co.x, v.co.y, v.co.z
-        p = at(a, f, 0.017 + depth)
+        p = at(a, f, lift + 0.017 + depth)
         v.co = Vector(p)
     strap = sweep(f"_strap_{side}", coll, sole_m,
-                  [at(-0.078, 0.13, 0.034), at(-0.05, 0.135, 0.088), at(0.0, 0.138, 0.104),
-                   at(0.05, 0.135, 0.088), at(0.078, 0.13, 0.034)], [0.024], n=16, ring=12, squash=0.45)
+                  [at(-0.078, 0.13, lift + 0.034), at(-0.05, 0.135, lift + 0.088), at(0.0, 0.138, lift + 0.104),
+                   at(0.05, 0.135, lift + 0.088), at(0.078, 0.13, lift + 0.034)], [0.024], n=16, ring=12, squash=0.45)
     return merge(f"J_sandal_{side}", coll, sole_m, [s, strap])
 
 
@@ -385,14 +389,26 @@ SKULL = [
     (1.84, 0.12, 0.137, 0.0), (1.89, 0.113, 0.129, 0.0), (1.93, 0.098, 0.112, 0.0),
     (1.958, 0.074, 0.085, 0.0), (1.975, 0.042, 0.048, 0.0), (1.981, 0.0, 0.0, 0.0),
 ]
-EYE_R = 0.039
+EYE_R = 0.035
+LOOK = 6         # degrees the pupils aim down from level
+PUPIL = 0.0095   # pupil radius
+LID_CUT = -0.08  # where the lid's edge cuts the eye, in eye radii above its centre (below 0: past halfway)
+LID_TILT = 20    # degrees the lid's edge is tipped back, square to the camera's view
 EYE_X = 0.058
 EYE_Z = 1.83
 EYE_Y = -0.118  # half out of the face, as Simpsons eyes are
 HANG_Z = 1.7    # below this the hair hangs straight instead of following the head
 MUZZLE = 0.045  # how far the Simpsons muzzle (moustache, lip, chin) juts out of the face
 HAIR_TOP = 0.02  # hair thickness on the crown
-EAR_Z = 1.725
+HALO = (0.165, 0.013, 0.006)  # the halo's radius, and its band's half width and half thickness
+SIDEBURN = 1.715  # the hair at the sides comes down over where the ears would be, onto the beard
+# The beard below the jaw, (z, rx, ry, cy) sections: round the neck from the jaw into the collar,
+# then the point hanging in front of it down to the top of the V-neck.
+BEARD_NECK = [(1.628, 0.104, 0.1, -0.036), (1.6, 0.108, 0.1, -0.04), (1.57, 0.104, 0.097, -0.04),
+              (1.54, 0.099, 0.094, -0.036), (1.515, 0.094, 0.091, -0.032), (1.495, 0.088, 0.087, -0.03)]
+BEARD_POINT = [(1.612, 0.072, 0.04, -0.136), (1.585, 0.076, 0.042, -0.136), (1.555, 0.068, 0.038, -0.136),
+               (1.525, 0.052, 0.032, -0.139), (1.497, 0.032, 0.024, -0.142), (1.475, 0.013, 0.013, -0.145),
+               (1.468, 0.002, 0.002, -0.145)]
 
 
 def hair_top():
@@ -449,36 +465,25 @@ def build_head(coll, rig):
             v.co.y -= muzzle(v.co.z) * c ** 3
     skin(skull, rig, head)
 
-    # Simpsons ears: a C-shaped rim opening towards the face, lying on the side of the head
-    for x, side in ((1, "L"), (-1, "R")):
-        th = math.radians(93) * x
-        base = head_point(th, EAR_Z)
-        rim = []
-        for k in range(9):  # from the top front, round the back, to the lobe at the bottom front
-            a = math.radians(-70 + 290 * k / 8)
-            rim.append(base + outward(th) * 0.014 + Vector((0, 0.022 * math.sin(a), 0.036 * math.cos(a))))
-        parts = [sweep(f"_ear_rim_{side}", coll, skin_m, rim, [0.011, 0.012, 0.012, 0.012, 0.012, 0.012, 0.012, 0.013, 0.014],
-                       n=24, ring=12, squash=0.7, up=tuple(outward(th))),
-                 blobs(f"_ear_bowl_{side}", coll, skin_m, [(base + outward(th) * 0.004, (0.01, 0.02, 0.03), (0, 0, 0))])]
-        skin(merge(f"J_ear_{side}", coll, skin_m, parts), rig, head)
+    # no ears: in every drawing the hair covers the side of his head down to the beard
 
     # eyes: Simpsons balls half out of the face, a nose-width apart, high under the fringe
     eyes, pupils = [], []
-    # the camera looks down on him from about 20 degrees, so the pupils aim up to sit mid-way
-    # down the open eye and he looks out at the viewer's level
-    look = math.radians(-15)
+    # half closed, the calm look the drawings give him: the pupils sit just under the lids,
+    # looking out level
+    look = math.radians(LOOK)
     for x in (1, -1):
         c = Vector((EYE_X * x, EYE_Y, EYE_Z))
         eyes.append((c, (EYE_R,) * 3, (0, 0, 0)))
         d = Vector((0.06 * -x, -math.cos(look), -math.sin(look))).normalized()  # a touch cross-eyed, as drawn
-        pupils.append((c + d * EYE_R * 0.98, (0.011, 0.004, 0.011), (look, 0, 0)))
+        pupils.append((c + d * EYE_R * 0.98, (PUPIL, 0.004, PUPIL), (look, 0, 0)))
     skin(blobs("J_eyes", coll, mat("white", 0.93), eyes), rig, head)
     skin(blobs("J_pupils", coll, mat("black"), pupils, outline=False), rig, head, subsurf=0)
-    # upper lids: thin caps tipped back so, seen from the camera above, they cover only the top
-    # rim of each eye: calm and awake, like the source
+    # upper lids: half spheres whose straight edge runs across the middle of the eye as the camera
+    # sees it (it looks down on him from about 20 degrees, so the edge is tipped back by as much)
     for x, side in ((1, "L"), (-1, "R")):
         c = Vector((EYE_X * x, EYE_Y, EYE_Z))
-        skin(cap(f"J_lid_{side}", coll, skin_m, c, EYE_R * 1.07, 0.7, rot=(math.radians(-25), 0, 0)), rig, head)
+        skin(cap(f"J_lid_{side}", coll, skin_m, c, EYE_R * 1.07, LID_CUT, rot=(math.radians(-LID_TILT), 0, 0)), rig, head)
 
     # nose: the long Simpsons sausage from between the eyes, pointing forward and a little down
     skin(sweep("J_nose", coll, skin_m, [(0, -0.12, 1.79), (0, -0.168, 1.768), (0, -0.204, 1.75)],
@@ -496,13 +501,12 @@ def build_head(coll, rig):
     lip = [head_point(math.radians(a), 1.645) + outward(math.radians(a)) * 0.012 for a in (-26, 0, 26)]
     skin(sweep("J_lip", coll, skin_m, lip, [0.012], n=10, ring=12, squash=0.8), rig, head)
 
-    # goatee: a short, full point of beard on the chin in front of the neck, flattened front to back
-    chin = head_point(0, 1.608)
-    goatee = [(1.612, 0.066, 0.036, 0.022), (1.6, 0.074, 0.04, 0.016), (1.58, 0.07, 0.038, 0.01),
-              (1.562, 0.054, 0.032, 0.006), (1.546, 0.032, 0.024, 0.004), (1.534, 0.012, 0.012, 0.004),
-              (1.53, 0.002, 0.002, 0.004)]
-    skin(loft("J_goatee", coll, hair_m, [zsec(z, rx, ry, cy=chin.y + dy + ry * 0.2) for z, rx, ry, dy in goatee],
-              ring=24), rig, head)
+    # the beard hangs from the jaw down the front and sides of his neck into the collar, so his neck
+    # never shows (beard in front, hair behind), as in every drawing
+    skin(loft("J_beard_neck", coll, hair_m, [zsec(z, rx, ry, cy=cy) for z, rx, ry, cy in BEARD_NECK], ring=32),
+         rig, blend("chest", "head", 1.49, 1.53))
+    # and comes to a point on his chest, at the top of the V-neck, flattened front to back
+    skin(loft("J_goatee", coll, hair_m, [zsec(z, rx, ry, cy=cy) for z, rx, ry, cy in BEARD_POINT], ring=24), rig, head)
     # beard band: along the jaw from the goatee up to the sideburns in front of the ears, covering
     # the cheeks up to the moustache (the source shows no skin between them)
     span = math.radians(98)
@@ -511,7 +515,7 @@ def build_head(coll, rig):
         th = math.copysign(span * (0.3 + 0.7 * abs(2 * u - 1)), 2 * u - 1)
         a = abs(th) / span
         bottom = 1.584 + 0.012 * a
-        top = 1.63 + 0.04 * smooth(0.3, 0.45, a) + 0.065 * smooth(0.45, 1.0, a)
+        top = 1.63 + 0.04 * smooth(0.3, 0.45, a) + 0.105 * smooth(0.45, 0.88, a)  # up the cheeks to the hair
         return head_point(th, bottom + (top - bottom) * v)
 
     def band_thick(u, v):  # full under the jaw, thin where it climbs to the sideburns
@@ -533,7 +537,7 @@ def build_head(coll, rig):
         locks = -0.045 * math.exp(-((a - 60) / 9) ** 2)  # locks falling at the forehead corners
         ragged = 0.007 * math.sin(15 * th) * (1 - smooth(50, 80, a))
         hairline = 1.955 + peak + arch + locks + ragged
-        temple = hairline + (EAR_Z + 0.045 - hairline) * smooth(64, 86, a)  # over the ear tops
+        temple = hairline + (SIDEBURN - hairline) * smooth(64, 86, a)  # down the temples to the beard
         curtain = 1.465 + 0.006 * math.sin(7 * th) + 0.03 * smooth(150, 108, a)  # a touch higher at the sides
         return temple + (curtain - temple) * smooth(108, 126, a)  # the long hair hangs behind the ears and neck
 
@@ -560,10 +564,13 @@ def build_head(coll, rig):
     skin(shell("J_hair", coll, hair_m, hair_surf, 84, 36, hair_thick, wrap_u=True),
          rig, blend("chest", "head", 1.45, 1.56))
 
-    # level, so it reads as the same flat ellipse from every side, about as wide as his head
-    halo = torus("J_halo", coll, mat("halo", 0.9), (0, 0, 2.19), 0.165, 0.008)
+    # a flat, chunky hoop about as wide as his head: a band wider than it is thick, like the drawings'
+    # grey ring. It has its own bone, tipped towards the camera per drawing (HALO_TILT)
+    ring = [(HALO[0] + HALO[1] * math.cos(t), 2.19 + HALO[2] * math.sin(t))
+            for t in (2 * math.pi * i / 16 for i in range(17))]
+    halo = lathe("J_halo", coll, mat("halo", 0.9), ring, segs=64)
     halo["outline_px"] = 1.2  # a fine line: the source's halo is faint
-    skin(halo, rig, head, subsurf=0)
+    skin(halo, rig, rigid("halo"), subsurf=0)
 
 
 def build(coll):
@@ -668,7 +675,36 @@ def animate(rig):
         apply_head_fit(rig)
         apply_reuse(rig)
         hitch(rig)
+    animate_halo(rig)
     animate_hands(rig)
+
+
+# How far the halo tips towards the camera, per source frame, in degrees. The camera looks down on him
+# from 20 degrees, so a level halo reads as an open ellipse, as it does while he beckons (11-24);
+# whenever his arm is up the drawings show it almost edge-on.
+HALO_TILT = {k: 0.0 if 11 <= k <= 24 else 13.0 for k in range(41)}
+
+
+def animate_halo(rig):
+    """Key the halo bone on every source frame: level in the world (whatever the head does), then
+    tipped about the screen's horizontal by HALO_TILT, its front edge up."""
+    from mathutils import Matrix
+    scene = bpy.context.scene
+    pb = rig.pose.bones.get("halo")
+    if pb is None:
+        return
+    right = screen_right()
+    n = LAYOUT["source"]["frames"]
+    for k in range(n + 1):
+        f = remake_frame(k)
+        scene.frame_set(int(f), subframe=f - int(f))
+        level = rig.matrix_world.to_3x3().normalized() @ pb.bone.matrix_local.to_3x3().normalized()
+        world = (Matrix.Rotation(math.radians(-HALO_TILT.get(k % n, 0.0)), 3, right) @ level).to_4x4()
+        world.translation = (rig.matrix_world @ pb.matrix).translation
+        pb.matrix = rig.matrix_world.inverted() @ world
+        pb.keyframe_insert("rotation_quaternion", frame=f)
+        pb.keyframe_insert("scale", frame=f)
+    constant(rig)
 
 
 # Finger curl per source frame, read off the (upscaled) drawings: the beckoning hand (his
