@@ -128,6 +128,17 @@ The worms are modelled instead: at three pixels tall their drawings trace into n
 
 Each prop is sized to its outline in frame 0 (worms by their length, traced props by their width); only the drawing on show counts.
 
+## The look
+
+Concept A: flat colours, a thin toon band and outlines, on a flat sky-blue page.
+
+- **Colours:** the figure's are the GIF's own (`kit.PALETTE`). The materials are emission, so the Standard view transform renders the hexes as they are. A sun from camera-left only decides which side of a shape falls in the toon band (`kit.toon`): a crisp step down to the colour times its shadow factor. The robe's is faint (0.9), since the drawings have no shading.
+- **No cast shadows:** the original has none, and the sun's left a grey smudge beside every prop, a long smear from his feet and a grainy shade on his legs that changed with every pose. Instead a soft patch of shade under each sandal stands him on the page, like concept A's contact shadows, following each foot (`build_scene.contact_shadow`). The props float, as drawn.
+- **Outlines:** an inverted shell round every object (`kit.add_outline`), 1.9 px at 1200 wide, in a dark shade of the colour it rings, as the drawings have them (`kit.LINE`): slate round the robe, the halo and the worms, dark brown round his skin, near-black round the hair and sandals and round the traced props' ink.
+- **Inner lines:** where a hanging sleeve sinks into the robe its shell is buried, yet the drawings run a line down the arm there (the back views, the waves, the turns). A Grease Pencil Line Art object draws the lines where surfaces sink into the robe (`build_scene.inner_lines`): down the sleeves, and along both edges of the V-neck and under the hair. Not at the elbow, where a sleeve's two tubes meet, nor where the legs cross the hem. It's computed at render time only, and about doubles the render time of a frame; `INNER_LINES = False` skips it.
+- **The floor** sits at z = -0.03, below the soles' outline shells: cutting through them, it left a comb of light teeth under each sole.
+- **The title:** Ultra, emboldened with the curve's offset (0.02) enough to close the slits between its serifs, which read as hairline cracks through H, m, e and W.
+
 ## Working in the live Blender
 
 The Blender MCP add-on lets Claude run code in the open Blender. Rebuild parts of the scene there by reloading `kit`, `jesus` and `props` and calling their builders on the existing rig and prop roots. Never call `build_scene.build()` in the live app: it resets to factory settings and drops the MCP add-on. Build headless instead and open the result.

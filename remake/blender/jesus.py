@@ -301,7 +301,7 @@ def robe_ring(z):
 
 
 def build_body(coll, rig):
-    skin_m, robe_m = mat("skin"), mat("robe", 0.78)
+    skin_m, robe_m = mat("skin"), mat("robe", 0.9)  # the drawn robe is flat: only a faint shade band
 
     robe = loft("J_robe", coll, robe_m, [zsec(z, max(rx, 0.004), max(ry, 0.004), cy=cy) for z, rx, ry, cy in ROBE],
                 ring=48)
@@ -403,7 +403,7 @@ def build_sandal(coll, side, x):
 
 
 def build_arms(coll, rig):
-    robe_m = mat("robe", 0.78)
+    robe_m = mat("robe", 0.9)
     # Each sleeve is two rigid tubes with round ends meeting at the elbow pivot, so a
     # hard bend (hand to face) can't fold the mesh into itself and flip its outline.
     er = 0.058  # sleeve radius at the elbow

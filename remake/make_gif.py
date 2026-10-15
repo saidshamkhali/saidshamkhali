@@ -6,7 +6,9 @@ Reads remake/render/frames/frame_####.png (from build_scene.py --render or rende
 and writes OUT.gif, OUT.webp and/or OUT.mp4:
   gif   256 colours, for anywhere. Plays at 10 fps like the original: GIF delays are whole
         1/100 s, so 10/100 s is exact.
-  webp  animated WebP, full colour and much smaller; GitHub READMEs show it like a GIF.
+  webp  animated WebP, full colour and lossless; GitHub READMEs show it like a GIF. The flat
+        colours compress well (about 2 MB at 1200 wide); lossy WebP halves the colour resolution
+        and blurs the thin lines into the fills.
   mp4   H.264 for video players and the web.
 """
 import argparse
@@ -28,8 +30,7 @@ scale = f"scale={args.width}:-2:flags=lanczos"
 jobs = {
     "gif": ["-vf", f"{scale},split[a][b];[a]palettegen=max_colors={args.colors}:stats_mode=full[p];"
                    "[b][p]paletteuse=dither=none:diff_mode=rectangle", "-loop", "0"],
-    "webp": ["-vf", scale, "-c:v", "libwebp_anim", "-lossless", "0", "-quality", "92",
-             "-compression_level", "6", "-loop", "0"],
+    "webp": ["-vf", scale, "-c:v", "libwebp_anim", "-lossless", "1", "-compression_level", "6", "-loop", "0"],
     "mp4": ["-vf", f"{scale},format=yuv420p", "-c:v", "libx264", "-crf", "16", "-preset", "slow",
             "-movflags", "+faststart"],
 }
