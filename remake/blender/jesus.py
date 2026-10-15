@@ -38,7 +38,7 @@ BONES = {
     # the skirt of the robe, hanging from the waist: swings the hem and flares it (bone scale)
     "skirt": ((0, 0, 1.0), (0, 0, 0.45), "hips"),
     # the halo rides on the head but keeps level, tipping towards the camera on some drawings
-    "halo": ((0, 0, 2.19), (0, 0, 2.29), "head"),
+    "halo": ((0, 0, 2.155), (0, 0, 2.255), "head"),
 }
 SHOULDER = (0.222, 1.42)  # (x, z) of the joints on his left side
 ELBOW = (0.262, 1.13)
@@ -158,7 +158,7 @@ def build_body_hull(coll, rig):
     for v in body.data.vertices:  # the same seat as the robe
         rx, ry, cy = robe_ring(v.co.z)
         back = max(0.0, (v.co.y - cy) / max(ry, 1e-3)) ** 2
-        v.co.y += 0.05 * back * math.exp(-((v.co.z - 0.92) / 0.15) ** 2)
+        v.co.y += 0.055 * back * seat(v.co.z)
     auto_skin(body, rig, {"hips", "hip.L", "hip.R", "spine", "chest", "thigh.L", "thigh.R", "shin.L", "shin.R"})
     skirt = body.vertex_groups.new(name="skirt")
     groups = {g.index: g for g in body.vertex_groups}
@@ -192,16 +192,103 @@ def blend(lo_bone, hi_bone, z0, z1):
 # the source frames and the model sheet: head (hair top to beard tip) ~28% of his height,
 # eyes at 1.78, beard tip at 1.40, shoulders at 1.40, hem at 0.38, back hair down to 1.34.
 
-# Robe: horizontal ellipses (z, rx, ry, cy). Long and nearly straight, a soft belly pushing
-# the front out (cy), the hem just below the knee.
+# Robe: horizontal ellipses (z, rx, ry, cy). Long, pinched at the waist, the hips swelling below
+# it and tucking in a little at the hem (measured row by row on the drawings), a soft belly
+# pushing the front out (cy), the hem just below the knee.
 ROBE = [
-    (0.445, 0.256, 0.204, 0.0), (0.48, 0.254, 0.202, 0.0), (0.6, 0.246, 0.197, -0.01),
-    (0.8, 0.236, 0.191, -0.02), (0.95, 0.229, 0.186, -0.024), (1.08, 0.222, 0.177, -0.016),
-    (1.2, 0.217, 0.168, -0.006), (1.32, 0.216, 0.16, 0.0), (1.4, 0.212, 0.154, 0.0),
+    (0.445, 0.25, 0.2, 0.0), (0.48, 0.251, 0.199, 0.0), (0.6, 0.25, 0.196, -0.01),
+    (0.74, 0.25, 0.19, -0.018), (0.86, 0.228, 0.18, -0.024), (0.98, 0.196, 0.168, -0.024),
+    (1.1, 0.188, 0.162, -0.014), (1.22, 0.196, 0.16, -0.006), (1.32, 0.204, 0.158, 0.0), (1.4, 0.208, 0.154, 0.0),
     (1.44, 0.2, 0.146, 0.0), (1.47, 0.176, 0.132, 0.0), (1.495, 0.136, 0.112, 0.0), (1.512, 0.085, 0.085, 0.0),
     (1.52, 0.04, 0.04, 0.0), (1.524, 0.0, 0.0, 0.0),
 ]
 HEM_Z = ROBE[0][0]
+
+
+def seat(z):
+    """How far the seat bulges out behind his hips, by height: low and tight, the small of his back
+    hollow above it."""
+    return math.exp(-((z - 0.80) / 0.10) ** 2)
+
+
+def flat_hem(robe):
+    """Flatten the hem as the camera sees it: drawn, it's one straight line with square corners, but
+    an ellipse seen from above sags in the middle. A Geometry Nodes modifier after the body (so it
+    works whichever way he faces and however the fit squashes him) drops each hem point by how far it
+    lies behind the hem's point nearest the camera, times the slope of the camera's view, so the
+    whole hem projects onto one line."""
+    cam = bpy.context.scene.camera
+    if cam is None:
+        return
+    nt = bpy.data.node_groups.new("FlatHem", "GeometryNodeTree")
+    nt.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+    nt.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+    n, link = nt.nodes, nt.links.new
+
+    def math_node(op, a=None, b=None, clamp=False):
+        m = n.new("ShaderNodeMath")
+        m.operation = op
+        m.use_clamp = clamp
+        for sock, v in zip(m.inputs, (a, b)):
+            if isinstance(v, (int, float)):
+                sock.default_value = v
+            elif v is not None:
+                link(v, sock)
+        return m.outputs[0]
+
+    def vec_node(op, a, b=None):
+        m = n.new("ShaderNodeVectorMath")
+        m.operation = op
+        link(a, m.inputs[0])
+        if b is not None:
+            link(b, m.inputs[1])
+        return m.outputs["Value" if op in ("LENGTH", "DOT_PRODUCT") else "Vector"]
+
+    def ground(vec):  # (x, y, 0)
+        sep, comb = n.new("ShaderNodeSeparateXYZ"), n.new("ShaderNodeCombineXYZ")
+        link(vec, sep.inputs["Vector"])
+        link(sep.outputs["X"], comb.inputs["X"])
+        link(sep.outputs["Y"], comb.inputs["Y"])
+        return comb.outputs["Vector"], sep.outputs["Z"]
+
+    gin, gout = n.new("NodeGroupInput"), n.new("NodeGroupOutput")
+    rest = n.new("GeometryNodeInputNamedAttribute")
+    rest.data_type = "FLOAT"
+    rest.inputs["Name"].default_value = "rest_z"
+    weight = n.new("ShaderNodeMapRange")  # 1 at the hem, fading out over the lowest 0.12 of the robe
+    weight.interpolation_type = "SMOOTHSTEP"
+    weight.inputs["From Min"].default_value = HEM_Z + 0.12
+    weight.inputs["From Max"].default_value = HEM_Z
+    link(rest.outputs["Attribute"], weight.inputs["Value"])
+    info = n.new("GeometryNodeObjectInfo")
+    info.transform_space = "RELATIVE"
+    info.inputs["Object"].default_value = cam
+    cam_flat, cam_z = ground(info.outputs["Location"])
+    slope = math_node("DIVIDE", math_node("SUBTRACT", cam_z, HEM_Z), vec_node("LENGTH", cam_flat))
+    pos_flat, _ = ground(n.new("GeometryNodeInputPosition").outputs["Position"])
+    toward = vec_node("DOT_PRODUCT", pos_flat, vec_node("NORMALIZE", cam_flat))
+    hem = n.new("FunctionNodeCompare")  # the hem's own row
+    hem.data_type = "FLOAT"
+    hem.operation = "LESS_THAN"
+    link(rest.outputs["Attribute"], hem.inputs["A"])
+    hem.inputs["B"].default_value = HEM_Z + 0.005
+    front = n.new("GeometryNodeAttributeStatistic")
+    front.data_type = "FLOAT"
+    front.domain = "POINT"
+    link(gin.outputs["Geometry"], front.inputs["Geometry"])
+    link(hem.outputs["Result"], front.inputs["Selection"])
+    link(toward, front.inputs["Attribute"])
+    behind = math_node("SUBTRACT", front.outputs["Max"], toward, clamp=True)
+    drop = math_node("MULTIPLY", math_node("MULTIPLY", behind, slope), weight.outputs["Result"])
+    offset = n.new("ShaderNodeCombineXYZ")
+    link(math_node("MULTIPLY", drop, -1.0), offset.inputs["Z"])
+    setpos = n.new("GeometryNodeSetPosition")
+    link(gin.outputs["Geometry"], setpos.inputs["Geometry"])
+    link(offset.outputs["Vector"], setpos.inputs["Offset"])
+    link(setpos.outputs["Geometry"], gout.inputs["Geometry"])
+    mod = robe.modifiers.new("FlatHem", "NODES")
+    mod.node_group = nt
+    robe.modifiers.move(len(robe.modifiers) - 1, robe.modifiers.find("Body") + 1)
 
 
 def robe_ring(z):
@@ -225,23 +312,31 @@ def build_body(coll, rig):
             f = 1 + 0.028 * k * math.sin(5 * th + 0.8)
             v.co.x *= f
             v.co.y *= f
-            v.co.z += 0.015 * k * max(0.0, v.co.y / 0.2) ** 2  # the hem rides up a little at the back
     for v in robe.data.vertices:  # the seat: in profile the robe bulges out behind his hips
         rx, ry, cy = robe_ring(v.co.z)
         back = max(0.0, (v.co.y - cy) / max(ry, 1e-3)) ** 2
-        v.co.y += 0.055 * back * math.exp(-((v.co.z - 0.92) / 0.15) ** 2)
+        v.co.y += 0.06 * back * seat(v.co.z)
+    rest = robe.data.attributes.new("rest_z", "FLOAT", "POINT")
+    rest.data.foreach_set("value", [v.co.z for v in robe.data.vertices])
     ride(robe, rig, build_body_hull(coll, rig))  # the robe rides on the body, not on the bones
+    flat_hem(robe)
 
-    # V-neck: skin showing through the collar, a thin patch lying on the robe, deep as on the sheet
-    def vneck_surf(u, v):
-        z = 1.35 + 0.16 * v
-        rx, ry, cy = robe_ring(z)
-        half = math.radians(34) * v ** 0.85
-        th = (2 * u - 1) * half
-        return Vector((rx * math.sin(th), cy - ry * math.cos(th), z))
+    # V-neck: skin showing through the collar, a thin patch lying on the robe: a short, wide V with
+    # straight sides, as drawn. Under it a dark one a little bigger draws the collar's edges on both
+    # sides (an outline shell would hide on the side turning away from the camera)
+    def vneck_surf(edge=0.0, drop=0.0):  # edge: how far the sides reach out past the V's
+        def surf(u, v):
+            z = 1.39 - drop + (0.12 + drop) * v
+            rx, ry, cy = robe_ring(z)
+            half = math.radians(46) * max(0.0, z - 1.39) / 0.12 + edge / rx
+            th = (2 * u - 1) * half
+            return Vector((rx * math.sin(th), cy - ry * math.cos(th), z))
+        return surf
 
-    skin(shell("J_vneck", coll, skin_m, vneck_surf, 8, 12, lambda u, v: 0.006, inner=0.006),
-         rig, rigid("chest"))
+    skin(shell("J_vneck", coll, skin_m, vneck_surf(), 8, 12, lambda u, v: 0.006, inner=0.006, outline=False),
+         rig, rigid("chest"), subsurf=0)
+    skin(shell("J_collar", coll, mat("black"), vneck_surf(0.008, 0.012), 8, 12, lambda u, v: 0.0035, inner=0.005,
+               outline=False), rig, rigid("chest"), subsurf=0)
     # the neck rising out of the collar, under the beard
     skin(loft("J_neck", coll, skin_m, [zsec(1.4, 0.082, 0.074, cy=0.0), zsec(1.52, 0.084, 0.076, cy=-0.005),
                                          zsec(1.64, 0.086, 0.08, cy=-0.01)],
@@ -249,10 +344,12 @@ def build_body(coll, rig):
 
     for side, x in (("L", 1), ("R", -1)):
         # the leg runs up under the robe so bent knees never open a gap at the hem, and down inside
-        # the foot so a leg the fit bends less (shorter) never shows its end above the ankle
+        # the foot so a leg the fit bends less (shorter) never shows its end above the ankle. Above the
+        # hem, where it never shows, it slims, so a leg angled back can't poke out through the cloth
         leg = loft(f"J_leg_{side}", coll, skin_m, [
             zsec(z, r, r * 0.95, cx=LEG_X * x) for z, r in
-            ((0.02, 0.045), (0.05, 0.062), (0.12, 0.068), (0.24, 0.074), (0.38, 0.075), (0.55, 0.074), (0.72, 0.072), (0.9, 0.068))],
+            ((0.02, 0.045), (0.05, 0.062), (0.12, 0.068), (0.24, 0.074), (0.38, 0.075), (0.44, 0.074), (0.52, 0.058),
+             (0.62, 0.052), (0.75, 0.052), (0.9, 0.052))],
             ring=20)
         skin(leg, rig, blend(f"shin.{side}", f"thigh.{side}", KNEE_Z - 0.06, KNEE_Z + 0.06))
         skin(build_foot(coll, side, x), rig, rigid(f"foot.{side}"))
@@ -309,7 +406,7 @@ def build_arms(coll, rig):
     robe_m = mat("robe", 0.78)
     # Each sleeve is two rigid tubes with round ends meeting at the elbow pivot, so a
     # hard bend (hand to face) can't fold the mesh into itself and flip its outline.
-    er = 0.066  # sleeve radius at the elbow
+    er = 0.058  # sleeve radius at the elbow
 
     def dome(cx, z, r, down):
         return [zsec(z + (-1 if down else 1) * r * a, r * math.sqrt(1 - a * a), r * math.sqrt(1 - a * a), cx=cx)
@@ -319,14 +416,14 @@ def build_arms(coll, rig):
         sx, sz = SHOULDER
         ex, ez = ELBOW
         wx, wz = WRIST
-        upper = [zsec(sz + 0.045, 0.03, 0.03, cx=(sx - 0.03) * x), zsec(sz + 0.025, 0.055, 0.055, cx=(sx - 0.008) * x),
-                 zsec(sz - 0.03, 0.064, 0.064, cx=sx * x), zsec(sz - 0.13, 0.066, 0.066, cx=(sx + 0.016) * x),
+        upper = [zsec(sz + 0.04, 0.045, 0.045, cx=(sx - 0.03) * x), zsec(sz + 0.02, 0.058, 0.058, cx=(sx - 0.008) * x),
+                 zsec(sz - 0.03, 0.058, 0.058, cx=sx * x), zsec(sz - 0.13, 0.058, 0.058, cx=(sx + 0.016) * x),
                  zsec(ez, er, er, cx=ex * x)]
         skin(loft(f"J_sleeve_{side}", coll, robe_m, upper + dome(ex * x, ez, er, True), ring=24),
              rig, rigid(f"upper_arm.{side}"))
-        lower = [zsec(ez, er, er, cx=ex * x), zsec(ez - 0.13, 0.068, 0.068, cx=(ex + 0.009) * x),
-                 zsec(wz + 0.03, 0.08, 0.08, cx=(wx - 0.003) * x), zsec(wz, 0.086, 0.086, cx=wx * x),
-                 zsec(wz - 0.004, 0.055, 0.055, cx=wx * x)]
+        lower = [zsec(ez, er, er, cx=ex * x), zsec(ez - 0.13, 0.058, 0.058, cx=(ex + 0.009) * x),
+                 zsec(wz + 0.03, 0.06, 0.06, cx=(wx - 0.003) * x), zsec(wz, 0.064, 0.064, cx=wx * x),
+                 zsec(wz - 0.004, 0.05, 0.05, cx=wx * x)]
         skin(loft(f"J_cuff_{side}", coll, robe_m, dome(ex * x, ez, er, False)[::-1] + lower, ring=24),
              rig, rigid(f"forearm.{side}"))
         skin(build_hand(coll, side, x), rig, rigid(f"hand.{side}"))
@@ -389,19 +486,21 @@ SKULL = [
     (1.84, 0.12, 0.137, 0.0), (1.89, 0.113, 0.129, 0.0), (1.93, 0.098, 0.112, 0.0),
     (1.958, 0.074, 0.085, 0.0), (1.975, 0.042, 0.048, 0.0), (1.981, 0.0, 0.0, 0.0),
 ]
-EYE_R = 0.035
+EYE_R = 0.033
 LOOK = 6         # degrees the pupils aim down from level
-PUPIL = 0.0095   # pupil radius
+PUPIL = 0.0085   # pupil radius
 LID_CUT = -0.08  # where the lid's edge cuts the eye, in eye radii above its centre (below 0: past halfway)
 LID_TILT = 20    # degrees the lid's edge is tipped back, square to the camera's view
-EYE_X = 0.058
+EYE_X = 0.066
 EYE_Z = 1.83
 EYE_Y = -0.118  # half out of the face, as Simpsons eyes are
 HANG_Z = 1.7    # below this the hair hangs straight instead of following the head
 MUZZLE = 0.045  # how far the Simpsons muzzle (moustache, lip, chin) juts out of the face
 HAIR_TOP = 0.02  # hair thickness on the crown
 HALO = (0.165, 0.014, 0.012)  # the halo's radius, and its band's half width and half thickness
-SIDEBURN = 1.715  # the hair at the sides comes down over where the ears would be, onto the beard
+SIDEBURN = 1.715  # the hair at the sides comes down the temples onto the beard
+EAR_TH, EAR_Z, EAR_OUT = 102, 1.73, 0.058  # where the ear pokes through the side hair (degrees round from the face)
+EAR = (0.02, 0.014, 0.032)  # its half sizes: narrow, thin (outwards) and tall
 # The beard below the jaw, (z, rx, ry, cy) sections: round the neck from the jaw into the collar,
 # then the point hanging in front of it down to the top of the V-neck.
 BEARD_NECK = [(1.628, 0.104, 0.1, -0.036), (1.6, 0.108, 0.1, -0.04), (1.57, 0.104, 0.097, -0.04),
@@ -465,7 +564,11 @@ def build_head(coll, rig):
             v.co.y -= muzzle(v.co.z) * c ** 3
     skin(skull, rig, head)
 
-    # no ears: in every drawing the hair covers the side of his head down to the beard
+    # ears: just a small yellow oval showing through the side hair, behind the sideburn
+    for x, side in ((1, "L"), (-1, "R")):
+        th = math.radians(EAR_TH) * x
+        skin(blobs(f"J_ear_{side}", coll, skin_m, [(head_point(th, EAR_Z) + outward(th) * EAR_OUT, EAR, (0, 0, th))],
+                   segs=20), rig, head)
 
     # eyes: Simpsons balls half out of the face, a nose-width apart, high under the fringe
     eyes, pupils = [], []
@@ -477,7 +580,9 @@ def build_head(coll, rig):
         eyes.append((c, (EYE_R,) * 3, (0, 0, 0)))
         d = Vector((0.06 * -x, -math.cos(look), -math.sin(look))).normalized()  # a touch cross-eyed, as drawn
         pupils.append((c + d * EYE_R * 0.98, (PUPIL, 0.004, PUPIL), (look, 0, 0)))
-    skin(blobs("J_eyes", coll, mat("white", 0.93), eyes), rig, head)
+    eyeballs = blobs("J_eyes", coll, mat("white", 0.93), eyes)
+    eyeballs["outline_px"] = 1.0  # a full-weight line rings the near eye like a monocle; the lid draws the strong line
+    skin(eyeballs, rig, head)
     skin(blobs("J_pupils", coll, mat("black"), pupils, outline=False), rig, head, subsurf=0)
     # upper lids: half spheres whose straight edge runs across the middle of the eye as the camera
     # sees it (it looks down on him from about 20 degrees, so the edge is tipped back by as much)
@@ -485,21 +590,23 @@ def build_head(coll, rig):
         c = Vector((EYE_X * x, EYE_Y, EYE_Z))
         skin(cap(f"J_lid_{side}", coll, skin_m, c, EYE_R * 1.07, LID_CUT, rot=(math.radians(-LID_TILT), 0, 0)), rig, head)
 
-    # nose: the long Simpsons sausage from between the eyes, pointing forward and a little down
-    skin(sweep("J_nose", coll, skin_m, [(0, -0.12, 1.79), (0, -0.168, 1.768), (0, -0.204, 1.75)],
-               [0.019, 0.021, 0.025], n=12, ring=20), rig, head)
+    # nose: the long Simpsons sausage from between the eyes, forward and down, its tip just above the moustache
+    skin(sweep("J_nose", coll, skin_m, [(0, -0.12, 1.79), (0, -0.17, 1.762), (0, -0.2, 1.722)],
+               [0.017, 0.018, 0.021], n=12, ring=20), rig, head)
 
-    # moustache: one thick straight bar across the muzzle, jutting out past the nose in profile,
-    # its blunt ends at the edges of the face (the source draws it as a dark cigar). The ends dip
-    # a little: they sit further back, so from the camera above a level bar would read as a smile
+    # moustache: one straight bar across the muzzle, jutting out past the nose in profile (the source
+    # draws it as a dark cigar), its tips drooping a little at the edges of the face. The ends dip: they
+    # sit further back, so from the camera above a level bar would read as a smile
     for x, side in ((1, "L"), (-1, "R")):
         pts = [head_point(math.radians(a) * x, z) + outward(math.radians(a) * x) * off
-               for a, z, off in ((0, 1.686, 0.05), (20, 1.683, 0.048), (38, 1.675, 0.044), (52, 1.666, 0.04))]
-        skin(sweep(f"J_moustache_{side}", coll, hair_m, pts, [0.028, 0.027, 0.025, 0.021],
-                   n=20, ring=18, squash=0.58), rig, head)
-    # lower lip: the yellow band just under the moustache, above the beard
-    lip = [head_point(math.radians(a), 1.645) + outward(math.radians(a)) * 0.012 for a in (-26, 0, 26)]
-    skin(sweep("J_lip", coll, skin_m, lip, [0.012], n=10, ring=12, squash=0.8), rig, head)
+               for a, z, off in ((0, 1.69, 0.05), (16, 1.688, 0.05), (30, 1.682, 0.047), (42, 1.672, 0.043), (47, 1.66, 0.037))]
+        bar = sweep(f"J_moustache_{side}", coll, hair_m, pts, [0.021, 0.021, 0.02, 0.017, 0.012], n=20, ring=18, squash=0.62)
+        bar["outline_px"] = 1.6
+        skin(bar, rig, head)
+    # lower lip: a broad, flat yellow band just under the moustache, above the beard
+    lip = [head_point(math.radians(a), 1.645) + outward(math.radians(a)) * 0.014 for a in (-36, -18, 0, 18, 36)]
+    lip = [p - Vector((0, 0, 0.006)) if abs(i - 2) == 2 else p for i, p in enumerate(lip)]  # ends dipped, or it smiles from above
+    skin(sweep("J_lip", coll, skin_m, lip, [0.016], n=12, ring=12, squash=0.65), rig, head)
 
     # the beard hangs from the jaw down the front and sides of his neck into the collar, so his neck
     # never shows (beard in front, hair behind), as in every drawing
@@ -534,24 +641,36 @@ def build_head(coll, rig):
         a = abs(deg)
         peak = -0.05 * math.exp(-((deg + 9) / 7) ** 2)  # the pointed lock, just off centre
         arch = -0.085 * (min(a, 62) / 62) ** 1.6  # a high forehead, the hairline arching down to the sides
-        locks = -0.045 * math.exp(-((a - 60) / 9) ** 2)  # locks falling at the forehead corners
-        ragged = 0.007 * math.sin(15 * th) * (1 - smooth(50, 80, a))
-        hairline = 1.955 + peak + arch + locks + ragged
+        locks = -0.02 * math.exp(-((a - 60) / 9) ** 2)  # small locks at the forehead corners: a clean hairline
+        hairline = 1.955 + peak + arch + locks
         temple = hairline + (SIDEBURN - hairline) * smooth(64, 86, a)  # down the temples to the beard
-        curtain = 1.465 + 0.006 * math.sin(7 * th) + 0.03 * smooth(150, 108, a)  # a touch higher at the sides
-        return temple + (curtain - temple) * smooth(108, 126, a)  # the long hair hangs behind the ears and neck
+        # the long hair hangs behind the ears and neck, lower at the sides than at the back: seen from
+        # above, that reads as a level cut over the shoulders. A few pointed locks at the bottom
+        curtain = 1.425 + 0.04 * smooth(115, 170, a) + 0.006 * math.sin(7 * th)
+        curtain -= 0.02 * max(0.0, math.sin(9 * th)) ** 4 * smooth(100, 140, a)
+        return temple + (curtain - temple) * smooth(96, 140, a)
 
     def hair_surf(u, v):
         th = math.pi * (2 * u - 1)  # u=0.5 is the front
         lo = hair_low(th)
         z = lo + (SKULL[-1][0] - lo) * v
-        if z >= HANG_Z:
-            return head_point(th, z)
-        p = head_point(th, HANG_Z)
-        drop = HANG_Z - z
-        wavy = 0.02 * math.sin(drop * 24 + th * 3) * min(1.0, drop * 6)
+        hang = HANG_Z + 0.05 * math.sin(th) ** 2  # at the sides it leaves the head higher, so it never pinches in
+        if z >= hang:
+            p = head_point(th, z)
+            k = 1 + 0.32 * smooth(1.90, 1.975, z)  # a flat-topped cap with square corners, as drawn
+            return Vector((p.x * k, p.y * k, z))
+        p = head_point(th, hang)
+        drop = hang - z
+        # tiers stepping out down the back and sides
+        wavy = 0.03 * math.sin(drop * 65 + th * 3) * min(1.0, drop * 6) * (0.5 - 0.5 * math.cos(th))
         # spreads out sideways over the shoulders, less front to back
-        return Vector((p.x * (1 + 1.25 * drop + wavy), p.y * (1 + 0.45 * drop + wavy) + 0.02 * drop, z))
+        x, y = p.x * (1 + 2.0 * drop + wavy), p.y * (1 + 0.45 * drop + wavy) + 0.02 * drop
+        if z < 1.52:  # draped over the robe's shoulders, never sunk into them
+            rx, ry, cy = robe_ring(z)
+            e = math.hypot(x / (rx + 0.012), (y - cy) / (ry + 0.012))
+            if e < 1:
+                x, y = x / e, cy + (y - cy) / e
+        return Vector((x, y, z))
 
     def hair_thick(u, v):
         th = math.pi * (2 * u - 1)
@@ -566,7 +685,7 @@ def build_head(coll, rig):
 
     # a flat, chunky hoop about as wide as his head: a band wider than it is thick, like the drawings'
     # grey ring. It has its own bone, tipped towards the camera per drawing (HALO_TILT)
-    ring = [(HALO[0] + HALO[1] * math.cos(t), 2.19 + HALO[2] * math.sin(t))
+    ring = [(HALO[0] + HALO[1] * math.cos(t), BONES["halo"][0][2] + HALO[2] * math.sin(t))
             for t in (2 * math.pi * i / 16 for i in range(17))]
     halo = lathe("J_halo", coll, mat("halo", 0.9), ring, segs=64)
     halo["outline_px"] = 1.2  # a fine line: the source's halo is faint
@@ -679,10 +798,10 @@ def animate(rig):
     animate_hands(rig)
 
 
-# How far the halo tips towards the camera, per source frame, in degrees. The camera looks down on him
-# from 20 degrees, so a level halo reads as an open ellipse, as it does while he beckons (11-24);
-# whenever his arm is up the drawings show it almost edge-on.
-HALO_TILT = {k: 0.0 if 11 <= k <= 24 else 12.0 for k in range(41)}
+# How far the halo tips towards the camera, per source frame, in degrees. The camera looks down on his
+# head from about 17 degrees, so a level halo would read as a wide-open ellipse: while he beckons
+# (12-23) the drawings show it half that open, and whenever his arm is up almost edge-on.
+HALO_TILT = {k: 7.0 if 12 <= k <= 23 else 10.0 if k in (11, 24) else 12.0 for k in range(41)}
 
 
 def animate_halo(rig):
