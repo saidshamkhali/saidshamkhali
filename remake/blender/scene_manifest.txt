@@ -20,79 +20,99 @@ lens 85.0000 sensor 36.0000 HORIZONTAL
 [title] Title
 text Homer’s Web Page
 font Ultra-Regular.ttf
-offset 0.0120
+offset 0.0080
 space_character 1.1200
 space_word 1.2000
 extrude 0.0100 size 1.0000 align CENTER CENTER
 
 [materials]
+ContactShadow  flat  #3F84AA
+InnerInk_Hands  principled  #E7E7E7
+InnerInk_Lines  principled  #E7E7E7
 Outline  flat  #141414
+Outline_hair  flat  #140C0E
+Outline_halo  flat  #46525F
+Outline_robe  flat  #4A5166
+Outline_sandal  flat  #140C0E
+Outline_skin  flat  #4E3212
+Outline_worm  flat  #3A4658
 TitleInk  flat  #111111
-bell_l_ink  toon  #1F1818  shadow 0.800
-bell_l_yellow  toon  #D9AD13  shadow 0.720
-bell_r_ink  toon  #1B1315  shadow 0.800
-bell_r_yellow  toon  #D9AE11  shadow 0.720
+bell_l_ink  toon  #161012  shadow 0.950
+bell_l_rim  toon  #41313A  shadow 0.920
+bell_l_yellow  toon  #D8AD14  shadow 0.920
+bell_r_ink  toon  #181013  shadow 0.950
+bell_r_rim  toon  #523C40  shadow 0.920
+bell_r_yellow  toon  #D9AE13  shadow 0.920
 black  toon  #1A1A1A  shadow 0.720
-clock_br_grey  toon  #BABFC1  shadow 0.720
-clock_br_ink  toon  #0F090D  shadow 0.800
-clock_br_yellow  toon  #DCB850  shadow 0.720
-clock_c_grey  toon  #BCC0C1  shadow 0.720
-clock_c_ink  toon  #0F0A0E  shadow 0.800
-clock_c_yellow  toon  #D5B552  shadow 0.720
-clock_tl_grey  toon  #BCC1C0  shadow 0.720
-clock_tl_ink  toon  #110B0E  shadow 0.800
-clock_tl_yellow  toon  #DAB647  shadow 0.720
-floor  toon  #86C5E3  shadow 0.840
-hair  toon  #3B2015  shadow 0.800
-halo  toon  #C4CDD4  shadow 0.900
-lips_l_ink  toon  #181119  shadow 0.800
-lips_l_pink  toon  #B55782  shadow 0.720
-lips_l_red  toon  #BE3344  shadow 0.720
-lips_l_white  toon  #E3F9F5  shadow 0.720
-lips_r_ink  toon  #1B121A  shadow 0.800
-lips_r_pink  toon  #B45783  shadow 0.720
-lips_r_red  toon  #BD3245  shadow 0.720
-lips_r_white  toon  #E0F8F4  shadow 0.720
-robe  toon  #D3D1E3  shadow 0.780
+clock_br_grey  toon  #BAC0C1  shadow 0.920
+clock_br_ink  toon  #0F080B  shadow 0.950
+clock_br_yellow  toon  #DAB43E  shadow 0.920
+clock_c_grey  toon  #BCC0C0  shadow 0.920
+clock_c_ink  toon  #0D090C  shadow 0.950
+clock_c_yellow  toon  #D2B34C  shadow 0.920
+clock_tl_grey  toon  #B9BDBF  shadow 0.920
+clock_tl_ink  toon  #120B0E  shadow 0.950
+clock_tl_yellow  toon  #D9B33C  shadow 0.920
+collar  toon  #4E3212  shadow 0.720
+floor  flat  #86C5E3
+hair  toon  #2C191C  shadow 0.800
+halo  toon  #6A8296  shadow 0.900
+lips_l_ink  toon  #191018  shadow 0.950
+lips_l_pink  toon  #B45883  shadow 0.920
+lips_l_red  toon  #BE3245  shadow 0.920
+lips_l_white  toon  #E4F8F3  shadow 0.920
+lips_r_ink  toon  #1B1219  shadow 0.950
+lips_r_pink  toon  #B45883  shadow 0.920
+lips_r_red  toon  #BE3145  shadow 0.920
+lips_r_white  toon  #E4F8F6  shadow 0.920
+robe  toon  #C1C2D3  shadow 0.900
 sandal  toon  #2B1A17  shadow 0.720
-skin  toon  #FFD90F  shadow 0.720
-toaster_b_grey  toon  #BABBBC  shadow 0.720
-toaster_b_ink  toon  #222227  shadow 0.800
-toaster_b_pink  toon  #D88E6E  shadow 0.720
-toaster_b_white  toon  #E9F2F7  shadow 0.720
-toaster_b_yellow  toon  #CDB059  shadow 0.720
-toaster_l_grey  toon  #BBBCBD  shadow 0.720
-toaster_l_ink  toon  #1A191E  shadow 0.800
-toaster_l_pink  toon  #D8956F  shadow 0.720
-toaster_l_white  toon  #E8F2F7  shadow 0.720
-toaster_l_yellow  toon  #CDA854  shadow 0.720
-toaster_s_grey  toon  #B0B2B5  shadow 0.720
-toaster_s_ink  toon  #2A282C  shadow 0.800
-toaster_s_pink  toon  #C98170  shadow 0.720
-toaster_s_white  toon  #EAF3F5  shadow 0.720
-toaster_s_yellow  toon  #C89843  shadow 0.720
-toaster_tr_grey  toon  #ADAEB4  shadow 0.720
-toaster_tr_ink  toon  #2B282A  shadow 0.800
-toaster_tr_white  toon  #ECF4F7  shadow 0.720
-toaster_tr_yellow  toon  #CB9642  shadow 0.720
+skin  toon  #DCB014  shadow 0.880
+toaster_b_crust  toon  #603B20  shadow 0.920
+toaster_b_grey  toon  #BABCBC  shadow 0.920
+toaster_b_ink  toon  #222227  shadow 0.950
+toaster_b_white  toon  #E9F3F7  shadow 0.920
+toaster_b_yellow  toon  #C69B3D  shadow 0.920
+toaster_l_crust  toon  #5D3C26  shadow 0.920
+toaster_l_grey  toon  #BEC1BF  shadow 0.920
+toaster_l_ink  toon  #1A191E  shadow 0.950
+toaster_l_white  toon  #E9F2F6  shadow 0.920
+toaster_l_yellow  toon  #C7A44E  shadow 0.920
+toaster_s_grey  toon  #BEC1BF  shadow 0.920
+toaster_s_ink  toon  #1A191E  shadow 0.950
+toaster_s_white  toon  #E9F2F6  shadow 0.920
+toaster_s_yellow  toon  #C7A44E  shadow 0.920
+toaster_tr_grey  toon  #BEC1BF  shadow 0.920
+toaster_tr_ink  toon  #1A191E  shadow 0.950
+toaster_tr_white  toon  #E9F2F6  shadow 0.920
+toaster_tr_yellow  toon  #C7A44E  shadow 0.920
+toe  toon  #D2911E  shadow 0.720
 white  toon  #FFFFFF  shadow 0.930
 worm  toon  #B4AFC0  shadow 0.720
+worm_b_stripe  toon  #5A5464  shadow 0.850
+worm_l_stripe  toon  #5A5464  shadow 0.850
+worm_r_stripe  toon  #5A5464  shadow 0.850
 
 [actions]
-J_hand_LAction  fcurves 1  keys 42  frames 1.0-42.0
-J_hand_RAction  fcurves 1  keys 42  frames 1.0-42.0
-Jesus_RigAction  fcurves 180  keys 7560  frames 1.0-42.0
+J_hand_LAction  fcurves 2  keys 84  frames 1.0-42.0
+J_hand_RAction  fcurves 2  keys 84  frames 1.0-42.0
+Jesus_RigAction  fcurves 190  keys 7980  frames 1.0-42.0
 bell_l_d0_inkAction  fcurves 2  keys 84  frames 1.0-42.0
+bell_l_d0_rimAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_l_d0_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_l_d1_inkAction  fcurves 2  keys 84  frames 1.0-42.0
+bell_l_d1_rimAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_l_d1_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_l_d2_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_l_d2_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_r_d0_inkAction  fcurves 2  keys 84  frames 1.0-42.0
+bell_r_d0_rimAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_r_d0_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_r_d1_inkAction  fcurves 2  keys 84  frames 1.0-42.0
+bell_r_d1_rimAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_r_d1_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_r_d2_inkAction  fcurves 2  keys 84  frames 1.0-42.0
+bell_r_d2_rimAction  fcurves 2  keys 84  frames 1.0-42.0
 bell_r_d2_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 clock_br_d0_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 clock_br_d0_inkAction  fcurves 2  keys 84  frames 1.0-42.0
@@ -153,60 +173,68 @@ lips_r_d3_redAction  fcurves 2  keys 84  frames 1.0-42.0
 lips_r_d3_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
 lips_r_d4_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 lips_r_d4_pinkAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_b_d0_crustAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d0_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d0_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d0_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d0_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_b_d1_crustAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d1_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d1_inkAction  fcurves 2  keys 84  frames 1.0-42.0
-toaster_b_d1_pinkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d1_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_b_d1_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_b_d2_crustAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d2_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d2_inkAction  fcurves 2  keys 84  frames 1.0-42.0
-toaster_b_d2_pinkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d2_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d2_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_b_d3_crustAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d3_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d3_inkAction  fcurves 2  keys 84  frames 1.0-42.0
-toaster_b_d3_pinkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d3_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d3_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_b_d4_crustAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d4_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d4_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d4_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_b_d4_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_l_d0_crustAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d0_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d0_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d0_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d0_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_l_d1_crustAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d1_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d1_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d1_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d1_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_l_d2_crustAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d2_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d2_inkAction  fcurves 2  keys 84  frames 1.0-42.0
-toaster_l_d2_pinkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d2_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d2_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_l_d3_crustAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d3_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d3_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d3_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_l_d3_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_l_d4_crustAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d4_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d4_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d4_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_l_d4_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_s_d0_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_s_d0_inkAction  fcurves 2  keys 84  frames 1.0-42.0
-toaster_s_d0_pinkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_s_d0_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_s_d0_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_s_d1_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_s_d1_inkAction  fcurves 2  keys 84  frames 1.0-42.0
-toaster_s_d1_pinkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_s_d1_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_s_d1_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_s_d2_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_s_d2_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_s_d2_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_s_d2_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_s_d3_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_s_d3_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_s_d3_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
@@ -226,91 +254,25 @@ toaster_tr_d1_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_tr_d2_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_tr_d2_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_tr_d2_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_tr_d2_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_tr_d3_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_tr_d3_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_tr_d3_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_tr_d3_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_tr_d4_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_tr_d4_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_tr_d4_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
+toaster_tr_d4_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_tr_d5_greyAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_tr_d5_inkAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_tr_d5_whiteAction  fcurves 2  keys 84  frames 1.0-42.0
 toaster_tr_d5_yellowAction  fcurves 2  keys 84  frames 1.0-42.0
-worm_b_band0Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_band10Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_band11Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_band1Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_band2Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_band3Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_band4Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_band5Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_band6Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_band7Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_band8Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_band9Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg0Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg10Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg11Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg12Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg1Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg2Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg3Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg4Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg5Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg6Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg7Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg8Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_b_seg9Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_band0Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_band10Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_band11Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_band1Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_band2Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_band3Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_band4Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_band5Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_band6Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_band7Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_band8Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_band9Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg0Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg10Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg11Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg12Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg1Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg2Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg3Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg4Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg5Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg6Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg7Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg8Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_l_seg9Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_band0Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_band10Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_band11Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_band1Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_band2Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_band3Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_band4Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_band5Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_band6Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_band7Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_band8Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_band9Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg0Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg10Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg11Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg12Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg1Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg2Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg3Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg4Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg5Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg6Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg7Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg8Action  fcurves 3  keys 126  frames 1.0-42.0
-worm_r_seg9Action  fcurves 3  keys 126  frames 1.0-42.0
+worm_b_bodyAction  fcurves 5  keys 210  frames 1.0-42.0
+worm_b_stripesAction  fcurves 5  keys 210  frames 1.0-42.0
+worm_l_bodyAction  fcurves 5  keys 210  frames 1.0-42.0
+worm_l_stripesAction  fcurves 5  keys 210  frames 1.0-42.0
+worm_r_bodyAction  fcurves 5  keys 210  frames 1.0-42.0
+worm_r_stripesAction  fcurves 5  keys 210  frames 1.0-42.0
 
 == Scene Collection (2 objects)
 Camera  CAMERA
@@ -320,175 +282,201 @@ Sun  LIGHT
   loc 0.0000 0.0000 0.0000  rot_deg 41.1743 0.0000 -30.9638  scale 1.0000 1.0000 1.0000
   light SUN energy 3.0000 color #FFFFFF angle_deg 6.0000
 
-== Scene Collection/Figure (33 objects)
+== Scene Collection/Figure (37 objects)
 J_beard_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_beard_L verts 414 faces 412
-  materials hair, Outline
+  materials hair, Outline_hair
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
 J_beard_R  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_beard_R verts 414 faces 412
-  materials hair, Outline
+  materials hair, Outline_hair
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+J_beard_neck  MESH  parent=Jesus_Rig
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh J_beard_neck verts 194 faces 224
+  materials hair, Outline_hair
+  modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
+  modifier Subsurf SUBSURF levels=1 render_levels=2
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_body  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render
   mesh J_body verts 962 faces 992
   materials skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
+J_collar  MESH  parent=Jesus_Rig
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh J_collar verts 234 faces 232
+  materials collar
+  modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
+J_contact_L  MESH  parent=Jesus_Rig
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags no_shadow
+  mesh J_contact_L verts 385 faces 384
+  materials ContactShadow
+  modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
+J_contact_R  MESH  parent=Jesus_Rig
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags no_shadow
+  mesh J_contact_R verts 385 faces 384
+  materials ContactShadow
+  modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
 J_cuff_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_cuff_L verts 194 faces 216
-  materials robe, Outline
+  materials robe, Outline_robe
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier ShellMarks NODES
 J_cuff_R  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_cuff_R verts 194 faces 216
-  materials robe, Outline
+  materials robe, Outline_robe
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier ShellMarks NODES
 J_ear_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh J_ear_L verts 640 faces 672
-  materials skin, Outline
+  mesh J_ear_L verts 182 faces 200
+  materials skin, Outline_skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_ear_R  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh J_ear_R verts 640 faces 672
-  materials skin, Outline
+  mesh J_ear_R verts 182 faces 200
+  materials skin, Outline_skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_eyes  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_eyes verts 532 faces 576
   materials white, Outline
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.005902 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_foot_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_foot_L verts 988 faces 1088
-  materials skin, Outline
+  materials skin, toe, Outline_skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=2
 J_foot_R  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_foot_R verts 988 faces 1088
-  materials skin, Outline
+  materials skin, toe, Outline_skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=2
 J_goatee  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_goatee verts 170 faces 192
-  materials hair, Outline
+  materials hair, Outline_hair
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_hair  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_hair verts 6050 faces 6132
-  materials hair, Outline
+  materials hair, Outline_hair
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
 J_halo  MESH  parent=Jesus_Rig
-  loc 0.0000 0.0000 2.1900  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Torus verts 576 faces 576
-  materials halo, Outline
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh J_halo verts 1024 faces 1024
+  materials halo, Outline_halo
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
-  modifier Outline SOLIDIFY thickness=0.006765 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.007083 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_hand_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh J_hand_L verts 1492 faces 1584 shape_keys 2
-  materials skin, Outline
+  mesh J_hand_L verts 1492 faces 1584 shape_keys 3
+  materials skin, Outline_skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   shape_key_action J_hand_LAction
 J_hand_R  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh J_hand_R verts 1492 faces 1584 shape_keys 2
-  materials skin, Outline
+  mesh J_hand_R verts 1492 faces 1584 shape_keys 3
+  materials skin, Outline_skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   shape_key_action J_hand_RAction
 J_leg_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh J_leg_L verts 162 faces 180
-  materials skin, Outline
+  mesh J_leg_L verts 222 faces 240
+  materials skin, Outline_skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_leg_R  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh J_leg_R verts 162 faces 180
-  materials skin, Outline
+  mesh J_leg_R verts 222 faces 240
+  materials skin, Outline_skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_lid_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_lid_L verts 450 faces 480
-  materials skin, Outline
+  materials skin, Outline_skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_lid_R  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_lid_R verts 450 faces 480
-  materials skin, Outline
+  materials skin, Outline_skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_lip  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh J_lip verts 206 faces 216
-  materials skin, Outline
+  mesh J_lip verts 230 faces 240
+  materials skin, Outline_skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_moustache_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_moustache_L verts 488 faces 504
-  materials hair, Outline
+  materials hair, Outline_hair
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.009443 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_moustache_R  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_moustache_R verts 488 faces 504
-  materials hair, Outline
+  materials hair, Outline_hair
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.009443 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_neck  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_neck verts 74 faces 96
-  materials skin, Outline
+  materials skin, Outline_skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_nose  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_nose verts 382 faces 400
-  materials skin, Outline
+  materials skin, Outline_skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_pupils  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_pupils verts 532 faces 576
@@ -496,1675 +484,1558 @@ J_pupils  MESH  parent=Jesus_Rig
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
 J_robe  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh J_robe verts 722 faces 768
-  materials robe, Outline
+  mesh J_robe verts 770 faces 816
+  materials robe, Outline_robe
   modifier Body SURFACE_DEFORM
+  modifier FlatHem NODES
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier ShellMarks NODES
 J_sandal_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh J_sandal_L verts 358 faces 330
-  materials sandal, Outline
+  mesh J_sandal_L verts 450 faces 426
+  materials sandal, Outline_sandal
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_sandal_R  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh J_sandal_R verts 358 faces 330
-  materials sandal, Outline
+  mesh J_sandal_R verts 450 faces 426
+  materials sandal, Outline_sandal
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_skull  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_skull verts 1962 faces 2000
-  materials skin, Outline
+  materials skin, Outline_skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_sleeve_L  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_sleeve_L verts 194 faces 216
-  materials robe, Outline
+  materials robe, Outline_robe
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_sleeve_R  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_sleeve_R verts 194 faces 216
-  materials robe, Outline
+  materials robe, Outline_robe
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
   modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 J_vneck  MESH  parent=Jesus_Rig
   loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh J_vneck verts 218 faces 224
-  materials skin, Outline
+  materials skin
   modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
-  modifier Subsurf SUBSURF levels=1 render_levels=2
-  modifier Outline SOLIDIFY thickness=0.01298 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
 Jesus_Rig  ARMATURE
   loc -0.0852 -0.5743 0.0000  rot_deg 0.0000 0.0000 -165.4635  scale 1.0000 1.0000 1.0000
-  armature Jesus_Rig bones 23
+  armature Jesus_Rig bones 24
   action Jesus_RigAction
+
+== Scene Collection/Figure/Lines hands (2 objects)
+J_hand_L  MESH  parent=Jesus_Rig
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh J_hand_L verts 1492 faces 1584 shape_keys 3
+  materials skin, Outline_skin
+  modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
+  modifier Subsurf SUBSURF levels=1 render_levels=2
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  shape_key_action J_hand_LAction
+J_hand_R  MESH  parent=Jesus_Rig
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh J_hand_R verts 1492 faces 1584 shape_keys 3
+  materials skin, Outline_skin
+  modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
+  modifier Subsurf SUBSURF levels=1 render_levels=2
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  shape_key_action J_hand_RAction
+
+== Scene Collection/Figure/Lines robe (1 objects)
+J_robe  MESH  parent=Jesus_Rig
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh J_robe verts 770 faces 816
+  materials robe, Outline_robe
+  modifier Body SURFACE_DEFORM
+  modifier FlatHem NODES
+  modifier Subsurf SUBSURF levels=1 render_levels=2
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier ShellMarks NODES
+
+== Scene Collection/Figure/Lines sleeves (4 objects)
+J_cuff_L  MESH  parent=Jesus_Rig
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh J_cuff_L verts 194 faces 216
+  materials robe, Outline_robe
+  modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
+  modifier Subsurf SUBSURF levels=1 render_levels=2
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier ShellMarks NODES
+J_cuff_R  MESH  parent=Jesus_Rig
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh J_cuff_R verts 194 faces 216
+  materials robe, Outline_robe
+  modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
+  modifier Subsurf SUBSURF levels=1 render_levels=2
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+  modifier ShellMarks NODES
+J_sleeve_L  MESH  parent=Jesus_Rig
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh J_sleeve_L verts 194 faces 216
+  materials robe, Outline_robe
+  modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
+  modifier Subsurf SUBSURF levels=1 render_levels=2
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
+J_sleeve_R  MESH  parent=Jesus_Rig
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh J_sleeve_R verts 194 faces 216
+  materials robe, Outline_robe
+  modifier Armature ARMATURE object=Jesus_Rig use_vertex_groups=True use_deform_preserve_volume=False
+  modifier Subsurf SUBSURF levels=1 render_levels=2
+  modifier Outline SOLIDIFY thickness=0.01121 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
 
 == Scene Collection/Props (0 objects)
 
-== Scene Collection/Props/bell_l (7 objects)
+== Scene Collection/Props/bell_l (9 objects)
 bell_l  EMPTY
-  loc -2.2396 -0.9689 0.0000  rot_deg -23.5882 0.0000 8.6242  scale 0.4709 0.4709 0.4709
+  loc -2.2783 -0.8625 0.1972  rot_deg -20.0000 0.0000 0.0000  scale 0.5574 0.5574 0.5574
   empty PLAIN_AXES size 0.2000
 bell_l_d0_ink  MESH  parent=bell_l
-  loc -0.5375 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh bell_l_d0_ink verts 419 faces 712
+  loc -0.6125 0.0000 -0.6625  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh bell_l_d0_ink verts 434 faces 758
   materials bell_l_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009783 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action bell_l_d0_inkAction
+bell_l_d0_rim  MESH  parent=bell_l
+  loc -0.6125 0.0000 -0.6625  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh bell_l_d0_rim verts 52 faces 97
+  materials bell_l_rim
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action bell_l_d0_rimAction
 bell_l_d0_yellow  MESH  parent=bell_l
-  loc -0.5375 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh bell_l_d0_yellow verts 212 faces 395
+  loc -0.6125 0.0000 -0.6625  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh bell_l_d0_yellow verts 219 faces 408
   materials bell_l_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action bell_l_d0_yellowAction
 bell_l_d1_ink  MESH  parent=bell_l
-  loc -0.5375 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6125 0.0000 -0.6625  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh bell_l_d1_ink verts 413 faces 706
+  mesh bell_l_d1_ink verts 426 faces 721
   materials bell_l_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009783 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action bell_l_d1_inkAction
-bell_l_d1_yellow  MESH  parent=bell_l
-  loc -0.5375 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+bell_l_d1_rim  MESH  parent=bell_l
+  loc -0.6125 0.0000 -0.6625  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh bell_l_d1_yellow verts 202 faces 383
+  mesh bell_l_d1_rim verts 60 faces 111
+  materials bell_l_rim
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action bell_l_d1_rimAction
+bell_l_d1_yellow  MESH  parent=bell_l
+  loc -0.6125 0.0000 -0.6625  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh bell_l_d1_yellow verts 211 faces 400
   materials bell_l_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action bell_l_d1_yellowAction
 bell_l_d2_ink  MESH  parent=bell_l
-  loc -0.5375 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6125 0.0000 -0.6625  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh bell_l_d2_ink verts 411 faces 690
+  mesh bell_l_d2_ink verts 429 faces 721
   materials bell_l_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009783 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action bell_l_d2_inkAction
 bell_l_d2_yellow  MESH  parent=bell_l
-  loc -0.5375 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6125 0.0000 -0.6625  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh bell_l_d2_yellow verts 215 faces 383
+  mesh bell_l_d2_yellow verts 224 faces 406
   materials bell_l_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action bell_l_d2_yellowAction
 
-== Scene Collection/Props/bell_r (7 objects)
+== Scene Collection/Props/bell_r (10 objects)
 bell_r  EMPTY
-  loc 1.5660 0.9751 0.0000  rot_deg -20.8929 0.0000 -5.3587  scale 0.5514 0.5514 0.5514
+  loc 1.5947 1.1165 0.3133  rot_deg -20.0000 0.0000 0.0000  scale 0.6193 0.6193 0.6193
   empty PLAIN_AXES size 0.2000
 bell_r_d0_ink  MESH  parent=bell_r
-  loc -0.5500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh bell_r_d0_ink verts 833 faces 1294
+  loc -0.6250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh bell_r_d0_ink verts 854 faces 1347
   materials bell_r_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009322 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action bell_r_d0_inkAction
+bell_r_d0_rim  MESH  parent=bell_r
+  loc -0.6250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh bell_r_d0_rim verts 54 faces 102
+  materials bell_r_rim
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action bell_r_d0_rimAction
 bell_r_d0_yellow  MESH  parent=bell_r
-  loc -0.5500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh bell_r_d0_yellow verts 402 faces 678
+  loc -0.6250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh bell_r_d0_yellow verts 416 faces 714
   materials bell_r_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action bell_r_d0_yellowAction
 bell_r_d1_ink  MESH  parent=bell_r
-  loc -0.5500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh bell_r_d1_ink verts 823 faces 1308
+  mesh bell_r_d1_ink verts 841 faces 1337
   materials bell_r_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009322 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action bell_r_d1_inkAction
-bell_r_d1_yellow  MESH  parent=bell_r
-  loc -0.5500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+bell_r_d1_rim  MESH  parent=bell_r
+  loc -0.6250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh bell_r_d1_yellow verts 412 faces 733
+  mesh bell_r_d1_rim verts 59 faces 110
+  materials bell_r_rim
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action bell_r_d1_rimAction
+bell_r_d1_yellow  MESH  parent=bell_r
+  loc -0.6250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh bell_r_d1_yellow verts 421 faces 754
   materials bell_r_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action bell_r_d1_yellowAction
 bell_r_d2_ink  MESH  parent=bell_r
-  loc -0.5500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh bell_r_d2_ink verts 813 faces 1279
+  mesh bell_r_d2_ink verts 830 faces 1314
   materials bell_r_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009322 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action bell_r_d2_inkAction
-bell_r_d2_yellow  MESH  parent=bell_r
-  loc -0.5500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+bell_r_d2_rim  MESH  parent=bell_r
+  loc -0.6250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh bell_r_d2_yellow verts 411 faces 743
+  mesh bell_r_d2_rim verts 42 faces 72
+  materials bell_r_rim
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action bell_r_d2_rimAction
+bell_r_d2_yellow  MESH  parent=bell_r
+  loc -0.6250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh bell_r_d2_yellow verts 421 faces 751
   materials bell_r_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action bell_r_d2_yellowAction
 
 == Scene Collection/Props/clock_br (10 objects)
 clock_br  EMPTY
-  loc 2.1890 -2.1178 0.0000  rot_deg -25.2424 0.0000 -9.1394  scale 0.4495 0.4495 0.4495
+  loc 2.2332 -2.0026 0.2025  rot_deg -20.0000 0.0000 0.0000  scale 0.5209 0.5209 0.5209
   empty PLAIN_AXES size 0.2000
 clock_br_d0_grey  MESH  parent=clock_br
-  loc -0.5625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh clock_br_d0_grey verts 473 faces 882
+  loc -0.6375 0.0000 -0.7125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh clock_br_d0_grey verts 492 faces 900
   materials clock_br_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_br_d0_greyAction
 clock_br_d0_ink  MESH  parent=clock_br
-  loc -0.5625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh clock_br_d0_ink verts 931 faces 1340
+  loc -0.6375 0.0000 -0.7125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh clock_br_d0_ink verts 954 faces 1389
   materials clock_br_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009616 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action clock_br_d0_inkAction
 clock_br_d0_yellow  MESH  parent=clock_br
-  loc -0.5625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh clock_br_d0_yellow verts 84 faces 156
+  loc -0.6375 0.0000 -0.7125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh clock_br_d0_yellow verts 104 faces 181
   materials clock_br_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_br_d0_yellowAction
 clock_br_d1_grey  MESH  parent=clock_br
-  loc -0.5625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6375 0.0000 -0.7125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_br_d1_grey verts 477 faces 886
+  mesh clock_br_d1_grey verts 480 faces 871
   materials clock_br_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_br_d1_greyAction
 clock_br_d1_ink  MESH  parent=clock_br
-  loc -0.5625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6375 0.0000 -0.7125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_br_d1_ink verts 942 faces 1330
+  mesh clock_br_d1_ink verts 959 faces 1377
   materials clock_br_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009616 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action clock_br_d1_inkAction
 clock_br_d1_yellow  MESH  parent=clock_br
-  loc -0.5625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6375 0.0000 -0.7125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_br_d1_yellow verts 73 faces 127
+  mesh clock_br_d1_yellow verts 100 faces 184
   materials clock_br_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_br_d1_yellowAction
 clock_br_d2_grey  MESH  parent=clock_br
-  loc -0.5625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6375 0.0000 -0.7125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_br_d2_grey verts 472 faces 871
+  mesh clock_br_d2_grey verts 484 faces 895
   materials clock_br_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_br_d2_greyAction
 clock_br_d2_ink  MESH  parent=clock_br
-  loc -0.5625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6375 0.0000 -0.7125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_br_d2_ink verts 926 faces 1373
+  mesh clock_br_d2_ink verts 960 faces 1353
   materials clock_br_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009616 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action clock_br_d2_inkAction
 clock_br_d2_yellow  MESH  parent=clock_br
-  loc -0.5625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6375 0.0000 -0.7125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_br_d2_yellow verts 77 faces 139
+  mesh clock_br_d2_yellow verts 97 faces 178
   materials clock_br_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_br_d2_yellowAction
 
 == Scene Collection/Props/clock_c (10 objects)
 clock_c  EMPTY
-  loc -1.3483 -1.1411 0.0000  rot_deg -23.6658 0.0000 5.2709  scale 0.5019 0.5019 0.5019
+  loc -1.3732 -0.9996 0.2804  rot_deg -20.0000 0.0000 0.0000  scale 0.5520 0.5520 0.5520
   empty PLAIN_AXES size 0.2000
 clock_c_d0_grey  MESH  parent=clock_c
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh clock_c_d0_grey verts 874 faces 1595
+  loc -0.7375 0.0000 -0.8250  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh clock_c_d0_grey verts 853 faces 1543
   materials clock_c_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_c_d0_greyAction
 clock_c_d0_ink  MESH  parent=clock_c
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh clock_c_d0_ink verts 1681 faces 2187
+  loc -0.7375 0.0000 -0.8250  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh clock_c_d0_ink verts 1714 faces 2252
   materials clock_c_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009093 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action clock_c_d0_inkAction
 clock_c_d0_yellow  MESH  parent=clock_c
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh clock_c_d0_yellow verts 173 faces 326
+  loc -0.7375 0.0000 -0.8250  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh clock_c_d0_yellow verts 188 faces 350
   materials clock_c_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_c_d0_yellowAction
 clock_c_d1_grey  MESH  parent=clock_c
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7375 0.0000 -0.8250  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_c_d1_grey verts 881 faces 1586
+  mesh clock_c_d1_grey verts 878 faces 1564
   materials clock_c_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_c_d1_greyAction
 clock_c_d1_ink  MESH  parent=clock_c
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7375 0.0000 -0.8250  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_c_d1_ink verts 1668 faces 2171
+  mesh clock_c_d1_ink verts 1698 faces 2244
   materials clock_c_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009093 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action clock_c_d1_inkAction
 clock_c_d1_yellow  MESH  parent=clock_c
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7375 0.0000 -0.8250  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_c_d1_yellow verts 166 faces 315
+  mesh clock_c_d1_yellow verts 188 faces 349
   materials clock_c_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_c_d1_yellowAction
 clock_c_d2_grey  MESH  parent=clock_c
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7375 0.0000 -0.8250  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_c_d2_grey verts 871 faces 1580
+  mesh clock_c_d2_grey verts 842 faces 1515
   materials clock_c_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_c_d2_greyAction
 clock_c_d2_ink  MESH  parent=clock_c
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7375 0.0000 -0.8250  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_c_d2_ink verts 1687 faces 2204
+  mesh clock_c_d2_ink verts 1709 faces 2269
   materials clock_c_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009093 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action clock_c_d2_inkAction
 clock_c_d2_yellow  MESH  parent=clock_c
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7375 0.0000 -0.8250  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_c_d2_yellow verts 176 faces 326
+  mesh clock_c_d2_yellow verts 201 faces 360
   materials clock_c_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_c_d2_yellowAction
 
 == Scene Collection/Props/clock_tl (10 objects)
 clock_tl  EMPTY
-  loc -3.4080 8.1075 0.0000  rot_deg -14.7665 0.0000 8.1319  scale 0.7647 0.7647 0.7647
+  loc -3.4938 8.5669 0.3209  rot_deg -20.0000 0.0000 0.0000  scale 0.8574 0.8574 0.8574
   empty PLAIN_AXES size 0.2000
 clock_tl_d0_grey  MESH  parent=clock_tl
-  loc -0.5750 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh clock_tl_d0_grey verts 472 faces 861
+  loc -0.6500 0.0000 -0.6875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh clock_tl_d0_grey verts 477 faces 883
   materials clock_tl_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_tl_d0_greyAction
 clock_tl_d0_ink  MESH  parent=clock_tl
-  loc -0.5750 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh clock_tl_d0_ink verts 937 faces 1366
+  loc -0.6500 0.0000 -0.6875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh clock_tl_d0_ink verts 958 faces 1408
   materials clock_tl_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009165 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action clock_tl_d0_inkAction
 clock_tl_d0_yellow  MESH  parent=clock_tl
-  loc -0.5750 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh clock_tl_d0_yellow verts 80 faces 147
+  loc -0.6500 0.0000 -0.6875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh clock_tl_d0_yellow verts 97 faces 177
   materials clock_tl_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_tl_d0_yellowAction
 clock_tl_d1_grey  MESH  parent=clock_tl
-  loc -0.5750 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6500 0.0000 -0.6875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_tl_d1_grey verts 482 faces 902
+  mesh clock_tl_d1_grey verts 484 faces 885
   materials clock_tl_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_tl_d1_greyAction
 clock_tl_d1_ink  MESH  parent=clock_tl
-  loc -0.5750 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6500 0.0000 -0.6875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_tl_d1_ink verts 934 faces 1376
+  mesh clock_tl_d1_ink verts 958 faces 1388
   materials clock_tl_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009165 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action clock_tl_d1_inkAction
 clock_tl_d1_yellow  MESH  parent=clock_tl
-  loc -0.5750 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6500 0.0000 -0.6875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_tl_d1_yellow verts 79 faces 138
+  mesh clock_tl_d1_yellow verts 96 faces 173
   materials clock_tl_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_tl_d1_yellowAction
 clock_tl_d2_grey  MESH  parent=clock_tl
-  loc -0.5750 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6500 0.0000 -0.6875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_tl_d2_grey verts 476 faces 886
+  mesh clock_tl_d2_grey verts 490 faces 904
   materials clock_tl_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_tl_d2_greyAction
 clock_tl_d2_ink  MESH  parent=clock_tl
-  loc -0.5750 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6500 0.0000 -0.6875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_tl_d2_ink verts 941 faces 1338
+  mesh clock_tl_d2_ink verts 960 faces 1361
   materials clock_tl_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009165 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action clock_tl_d2_inkAction
 clock_tl_d2_yellow  MESH  parent=clock_tl
-  loc -0.5750 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.6500 0.0000 -0.6875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh clock_tl_d2_yellow verts 83 faces 155
+  mesh clock_tl_d2_yellow verts 100 faces 188
   materials clock_tl_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action clock_tl_d2_yellowAction
 
 == Scene Collection/Props/lips_l (17 objects)
 lips_l  EMPTY
-  loc -1.5820 1.4099 0.0000  rot_deg -20.6773 0.0000 5.2479  scale 0.5945 0.5945 0.5945
+  loc -1.5928 1.4570 0.2590  rot_deg -20.0000 0.0000 0.0000  scale 0.6308 0.6308 0.6308
   empty PLAIN_AXES size 0.2000
 lips_l_d0_ink  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh lips_l_d0_ink verts 1153 faces 1684
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh lips_l_d0_ink verts 1169 faces 1643
   materials lips_l_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.008808 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action lips_l_d0_inkAction
 lips_l_d0_pink  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh lips_l_d0_pink verts 745 faces 1427
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh lips_l_d0_pink verts 826 faces 1506
   materials lips_l_pink
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_l_d0_pinkAction
 lips_l_d1_ink  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_l_d1_ink verts 1261 faces 1943
+  mesh lips_l_d1_ink verts 1335 faces 1976
   materials lips_l_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.008808 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action lips_l_d1_inkAction
 lips_l_d1_pink  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_l_d1_pink verts 719 faces 1314
+  mesh lips_l_d1_pink verts 686 faces 1252
   materials lips_l_pink
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_l_d1_pinkAction
 lips_l_d1_red  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_l_d1_red verts 172 faces 310
+  mesh lips_l_d1_red verts 167 faces 315
   materials lips_l_red
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_l_d1_redAction
 lips_l_d1_white  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_l_d1_white verts 81 faces 152
+  mesh lips_l_d1_white verts 118 faces 214
   materials lips_l_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_l_d1_whiteAction
 lips_l_d2_ink  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_l_d2_ink verts 1278 faces 1926
+  mesh lips_l_d2_ink verts 1548 faces 2199
   materials lips_l_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.008808 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action lips_l_d2_inkAction
 lips_l_d2_pink  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_l_d2_pink verts 502 faces 925
+  mesh lips_l_d2_pink verts 564 faces 1033
   materials lips_l_pink
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_l_d2_pinkAction
 lips_l_d2_red  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_l_d2_red verts 358 faces 654
+  mesh lips_l_d2_red verts 380 faces 686
   materials lips_l_red
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_l_d2_redAction
 lips_l_d2_white  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_l_d2_white verts 95 faces 190
+  mesh lips_l_d2_white verts 128 faces 239
   materials lips_l_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_l_d2_whiteAction
 lips_l_d3_ink  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_l_d3_ink verts 1329 faces 1873
+  mesh lips_l_d3_ink verts 1333 faces 1855
   materials lips_l_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.008808 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action lips_l_d3_inkAction
 lips_l_d3_pink  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_l_d3_pink verts 865 faces 1595
+  mesh lips_l_d3_pink verts 855 faces 1567
   materials lips_l_pink
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_l_d3_pinkAction
 lips_l_d4_ink  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_l_d4_ink verts 1298 faces 2038
+  mesh lips_l_d4_ink verts 1385 faces 2076
   materials lips_l_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.008808 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action lips_l_d4_inkAction
 lips_l_d4_pink  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_l_d4_pink verts 603 faces 1105
+  mesh lips_l_d4_pink verts 584 faces 1085
   materials lips_l_pink
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_l_d4_pinkAction
 lips_l_d4_red  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_l_d4_red verts 300 faces 555
+  mesh lips_l_d4_red verts 269 faces 497
   materials lips_l_red
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_l_d4_redAction
 lips_l_d4_white  MESH  parent=lips_l
-  loc -0.8250 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9000 0.0000 -0.5875  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_l_d4_white verts 63 faces 109
+  mesh lips_l_d4_white verts 85 faces 157
   materials lips_l_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_l_d4_whiteAction
 
 == Scene Collection/Props/lips_r (17 objects)
 lips_r  EMPTY
-  loc 2.6306 1.0229 0.0000  rot_deg -20.7456 0.0000 -8.9024  scale 0.5623 0.5623 0.5623
+  loc 2.6771 1.2072 0.2786  rot_deg -20.0000 0.0000 0.0000  scale 0.6226 0.6226 0.6226
   empty PLAIN_AXES size 0.2000
 lips_r_d0_ink  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh lips_r_d0_ink verts 1302 faces 2074
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh lips_r_d0_ink verts 1372 faces 2042
   materials lips_r_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.00918 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action lips_r_d0_inkAction
 lips_r_d0_pink  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh lips_r_d0_pink verts 677 faces 1223
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh lips_r_d0_pink verts 581 faces 1053
   materials lips_r_pink
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_r_d0_pinkAction
 lips_r_d0_red  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh lips_r_d0_red verts 188 faces 344
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh lips_r_d0_red verts 259 faces 491
   materials lips_r_red
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_r_d0_redAction
 lips_r_d0_white  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh lips_r_d0_white verts 66 faces 124
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh lips_r_d0_white verts 97 faces 173
   materials lips_r_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_r_d0_whiteAction
 lips_r_d1_ink  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_r_d1_ink verts 1307 faces 1762
+  mesh lips_r_d1_ink verts 1347 faces 1825
   materials lips_r_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.00918 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action lips_r_d1_inkAction
 lips_r_d1_pink  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_r_d1_pink verts 871 faces 1582
+  mesh lips_r_d1_pink verts 844 faces 1553
   materials lips_r_pink
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_r_d1_pinkAction
 lips_r_d2_ink  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_r_d2_ink verts 1241 faces 2025
+  mesh lips_r_d2_ink verts 1340 faces 1984
   materials lips_r_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.00918 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action lips_r_d2_inkAction
 lips_r_d2_pink  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_r_d2_pink verts 693 faces 1294
+  mesh lips_r_d2_pink verts 714 faces 1315
   materials lips_r_pink
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_r_d2_pinkAction
 lips_r_d2_red  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_r_d2_red verts 217 faces 392
+  mesh lips_r_d2_red verts 165 faces 298
   materials lips_r_red
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_r_d2_redAction
 lips_r_d2_white  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_r_d2_white verts 82 faces 126
+  mesh lips_r_d2_white verts 124 faces 226
   materials lips_r_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_r_d2_whiteAction
 lips_r_d3_ink  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_r_d3_ink verts 1468 faces 2282
+  mesh lips_r_d3_ink verts 1541 faces 2154
   materials lips_r_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.00918 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action lips_r_d3_inkAction
 lips_r_d3_pink  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_r_d3_pink verts 567 faces 1059
+  mesh lips_r_d3_pink verts 595 faces 1108
   materials lips_r_pink
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_r_d3_pinkAction
 lips_r_d3_red  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_r_d3_red verts 424 faces 753
+  mesh lips_r_d3_red verts 386 faces 714
   materials lips_r_red
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_r_d3_redAction
 lips_r_d3_white  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_r_d3_white verts 92 faces 162
+  mesh lips_r_d3_white verts 126 faces 233
   materials lips_r_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_r_d3_whiteAction
 lips_r_d4_ink  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_r_d4_ink verts 1149 faces 1653
+  mesh lips_r_d4_ink verts 1168 faces 1646
   materials lips_r_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.00918 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action lips_r_d4_inkAction
 lips_r_d4_pink  MESH  parent=lips_r
-  loc -0.7000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7750 0.0000 -0.7500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh lips_r_d4_pink verts 855 faces 1534
+  mesh lips_r_d4_pink verts 820 faces 1464
   materials lips_r_pink
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action lips_r_d4_pinkAction
 
-== Scene Collection/Props/toaster_b (23 objects)
+== Scene Collection/Props/toaster_b (26 objects)
 toaster_b  EMPTY
-  loc 1.2719 -1.7842 0.0000  rot_deg -24.7326 0.0000 -5.2283  scale 0.4841 0.4841 0.4841
+  loc 1.2919 -1.7655 0.3006  rot_deg -20.0000 0.0000 0.0000  scale 0.5273 0.5273 0.5273
   empty PLAIN_AXES size 0.2000
+toaster_b_d0_crust  MESH  parent=toaster_b
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_b_d0_crust verts 140 faces 253
+  materials toaster_b_crust
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_b_d0_crustAction
 toaster_b_d0_grey  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_b_d0_grey verts 1223 faces 2220
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_b_d0_grey verts 1221 faces 2204
   materials toaster_b_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_b_d0_greyAction
 toaster_b_d0_ink  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_b_d0_ink verts 2459 faces 3038
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_b_d0_ink verts 2507 faces 3023
   materials toaster_b_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009111 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_b_d0_inkAction
 toaster_b_d0_white  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_b_d0_white verts 285 faces 513
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_b_d0_white verts 276 faces 506
   materials toaster_b_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_b_d0_whiteAction
 toaster_b_d0_yellow  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_b_d0_yellow verts 110 faces 209
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_b_d0_yellow verts 124 faces 229
   materials toaster_b_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_b_d0_yellowAction
-toaster_b_d1_grey  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+toaster_b_d1_crust  MESH  parent=toaster_b
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d1_grey verts 1133 faces 2068
+  mesh toaster_b_d1_crust verts 36 faces 61
+  materials toaster_b_crust
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_b_d1_crustAction
+toaster_b_d1_grey  MESH  parent=toaster_b
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_b_d1_grey verts 1235 faces 2140
   materials toaster_b_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_b_d1_greyAction
 toaster_b_d1_ink  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d1_ink verts 2546 faces 3513
+  mesh toaster_b_d1_ink verts 2625 faces 3214
   materials toaster_b_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009111 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_b_d1_inkAction
-toaster_b_d1_pink  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_b_d1_pink verts 100 faces 98
-  materials toaster_b_pink
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  action toaster_b_d1_pinkAction
 toaster_b_d1_white  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d1_white verts 484 faces 894
+  mesh toaster_b_d1_white verts 462 faces 844
   materials toaster_b_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_b_d1_whiteAction
-toaster_b_d2_grey  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+toaster_b_d1_yellow  MESH  parent=toaster_b
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d2_grey verts 1172 faces 2111
+  mesh toaster_b_d1_yellow verts 28 faces 40
+  materials toaster_b_yellow
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_b_d1_yellowAction
+toaster_b_d2_crust  MESH  parent=toaster_b
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_b_d2_crust verts 79 faces 141
+  materials toaster_b_crust
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_b_d2_crustAction
+toaster_b_d2_grey  MESH  parent=toaster_b
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_b_d2_grey verts 1266 faces 2290
   materials toaster_b_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_b_d2_greyAction
 toaster_b_d2_ink  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d2_ink verts 2278 faces 3309
+  mesh toaster_b_d2_ink verts 2362 faces 2931
   materials toaster_b_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009111 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_b_d2_inkAction
-toaster_b_d2_pink  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_b_d2_pink verts 76 faces 74
-  materials toaster_b_pink
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  action toaster_b_d2_pinkAction
 toaster_b_d2_white  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d2_white verts 203 faces 381
+  mesh toaster_b_d2_white verts 195 faces 364
   materials toaster_b_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_b_d2_whiteAction
 toaster_b_d2_yellow  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d2_yellow verts 28 faces 46
+  mesh toaster_b_d2_yellow verts 68 faces 97
   materials toaster_b_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_b_d2_yellowAction
-toaster_b_d3_grey  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+toaster_b_d3_crust  MESH  parent=toaster_b
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d3_grey verts 1261 faces 2227
+  mesh toaster_b_d3_crust verts 154 faces 283
+  materials toaster_b_crust
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_b_d3_crustAction
+toaster_b_d3_grey  MESH  parent=toaster_b
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_b_d3_grey verts 1311 faces 2351
   materials toaster_b_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_b_d3_greyAction
 toaster_b_d3_ink  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d3_ink verts 2456 faces 3540
+  mesh toaster_b_d3_ink verts 2549 faces 3105
   materials toaster_b_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009111 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_b_d3_inkAction
-toaster_b_d3_pink  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_b_d3_pink verts 58 faces 92
-  materials toaster_b_pink
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  action toaster_b_d3_pinkAction
 toaster_b_d3_white  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d3_white verts 214 faces 388
+  mesh toaster_b_d3_white verts 196 faces 365
   materials toaster_b_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_b_d3_whiteAction
 toaster_b_d3_yellow  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d3_yellow verts 36 faces 60
+  mesh toaster_b_d3_yellow verts 137 faces 247
   materials toaster_b_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_b_d3_yellowAction
-toaster_b_d4_grey  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+toaster_b_d4_crust  MESH  parent=toaster_b
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d4_grey verts 1242 faces 2213
+  mesh toaster_b_d4_crust verts 249 faces 409
+  materials toaster_b_crust
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_b_d4_crustAction
+toaster_b_d4_grey  MESH  parent=toaster_b
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_b_d4_grey verts 1334 faces 2332
   materials toaster_b_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_b_d4_greyAction
 toaster_b_d4_ink  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d4_ink verts 2588 faces 3434
+  mesh toaster_b_d4_ink verts 2685 faces 3196
   materials toaster_b_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009111 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_b_d4_inkAction
 toaster_b_d4_white  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d4_white verts 258 faces 483
+  mesh toaster_b_d4_white verts 243 faces 445
   materials toaster_b_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_b_d4_whiteAction
 toaster_b_d4_yellow  MESH  parent=toaster_b
-  loc -0.8500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9250 0.0000 -0.8000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_b_d4_yellow verts 199 faces 370
+  mesh toaster_b_d4_yellow verts 226 faces 408
   materials toaster_b_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_b_d4_yellowAction
 
-== Scene Collection/Props/toaster_l (21 objects)
+== Scene Collection/Props/toaster_l (26 objects)
 toaster_l  EMPTY
-  loc -2.6263 1.0877 0.0000  rot_deg -20.5780 0.0000 8.8674  scale 0.5644 0.5644 0.5644
+  loc -2.6666 1.2079 0.3367  rot_deg -20.0000 0.0000 0.0000  scale 0.6219 0.6219 0.6219
   empty PLAIN_AXES size 0.2000
+toaster_l_d0_crust  MESH  parent=toaster_l
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_l_d0_crust verts 157 faces 274
+  materials toaster_l_crust
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_l_d0_crustAction
 toaster_l_d0_grey  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_l_d0_grey verts 1289 faces 2323
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_l_d0_grey verts 1319 faces 2367
   materials toaster_l_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_l_d0_greyAction
 toaster_l_d0_ink  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_l_d0_ink verts 2508 faces 3045
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_l_d0_ink verts 2550 faces 3112
   materials toaster_l_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009112 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_l_d0_inkAction
 toaster_l_d0_white  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_l_d0_white verts 208 faces 386
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_l_d0_white verts 203 faces 374
   materials toaster_l_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_l_d0_whiteAction
 toaster_l_d0_yellow  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_l_d0_yellow verts 139 faces 262
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_l_d0_yellow verts 144 faces 264
   materials toaster_l_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_l_d0_yellowAction
-toaster_l_d1_grey  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+toaster_l_d1_crust  MESH  parent=toaster_l
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_l_d1_grey verts 1226 faces 2193
+  mesh toaster_l_d1_crust verts 219 faces 372
+  materials toaster_l_crust
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_l_d1_crustAction
+toaster_l_d1_grey  MESH  parent=toaster_l
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_l_d1_grey verts 1297 faces 2286
   materials toaster_l_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_l_d1_greyAction
 toaster_l_d1_ink  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_l_d1_ink verts 2648 faces 3316
+  mesh toaster_l_d1_ink verts 2682 faces 3225
   materials toaster_l_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009112 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_l_d1_inkAction
 toaster_l_d1_white  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_l_d1_white verts 278 faces 518
+  mesh toaster_l_d1_white verts 268 faces 485
   materials toaster_l_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_l_d1_whiteAction
 toaster_l_d1_yellow  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_l_d1_yellow verts 98 faces 178
+  mesh toaster_l_d1_yellow verts 212 faces 394
   materials toaster_l_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_l_d1_yellowAction
-toaster_l_d2_grey  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+toaster_l_d2_crust  MESH  parent=toaster_l
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_l_d2_grey verts 1178 faces 2150
+  mesh toaster_l_d2_crust verts 126 faces 235
+  materials toaster_l_crust
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_l_d2_crustAction
+toaster_l_d2_grey  MESH  parent=toaster_l
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_l_d2_grey verts 1219 faces 2221
   materials toaster_l_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_l_d2_greyAction
 toaster_l_d2_ink  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_l_d2_ink verts 2467 faces 3223
+  mesh toaster_l_d2_ink verts 2515 faces 3031
   materials toaster_l_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009112 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_l_d2_inkAction
-toaster_l_d2_pink  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_l_d2_pink verts 174 faces 170
-  materials toaster_l_pink
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  action toaster_l_d2_pinkAction
 toaster_l_d2_white  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_l_d2_white verts 290 faces 519
+  mesh toaster_l_d2_white verts 288 faces 531
   materials toaster_l_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_l_d2_whiteAction
 toaster_l_d2_yellow  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_l_d2_yellow verts 65 faces 117
+  mesh toaster_l_d2_yellow verts 118 faces 199
   materials toaster_l_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_l_d2_yellowAction
-toaster_l_d3_grey  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+toaster_l_d3_crust  MESH  parent=toaster_l
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_l_d3_grey verts 1096 faces 1937
+  mesh toaster_l_d3_crust verts 55 faces 74
+  materials toaster_l_crust
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_l_d3_crustAction
+toaster_l_d3_grey  MESH  parent=toaster_l
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_l_d3_grey verts 1229 faces 2116
   materials toaster_l_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_l_d3_greyAction
 toaster_l_d3_ink  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_l_d3_ink verts 2549 faces 3556
+  mesh toaster_l_d3_ink verts 2620 faces 3177
   materials toaster_l_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009112 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_l_d3_inkAction
 toaster_l_d3_white  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_l_d3_white verts 496 faces 920
+  mesh toaster_l_d3_white verts 481 faces 898
   materials toaster_l_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_l_d3_whiteAction
-toaster_l_d4_grey  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+toaster_l_d3_yellow  MESH  parent=toaster_l
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_l_d4_grey verts 1144 faces 2073
-  materials toaster_l_grey
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  action toaster_l_d4_greyAction
-toaster_l_d4_ink  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_l_d4_ink verts 2316 faces 3266
-  materials toaster_l_ink, Outline
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009112 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
-  action toaster_l_d4_inkAction
-toaster_l_d4_white  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_l_d4_white verts 216 faces 415
-  materials toaster_l_white
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  action toaster_l_d4_whiteAction
-toaster_l_d4_yellow  MESH  parent=toaster_l
-  loc -0.8625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_l_d4_yellow verts 39 faces 70
+  mesh toaster_l_d3_yellow verts 52 faces 50
   materials toaster_l_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_l_d3_yellowAction
+toaster_l_d4_crust  MESH  parent=toaster_l
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_l_d4_crust verts 75 faces 133
+  materials toaster_l_crust
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_l_d4_crustAction
+toaster_l_d4_grey  MESH  parent=toaster_l
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_l_d4_grey verts 1218 faces 2193
+  materials toaster_l_grey
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_l_d4_greyAction
+toaster_l_d4_ink  MESH  parent=toaster_l
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_l_d4_ink verts 2381 faces 2971
+  materials toaster_l_ink, Outline
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  action toaster_l_d4_inkAction
+toaster_l_d4_white  MESH  parent=toaster_l
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_l_d4_white verts 208 faces 385
+  materials toaster_l_white
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_l_d4_whiteAction
+toaster_l_d4_yellow  MESH  parent=toaster_l
+  loc -0.9375 0.0000 -0.8125  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_l_d4_yellow verts 63 faces 105
+  materials toaster_l_yellow
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_l_d4_yellowAction
 
 == Scene Collection/Props/toaster_s (21 objects)
 toaster_s  EMPTY
-  loc -1.7679 3.8799 0.0000  rot_deg -18.1246 0.0000 5.1639  scale 0.6226 0.6226 0.6226
+  loc -1.8028 4.0647 0.2750  rot_deg -20.0000 0.0000 0.0000  scale 0.7140 0.7140 0.7140
   empty PLAIN_AXES size 0.2000
 toaster_s_d0_grey  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_s_d0_grey verts 564 faces 1013
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_s_d0_grey verts 679 faces 1236
   materials toaster_s_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_s_d0_greyAction
 toaster_s_d0_ink  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_s_d0_ink verts 1069 faces 1679
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_s_d0_ink verts 1237 faces 1672
   materials toaster_s_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009467 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_s_d0_inkAction
-toaster_s_d0_pink  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_s_d0_pink verts 122 faces 118
-  materials toaster_s_pink
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  action toaster_s_d0_pinkAction
 toaster_s_d0_white  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_s_d0_white verts 145 faces 268
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_s_d0_white verts 148 faces 274
   materials toaster_s_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_s_d0_whiteAction
+toaster_s_d0_yellow  MESH  parent=toaster_s
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_s_d0_yellow verts 75 faces 138
+  materials toaster_s_yellow
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_s_d0_yellowAction
 toaster_s_d1_grey  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d1_grey verts 661 faces 1158
+  mesh toaster_s_d1_grey verts 720 faces 1334
   materials toaster_s_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_s_d1_greyAction
 toaster_s_d1_ink  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d1_ink verts 1094 faces 1667
+  mesh toaster_s_d1_ink verts 1256 faces 1691
   materials toaster_s_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009467 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_s_d1_inkAction
-toaster_s_d1_pink  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_s_d1_pink verts 37 faces 67
-  materials toaster_s_pink
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  action toaster_s_d1_pinkAction
 toaster_s_d1_white  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d1_white verts 89 faces 166
+  mesh toaster_s_d1_white verts 108 faces 197
   materials toaster_s_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_s_d1_whiteAction
 toaster_s_d1_yellow  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d1_yellow verts 114 faces 112
+  mesh toaster_s_d1_yellow verts 88 faces 162
   materials toaster_s_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_s_d1_yellowAction
 toaster_s_d2_grey  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d2_grey verts 588 faces 1091
+  mesh toaster_s_d2_grey verts 676 faces 1176
   materials toaster_s_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_s_d2_greyAction
 toaster_s_d2_ink  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d2_ink verts 1133 faces 1680
+  mesh toaster_s_d2_ink verts 1293 faces 1747
   materials toaster_s_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009467 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_s_d2_inkAction
 toaster_s_d2_white  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d2_white verts 211 faces 393
+  mesh toaster_s_d2_white verts 257 faces 483
   materials toaster_s_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_s_d2_whiteAction
-toaster_s_d3_grey  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+toaster_s_d2_yellow  MESH  parent=toaster_s
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d3_grey verts 605 faces 1115
+  mesh toaster_s_d2_yellow verts 30 faces 47
+  materials toaster_s_yellow
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_s_d2_yellowAction
+toaster_s_d3_grey  MESH  parent=toaster_s
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_s_d3_grey verts 675 faces 1211
   materials toaster_s_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_s_d3_greyAction
 toaster_s_d3_ink  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d3_ink verts 1027 faces 1597
+  mesh toaster_s_d3_ink verts 1176 faces 1616
   materials toaster_s_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009467 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_s_d3_inkAction
 toaster_s_d3_white  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d3_white verts 86 faces 164
+  mesh toaster_s_d3_white verts 113 faces 211
   materials toaster_s_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_s_d3_whiteAction
 toaster_s_d3_yellow  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d3_yellow verts 94 faces 92
+  mesh toaster_s_d3_yellow verts 47 faces 76
   materials toaster_s_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_s_d3_yellowAction
 toaster_s_d4_grey  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d4_grey verts 613 faces 1096
+  mesh toaster_s_d4_grey verts 716 faces 1287
   materials toaster_s_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_s_d4_greyAction
 toaster_s_d4_ink  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d4_ink verts 1157 faces 1761
+  mesh toaster_s_d4_ink verts 1322 faces 1723
   materials toaster_s_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009467 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_s_d4_inkAction
 toaster_s_d4_white  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d4_white verts 119 faces 217
+  mesh toaster_s_d4_white verts 144 faces 265
   materials toaster_s_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_s_d4_whiteAction
 toaster_s_d4_yellow  MESH  parent=toaster_s
-  loc -0.6500 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7250 0.0000 -0.6500  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_s_d4_yellow verts 79 faces 147
+  mesh toaster_s_d4_yellow verts 118 faces 223
   materials toaster_s_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_s_d4_yellowAction
 
-== Scene Collection/Props/toaster_tr (22 objects)
+== Scene Collection/Props/toaster_tr (25 objects)
 toaster_tr  EMPTY
-  loc 3.1965 6.0193 0.0000  rot_deg -16.2972 0.0000 -8.3836  scale 0.6749 0.6749 0.6749
+  loc 3.2627 6.2550 0.2887  rot_deg -20.0000 0.0000 0.0000  scale 0.7838 0.7838 0.7838
   empty PLAIN_AXES size 0.2000
 toaster_tr_d0_grey  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_tr_d0_grey verts 691 faces 1229
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_tr_d0_grey verts 720 faces 1334
   materials toaster_tr_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_tr_d0_greyAction
 toaster_tr_d0_ink  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_tr_d0_ink verts 1129 faces 1637
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_tr_d0_ink verts 1256 faces 1695
   materials toaster_tr_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009613 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_tr_d0_inkAction
 toaster_tr_d0_white  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_tr_d0_white verts 75 faces 136
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_tr_d0_white verts 108 faces 198
   materials toaster_tr_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_tr_d0_whiteAction
 toaster_tr_d0_yellow  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh toaster_tr_d0_yellow verts 48 faces 84
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh toaster_tr_d0_yellow verts 88 faces 162
   materials toaster_tr_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_tr_d0_yellowAction
 toaster_tr_d1_grey  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_tr_d1_grey verts 653 faces 1177
+  mesh toaster_tr_d1_grey verts 716 faces 1284
   materials toaster_tr_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_tr_d1_greyAction
 toaster_tr_d1_ink  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_tr_d1_ink verts 1180 faces 1709
+  mesh toaster_tr_d1_ink verts 1322 faces 1712
   materials toaster_tr_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009613 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_tr_d1_inkAction
 toaster_tr_d1_white  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_tr_d1_white verts 114 faces 215
+  mesh toaster_tr_d1_white verts 144 faces 265
   materials toaster_tr_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_tr_d1_whiteAction
 toaster_tr_d1_yellow  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_tr_d1_yellow verts 59 faces 104
+  mesh toaster_tr_d1_yellow verts 118 faces 223
   materials toaster_tr_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_tr_d1_yellowAction
 toaster_tr_d2_grey  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_tr_d2_grey verts 584 faces 1058
+  mesh toaster_tr_d2_grey verts 675 faces 1212
   materials toaster_tr_grey
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_tr_d2_greyAction
 toaster_tr_d2_ink  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_tr_d2_ink verts 989 faces 1490
+  mesh toaster_tr_d2_ink verts 1176 faces 1620
   materials toaster_tr_ink, Outline
   modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009613 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
   action toaster_tr_d2_inkAction
 toaster_tr_d2_white  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_tr_d2_white verts 77 faces 142
+  mesh toaster_tr_d2_white verts 113 faces 211
   materials toaster_tr_white
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_tr_d2_whiteAction
-toaster_tr_d3_grey  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+toaster_tr_d2_yellow  MESH  parent=toaster_tr
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   flags hide_render hide_viewport
-  mesh toaster_tr_d3_grey verts 623 faces 1123
-  materials toaster_tr_grey
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  action toaster_tr_d3_greyAction
-toaster_tr_d3_ink  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_tr_d3_ink verts 1061 faces 1662
-  materials toaster_tr_ink, Outline
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009613 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
-  action toaster_tr_d3_inkAction
-toaster_tr_d3_white  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_tr_d3_white verts 120 faces 221
-  materials toaster_tr_white
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  action toaster_tr_d3_whiteAction
-toaster_tr_d4_grey  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_tr_d4_grey verts 603 faces 1073
-  materials toaster_tr_grey
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  action toaster_tr_d4_greyAction
-toaster_tr_d4_ink  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_tr_d4_ink verts 1105 faces 1677
-  materials toaster_tr_ink, Outline
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009613 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
-  action toaster_tr_d4_inkAction
-toaster_tr_d4_white  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_tr_d4_white verts 192 faces 351
-  materials toaster_tr_white
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  action toaster_tr_d4_whiteAction
-toaster_tr_d5_grey  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_tr_d5_grey verts 479 faces 862
-  materials toaster_tr_grey
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  action toaster_tr_d5_greyAction
-toaster_tr_d5_ink  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_tr_d5_ink verts 890 faces 1472
-  materials toaster_tr_ink, Outline
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  modifier Outline SOLIDIFY thickness=0.009613 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
-  action toaster_tr_d5_inkAction
-toaster_tr_d5_white  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_tr_d5_white verts 112 faces 202
-  materials toaster_tr_white
-  modifier Subdivision SUBSURF levels=1 render_levels=1
-  action toaster_tr_d5_whiteAction
-toaster_tr_d5_yellow  MESH  parent=toaster_tr
-  loc -0.6625 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  flags hide_render hide_viewport
-  mesh toaster_tr_d5_yellow verts 148 faces 145
+  mesh toaster_tr_d2_yellow verts 47 faces 76
   materials toaster_tr_yellow
   modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_tr_d2_yellowAction
+toaster_tr_d3_grey  MESH  parent=toaster_tr
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_tr_d3_grey verts 679 faces 1234
+  materials toaster_tr_grey
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_tr_d3_greyAction
+toaster_tr_d3_ink  MESH  parent=toaster_tr
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_tr_d3_ink verts 1237 faces 1673
+  materials toaster_tr_ink, Outline
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  action toaster_tr_d3_inkAction
+toaster_tr_d3_white  MESH  parent=toaster_tr
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_tr_d3_white verts 148 faces 275
+  materials toaster_tr_white
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_tr_d3_whiteAction
+toaster_tr_d3_yellow  MESH  parent=toaster_tr
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_tr_d3_yellow verts 75 faces 138
+  materials toaster_tr_yellow
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_tr_d3_yellowAction
+toaster_tr_d4_grey  MESH  parent=toaster_tr
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_tr_d4_grey verts 676 faces 1175
+  materials toaster_tr_grey
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_tr_d4_greyAction
+toaster_tr_d4_ink  MESH  parent=toaster_tr
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_tr_d4_ink verts 1293 faces 1737
+  materials toaster_tr_ink, Outline
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  action toaster_tr_d4_inkAction
+toaster_tr_d4_white  MESH  parent=toaster_tr
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_tr_d4_white verts 257 faces 481
+  materials toaster_tr_white
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_tr_d4_whiteAction
+toaster_tr_d4_yellow  MESH  parent=toaster_tr
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_tr_d4_yellow verts 30 faces 47
+  materials toaster_tr_yellow
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_tr_d4_yellowAction
+toaster_tr_d5_grey  MESH  parent=toaster_tr
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_tr_d5_grey verts 679 faces 1234
+  materials toaster_tr_grey
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_tr_d5_greyAction
+toaster_tr_d5_ink  MESH  parent=toaster_tr
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_tr_d5_ink verts 1237 faces 1670
+  materials toaster_tr_ink, Outline
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Outline SOLIDIFY thickness=0.0083 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  action toaster_tr_d5_inkAction
+toaster_tr_d5_white  MESH  parent=toaster_tr
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_tr_d5_white verts 148 faces 275
+  materials toaster_tr_white
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
+  action toaster_tr_d5_whiteAction
+toaster_tr_d5_yellow  MESH  parent=toaster_tr
+  loc -0.7375 0.0000 -0.6375  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  flags hide_render hide_viewport
+  mesh toaster_tr_d5_yellow verts 75 faces 138
+  materials toaster_tr_yellow
+  modifier Subdivision SUBSURF levels=1 render_levels=1
+  modifier Hold DISPLACE strength=1 mid_level=1
   action toaster_tr_d5_yellowAction
 
-== Scene Collection/Props/worm_b (26 objects)
+== Scene Collection/Props/worm_b (3 objects)
 worm_b  EMPTY
-  loc -2.2654 -2.5756 0.0000  rot_deg 0.0000 0.0000 9.6261  scale 0.2825 0.2825 0.2825
+  loc -2.2626 -2.5395 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 0.3208 0.3208 0.3208
   empty PLAIN_AXES size 0.2000
-worm_b_band0  MESH  parent=worm_b
-  loc -0.5142 0.0000 0.1090  rot_deg 0.0000 90.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.024 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_b_band0Action
-worm_b_band1  MESH  parent=worm_b
-  loc -0.4201 0.0000 0.1164  rot_deg 0.0000 90.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.025 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_b_band1Action
-worm_b_band10  MESH  parent=worm_b
-  loc 0.4201 0.0000 0.1071  rot_deg 0.0000 90.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.034 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_b_band10Action
-worm_b_band11  MESH  parent=worm_b
-  loc 0.5142 0.0000 0.1118  rot_deg 0.0000 90.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.035 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_b_band11Action
-worm_b_band2  MESH  parent=worm_b
-  loc -0.3263 0.0000 0.1247  rot_deg 0.0000 82.6966 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.026 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_b_band2Action
-worm_b_band3  MESH  parent=worm_b
-  loc -0.2315 0.0000 0.1467  rot_deg 0.0000 75.5726 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.027 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_b_band3Action
-worm_b_band4  MESH  parent=worm_b
-  loc -0.1408 0.0000 0.1719  rot_deg 0.0000 76.3106 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.028 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_b_band4Action
-worm_b_band5  MESH  parent=worm_b
-  loc -0.0484 0.0000 0.1886  rot_deg 0.0000 84.2229 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.029 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_b_band5Action
-worm_b_band6  MESH  parent=worm_b
-  loc 0.0484 0.0000 0.1877  rot_deg 0.0000 95.4625 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.030 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_b_band6Action
-worm_b_band7  MESH  parent=worm_b
-  loc 0.1408 0.0000 0.1692  rot_deg 0.0000 103.5419 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.031 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_b_band7Action
-worm_b_band8  MESH  parent=worm_b
-  loc 0.2315 0.0000 0.1420  rot_deg 0.0000 104.5252 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.032 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_b_band8Action
-worm_b_band9  MESH  parent=worm_b
-  loc 0.3263 0.0000 0.1176  rot_deg 0.0000 97.5983 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.033 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_b_band9Action
-worm_b_seg0  MESH  parent=worm_b
-  loc -0.5626 0.0000 0.1000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.026 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.0407 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg0Action
-worm_b_seg1  MESH  parent=worm_b
-  loc -0.4686 0.0000 0.1096  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.027 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04071 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg1Action
-worm_b_seg10  MESH  parent=worm_b
-  loc 0.3717 0.0000 0.1063  rot_deg 0.0000 2.5282 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.036 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04081 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg10Action
-worm_b_seg11  MESH  parent=worm_b
-  loc 0.4686 0.0000 0.1000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.037 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04082 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg11Action
-worm_b_seg12  MESH  parent=worm_b
-  loc 0.5626 0.0000 0.1150  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.038 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04083 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg12Action
-worm_b_seg2  MESH  parent=worm_b
-  loc -0.3717 0.0000 0.1146  rot_deg 0.0000 -2.1937 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.028 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04072 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg2Action
-worm_b_seg3  MESH  parent=worm_b
-  loc -0.2786 0.0000 0.1298  rot_deg 0.0000 -11.7053 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.029 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04073 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg3Action
-worm_b_seg4  MESH  parent=worm_b
-  loc -0.1876 0.0000 0.1546  rot_deg 0.0000 -15.0941 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.030 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04073 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg4Action
-worm_b_seg5  MESH  parent=worm_b
-  loc -0.0935 0.0000 0.1776  rot_deg 0.0000 -10.3149 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.031 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04074 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg5Action
-worm_b_seg6  MESH  parent=worm_b
-  loc 0.0000 0.0000 0.1860  rot_deg 0.0000 -0.1693 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.032 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04074 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg6Action
-worm_b_seg7  MESH  parent=worm_b
-  loc 0.0935 0.0000 0.1759  rot_deg 0.0000 10.0644 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.033 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04076 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg7Action
-worm_b_seg8  MESH  parent=worm_b
-  loc 0.1876 0.0000 0.1511  rot_deg 0.0000 15.0712 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.034 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04078 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg8Action
-worm_b_seg9  MESH  parent=worm_b
-  loc 0.2786 0.0000 0.1244  rot_deg 0.0000 11.9171 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.035 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04079 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_b_seg9Action
+worm_b_body  MESH  parent=worm_b
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh worm_b_body verts 1138 faces 1152 shape_keys 6
+  materials worm, Outline_worm
+  modifier Outline SOLIDIFY thickness=0.03109 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  shape_key_action worm_b_bodyAction
+worm_b_stripes  MESH  parent=worm_b
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh worm_b_stripes verts 288 faces 162 shape_keys 6
+  materials worm_b_stripe
+  shape_key_action worm_b_stripesAction
 
-== Scene Collection/Props/worm_l (26 objects)
+== Scene Collection/Props/worm_l (3 objects)
 worm_l  EMPTY
-  loc -3.2374 4.2797 0.0000  rot_deg 0.0000 0.0000 9.0964  scale 0.3103 0.3103 0.3103
+  loc -3.2447 4.2718 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 0.3973 0.3973 0.3973
   empty PLAIN_AXES size 0.2000
-worm_l_band0  MESH  parent=worm_l
-  loc -0.5143 0.0000 0.1090  rot_deg 0.0000 90.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.012 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_l_band0Action
-worm_l_band1  MESH  parent=worm_l
-  loc -0.4190 0.0000 0.1164  rot_deg 0.0000 90.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.013 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_l_band1Action
-worm_l_band10  MESH  parent=worm_l
-  loc 0.4190 0.0000 0.1071  rot_deg 0.0000 90.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.022 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_l_band10Action
-worm_l_band11  MESH  parent=worm_l
-  loc 0.5143 0.0000 0.1118  rot_deg 0.0000 90.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.023 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_l_band11Action
-worm_l_band2  MESH  parent=worm_l
-  loc -0.3241 0.0000 0.1264  rot_deg 0.0000 80.0917 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.014 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_l_band2Action
-worm_l_band3  MESH  parent=worm_l
-  loc -0.2301 0.0000 0.1553  rot_deg 0.0000 70.3929 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.015 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_l_band3Action
-worm_l_band4  MESH  parent=worm_l
-  loc -0.1411 0.0000 0.1891  rot_deg 0.0000 71.4001 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.016 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_l_band4Action
-worm_l_band5  MESH  parent=worm_l
-  loc -0.0489 0.0000 0.2118  rot_deg 0.0000 82.1643 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.017 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_l_band5Action
-worm_l_band6  MESH  parent=worm_l
-  loc 0.0489 0.0000 0.2109  rot_deg 0.0000 97.4088 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.018 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_l_band6Action
-worm_l_band7  MESH  parent=worm_l
-  loc 0.1411 0.0000 0.1864  rot_deg 0.0000 108.3987 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.019 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_l_band7Action
-worm_l_band8  MESH  parent=worm_l
-  loc 0.2301 0.0000 0.1507  rot_deg 0.0000 109.7407 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.020 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_l_band8Action
-worm_l_band9  MESH  parent=worm_l
-  loc 0.3241 0.0000 0.1192  rot_deg 0.0000 100.3089 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.021 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_l_band9Action
-worm_l_seg0  MESH  parent=worm_l
-  loc -0.5634 0.0000 0.1000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.013 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.05317 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg0Action
-worm_l_seg1  MESH  parent=worm_l
-  loc -0.4681 0.0000 0.1096  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.014 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.05318 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg1Action
-worm_l_seg10  MESH  parent=worm_l
-  loc 0.3700 0.0000 0.1065  rot_deg 0.0000 3.4281 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.023 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.05328 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg10Action
-worm_l_seg11  MESH  parent=worm_l
-  loc 0.4681 0.0000 0.1000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.024 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.05329 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg11Action
-worm_l_seg12  MESH  parent=worm_l
-  loc 0.5634 0.0000 0.1150  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.025 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.0533 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg12Action
-worm_l_seg2  MESH  parent=worm_l
-  loc -0.3700 0.0000 0.1148  rot_deg 0.0000 -2.9744 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.015 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.05319 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg2Action
-worm_l_seg3  MESH  parent=worm_l
-  loc -0.2765 0.0000 0.1345  rot_deg 0.0000 -15.8953 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.016 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.0532 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg3Action
-worm_l_seg4  MESH  parent=worm_l
-  loc -0.1870 0.0000 0.1675  rot_deg 0.0000 -20.5175 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.017 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.0532 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg4Action
-worm_l_seg5  MESH  parent=worm_l
-  loc -0.0942 0.0000 0.1985  rot_deg 0.0000 -14.0024 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.018 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.0532 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg5Action
-worm_l_seg6  MESH  parent=worm_l
-  loc 0.0000 0.0000 0.2102  rot_deg 0.0000 -0.2296 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.019 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.05321 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg6Action
-worm_l_seg7  MESH  parent=worm_l
-  loc 0.0942 0.0000 0.1968  rot_deg 0.0000 13.6614 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.020 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.05322 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg7Action
-worm_l_seg8  MESH  parent=worm_l
-  loc 0.1870 0.0000 0.1640  rot_deg 0.0000 20.4863 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.021 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.05324 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg8Action
-worm_l_seg9  MESH  parent=worm_l
-  loc 0.2765 0.0000 0.1290  rot_deg 0.0000 16.1838 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.022 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.05326 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_l_seg9Action
+worm_l_body  MESH  parent=worm_l
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh worm_l_body verts 1138 faces 1152 shape_keys 6
+  materials worm, Outline_worm
+  modifier Outline SOLIDIFY thickness=0.03591 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  shape_key_action worm_l_bodyAction
+worm_l_stripes  MESH  parent=worm_l
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh worm_l_stripes verts 288 faces 162 shape_keys 6
+  materials worm_l_stripe
+  shape_key_action worm_l_stripesAction
 
-== Scene Collection/Props/worm_r (26 objects)
+== Scene Collection/Props/worm_r (3 objects)
 worm_r  EMPTY
-  loc 1.9160 4.2955 0.0000  rot_deg 0.0000 0.0000 -5.4559  scale 0.3950 0.3950 0.3950
+  loc 1.9225 4.3425 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 0.4593 0.4593 0.4593
   empty PLAIN_AXES size 0.2000
-worm_r_band0  MESH  parent=worm_r
-  loc -0.5111 0.0000 0.1090  rot_deg 0.0000 90.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_r_band0Action
-worm_r_band1  MESH  parent=worm_r
-  loc -0.4185 0.0000 0.1164  rot_deg 0.0000 90.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.001 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_r_band1Action
-worm_r_band10  MESH  parent=worm_r
-  loc 0.4185 0.0000 0.1071  rot_deg 0.0000 90.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.010 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_r_band10Action
-worm_r_band11  MESH  parent=worm_r
-  loc 0.5111 0.0000 0.1118  rot_deg 0.0000 90.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.011 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_r_band11Action
-worm_r_band2  MESH  parent=worm_r
-  loc -0.3260 0.0000 0.1228  rot_deg 0.0000 85.9240 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.002 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_r_band2Action
-worm_r_band3  MESH  parent=worm_r
-  loc -0.2313 0.0000 0.1360  rot_deg 0.0000 81.9557 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.003 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_r_band3Action
-worm_r_band4  MESH  parent=worm_r
-  loc -0.1397 0.0000 0.1507  rot_deg 0.0000 82.3662 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.004 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_r_band4Action
-worm_r_band5  MESH  parent=worm_r
-  loc -0.0477 0.0000 0.1600  rot_deg 0.0000 86.7754 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.005 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_r_band5Action
-worm_r_band6  MESH  parent=worm_r
-  loc 0.0477 0.0000 0.1591  rot_deg 0.0000 93.0491 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.006 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_r_band6Action
-worm_r_band7  MESH  parent=worm_r
-  loc 0.1397 0.0000 0.1480  rot_deg 0.0000 97.5517 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.007 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_r_band7Action
-worm_r_band8  MESH  parent=worm_r
-  loc 0.2313 0.0000 0.1314  rot_deg 0.0000 98.0987 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.008 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_r_band8Action
-worm_r_band9  MESH  parent=worm_r
-  loc 0.3260 0.0000 0.1156  rot_deg 0.0000 94.2405 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Cylinder.009 verts 64 faces 34
-  materials black
-  modifier Bevel BEVEL width=0.0045 segments=3 limit_method=ANGLE harden_normals=False
-  action worm_r_band9Action
-worm_r_seg0  MESH  parent=worm_r
-  loc -0.5588 0.0000 0.1000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04188 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg0Action
-worm_r_seg1  MESH  parent=worm_r
-  loc -0.4662 0.0000 0.1096  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.001 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04187 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg1Action
-worm_r_seg10  MESH  parent=worm_r
-  loc 0.3709 0.0000 0.1061  rot_deg 0.0000 1.4114 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.010 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04181 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg10Action
-worm_r_seg11  MESH  parent=worm_r
-  loc 0.4662 0.0000 0.1000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.011 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04181 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg11Action
-worm_r_seg12  MESH  parent=worm_r
-  loc 0.5588 0.0000 0.1150  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.012 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.0418 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg12Action
-worm_r_seg2  MESH  parent=worm_r
-  loc -0.3709 0.0000 0.1144  rot_deg 0.0000 -1.2246 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.002 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04186 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg2Action
-worm_r_seg3  MESH  parent=worm_r
-  loc -0.2786 0.0000 0.1242  rot_deg 0.0000 -6.5294 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.003 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04185 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg3Action
-worm_r_seg4  MESH  parent=worm_r
-  loc -0.1869 0.0000 0.1388  rot_deg 0.0000 -8.4150 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.004 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04184 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg4Action
-worm_r_seg5  MESH  parent=worm_r
-  loc -0.0924 0.0000 0.1518  rot_deg 0.0000 -5.7549 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.005 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04183 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg5Action
-worm_r_seg6  MESH  parent=worm_r
-  loc 0.0000 0.0000 0.1563  rot_deg 0.0000 -0.0945 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.006 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04182 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg6Action
-worm_r_seg7  MESH  parent=worm_r
-  loc 0.0924 0.0000 0.1501  rot_deg 0.0000 5.6153 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.007 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04182 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg7Action
-worm_r_seg8  MESH  parent=worm_r
-  loc 0.1869 0.0000 0.1353  rot_deg 0.0000 8.4023 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.008 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04182 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg8Action
-worm_r_seg9  MESH  parent=worm_r
-  loc 0.2786 0.0000 0.1188  rot_deg 0.0000 6.6473 0.0000  scale 1.0000 1.0000 1.0000
-  mesh Sphere.009 verts 482 faces 512
-  materials worm, Outline
-  modifier Outline SOLIDIFY thickness=0.04181 offset=1 use_flip_normals=True use_even_offset=True use_quality_normals=True use_rim=False material_offset=1
-  action worm_r_seg9Action
+worm_r_body  MESH  parent=worm_r
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh worm_r_body verts 1138 faces 1152 shape_keys 6
+  materials worm, Outline_worm
+  modifier Outline SOLIDIFY thickness=0.03116 offset=1 use_flip_normals=True use_even_offset=False use_quality_normals=True use_rim=False material_offset=1
+  shape_key_action worm_r_bodyAction
+worm_r_stripes  MESH  parent=worm_r
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  mesh worm_r_stripes verts 288 faces 162 shape_keys 6
+  materials worm_r_stripe
+  shape_key_action worm_r_stripesAction
 
-== Scene Collection/Set (2 objects)
+== Scene Collection/Set (3 objects)
 Floor  MESH
-  loc 0.0000 60.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  loc 0.0000 60.0000 -0.0300  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
   mesh Plane verts 4 faces 1
   materials floor
+InnerLines  GREASEPENCIL
+  loc 0.0000 0.0000 0.0000  rot_deg 0.0000 0.0000 0.0000  scale 1.0000 1.0000 1.0000
+  materials InnerInk_Lines, InnerInk_Hands
+  modifier LineArt LINEART
+  modifier LineArtHands LINEART
+  modifier ShortStrokes NODES
 Title  FONT  parent=Camera
-  loc -0.0050 0.7341 -6.0000  rot_deg 0.0000 0.0000 0.0000  scale 0.1640 0.1208 0.1640
+  loc -0.0051 0.7342 -6.0000  rot_deg 0.0000 0.0000 0.0000  scale 0.1642 0.1222 0.1642
   flags no_shadow
   materials TitleInk
+  modifier CloseSlits NODES
