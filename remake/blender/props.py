@@ -204,6 +204,9 @@ DRAWING_PX = 1 / 40  # units per GIF pixel for traced drawings (place_prop scale
 # crescent along one side of every part, which reads as dirt and as a heavier line.
 INK = (0.05, 0.03, 0.95)
 COLOUR = (0.0, 0.07, 0.92)
+# a toaster's crust is the toast's whole patch, between the ink and the toast, so its dark brown
+# shows round the toast in the slot as the ink shows round the colours
+LAYERS = {"ink": INK, "crust": (0.01, 0.008, 0.92)}
 INK_OUTLINE_PX = 0.8
 
 
@@ -221,13 +224,13 @@ def build_traced(root, coll, data, spec):
     as drawn: the bells swing, the wings beat, the clocks jolt, drawing for drawing."""
     cell = DRAWING_PX / data["cell"]
     w, h = spec["size"]
-    mats = {name: toon(f"{root.name}_{name}", hexc, (INK if name == "ink" else COLOUR)[2])
+    mats = {name: toon(f"{root.name}_{name}", hexc, LAYERS.get(name, COLOUR)[2])
             for name, hexc in spec["palette"].items()}
     drawings = []
     for i, dr in enumerate(spec["drawings"]):
         parts = []
         for name, runs in dr["parts"].items():
-            depth, radius, _ = INK if name == "ink" else COLOUR
+            depth, radius, _ = LAYERS.get(name, COLOUR)
             o = inflate(f"{root.name}_d{i}_{name}", coll, mats[name], unrle(runs, w, h), cell, depth=depth, radius=radius,
                         outline=name == "ink")
             if name == "ink":
@@ -353,10 +356,16 @@ WORM_LOOP = (0.45, 0.85)  # share of the body that curls up into the loop, start
                           # the way: the drawings' worm first humps its middle, then arches most of itself
 WORM_CURL = 1.85     # radians the body turns at the loop's sides: past upright, so curled all the way
                      # the sides lean out into the drawings' Omega, with a hole under the arch
-WORM_SPREAD = 0.7    # cartoon cheats: as the loop closes the ends pull in less than they should (so
-WORM_LIFT = 0.25     # the arch keeps its hole), and the loop stands a little taller than the body allows
+WORM_LIFT = 0.25     # cartoon cheat: the loop stands a little taller than the body allows
+# How long the worm is drawn, end to end, against flat, by curl: measured on all three worms in
+# the upscaled frames. Half curled, the ends pull in less than the body's length would make them
+# (a steep arch on long flat ends); curled all the way they pull in much less (so the Omega keeps
+# its hole). A worm that pulled in as its body bends was a broad low hump half curled.
+WORM_LENGTHS = ((0.0, 1.0), (0.35, 0.99), (0.5, 0.935), (0.7, 0.915), (0.9, 0.905), (1.0, 0.78))
 WORM_R = 0.09        # one smooth tube, as drawn
-WORM_CURLS = (0.0, 0.25, 0.5, 0.75, 1.0)  # the body is built at these curls and blends between them
+# the body is built at these curls and blends between them; closer at the top, where an arch
+# turns into the Omega and the drawn length falls off fast (WORM_LENGTHS)
+WORM_CURLS = (0.0, 0.25, 0.5, 0.75, 0.9, 1.0)
 WORM_STRIPE = "#5A5464"  # mid-dark slate: the drawings' worms have no black in them
 WORM_STRIPE_W = 0.035    # about a GIF pixel
 # where the stripes sit along the body (share of its length) and how far each one leans off
@@ -365,8 +374,9 @@ WORM_STRIPES = [(0.1, 12), (0.2, -8), (0.3, 18), (0.4, 4), (0.5, -14), (0.6, 10)
 
 
 def worm_curve(a, samples):
-    """Centre line of the worm, its body length kept, with the middle curled into a loop by
-    a (0 flat .. 1 tall loop). Returns (x, z, slope) at each arc length in samples."""
+    """Centre line of the worm, with the middle curled into a loop by a (0 flat .. 1 tall
+    loop), stretched end to end to the length the drawings give that curl (WORM_LENGTHS).
+    Returns (x, z, slope) at each arc length in samples."""
     loop = (WORM_LOOP[0] + (WORM_LOOP[1] - WORM_LOOP[0]) * a) * WORM_LENGTH
     start = (WORM_LENGTH - loop) / 2
     steps = 400
@@ -381,7 +391,10 @@ def worm_curve(a, samples):
         zs.append(zs[-1] + math.sin(th) * ds)
         ths.append(th)
     mid = xs[steps // 2]
-    stretch = 1 + WORM_SPREAD * a * a  # mostly near the top: a half-curled worm keeps its length
+    # end to end, the round ends included
+    length = next(l0 + (l1 - l0) * (a - a0) / (a1 - a0)
+                  for (a0, l0), (a1, l1) in zip(WORM_LENGTHS, WORM_LENGTHS[1:]) if a <= a1)
+    stretch = ((WORM_LENGTH + 2 * WORM_R) * length - 2 * WORM_R) / (max(xs) - min(xs))
     lift = 1 + WORM_LIFT * a
     out = []
     for s in samples:
@@ -444,11 +457,15 @@ def build_worm(root, coll, phase):
         x = saw(t, c, phase)
         return (0.5 - 0.5 * math.cos(2 * math.pi * x)) ** 1.3
     curl = track(root, "curl", loop)
-    step = WORM_CURLS[1] - WORM_CURLS[0]
+
+    def weight(c, k):  # the k-th built curl's share of a body curled c: 1 at its curl, 0 at its neighbours'
+        lo, a = WORM_CURLS[k - 1], WORM_CURLS[k]
+        if c <= a:
+            return max(0.0, (c - lo) / (a - lo))
+        return max(0.0, (WORM_CURLS[k + 1] - c) / (WORM_CURLS[k + 1] - a)) if k + 1 < len(WORM_CURLS) else 1.0
     for p in parts:  # each built curl weighs in as the curl passes it, so the body blends from one to the next
-        for k, a in enumerate(WORM_CURLS[1:], 1):
-            animate_value(p.data.shape_keys.key_blocks[f"curl{k}"], "value",
-                          lambda t, a=a: max(0.0, 1 - abs(curl(t) - a) / step))
+        for k in range(1, len(WORM_CURLS)):
+            animate_value(p.data.shape_keys.key_blocks[f"curl{k}"], "value", lambda t, k=k: weight(curl(t), k))
     root["fit_axis"] = "x"  # a flat worm's box is a few pixels tall: size it by its length
     root["level"] = True    # along the camera's horizontal: turned to face the camera, one off to the side slants
     if not load_tracks().get(root.name):  # untracked: size it in its box when flat, whatever its phase
