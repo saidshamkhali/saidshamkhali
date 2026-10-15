@@ -823,9 +823,11 @@ def animate(rig):
     if STEPPED:  # sample the smooth motion once per source frame and hold it
         hold(rig, step_frames())
         apply_hand_turns(rig)
+        apply_pose_from(rig)
         apply_fit(rig)
         aim_head(rig)
         apply_head_fit(rig)
+        plant_feet(rig)
         apply_reuse(rig)
         hitch(rig)
     animate_halo(rig)
@@ -836,17 +838,26 @@ def animate(rig):
 # head from about 17 degrees, so a level halo would read as a wide-open ellipse: while he beckons
 # (12-23) the drawings show it half that open, and whenever his arm is up almost edge-on.
 HALO_TILT = {k: 7.0 if 12 <= k <= 23 else 10.0 if k in (11, 24) else 12.0 for k in range(41)}
+# Where the raised hand meets the halo, the drawings tuck the halo's end behind the hand. Ours reached
+# round in front of it, its near rim a slate bar across the palm or the cuff: the hand is about as far
+# from the camera as the halo's middle, and some of it further. So on the frames with the arm up the
+# halo moves back along the camera's line of sight, by this much (units): on screen it stays where it
+# was, the same size to a third of a pixel, only now behind the hand. The turn to screen-right (30-35)
+# raises the arm through the halo, in front of the sleeve as drawn, so it stays.
+HALO_BACK = {k: 0.22 for k in (*range(0, 11), *range(25, 30), *range(36, 41))}
 
 
 def animate_halo(rig):
     """Key the halo bone on every source frame: right above his neck and level in the world (whatever the
-    head does), then tipped about the screen's horizontal by HALO_TILT, its front edge up."""
+    head does), then tipped about the screen's horizontal by HALO_TILT, its front edge up, and moved back
+    by HALO_BACK."""
     from mathutils import Matrix
     scene = bpy.context.scene
     pb = rig.pose.bones.get("halo")
     if pb is None:
         return
     right = screen_right()
+    cam = scene.camera
     n = LAYOUT["source"]["frames"]
     for k in range(n + 1):
         f = remake_frame(k)
@@ -856,9 +867,14 @@ def animate_halo(rig):
         head = rig.pose.bones["head"]
         rise = (pb.bone.head_local - head.bone.head_local).length * rig.matrix_world.to_scale().z
         world.translation = (rig.matrix_world @ head.head) + Vector((0, 0, rise))
+        back = HALO_BACK.get(k % n, 0.0)
+        if cam is not None and back:
+            world.translation += (world.translation - cam.matrix_world.translation).normalized() * back
         pb.matrix = rig.matrix_world.inverted() @ world
-        pb.keyframe_insert("rotation_quaternion", frame=f)
-        pb.keyframe_insert("scale", frame=f)
+        # the location too: the halo hangs off the head bone, so without it the halo would ride
+        # wherever the head moves it instead of staying above the neck
+        for path in ("location", "rotation_quaternion", "scale"):
+            pb.keyframe_insert(path, frame=f)
     constant(rig)
 
 
@@ -870,7 +886,7 @@ def animate_halo(rig):
 # the lowered one hooks its fingers or makes a fist at his side. Reused and held frames read the
 # frame they repeat.
 CURL = {
-    "R": {0: 0.2, 3: 0.8, 4: 0.2, 8: 0.8, 9: 0.1, 11: 0.8, 12: 0.5, 14: 0.0, 28: 0.8, 30: 0.6, 33: 0.9, 37: 0.8, 40: 0.2},
+    "R": {0: 0.2, 3: 0.8, 4: 0.2, 8: 0.8, 9: 0.4, 11: 0.8, 12: 0.5, 14: 0.0, 28: 0.8, 30: 0.6, 33: 0.9, 37: 0.8, 40: 0.2},
     "L": {0: 0.0, 3: 0.3, 5: 0.0, 10: 0.5, 11: 0.9, 12: 0.15, 14: 0.0, 17: 1.0, 18: 0.4, 28: 0.0, 29: 0.8, 30: 0.3,
           31: 0.5, 33: 0.3, 34: 0.0},
 }
@@ -882,10 +898,12 @@ FLICK = 30  # degrees the beckoning wrist drops (about the rest pose's X) as the
 # the hands' own turns per source frame (rest-pose axes, degrees), on top of the poses: the belly
 # hand turns up into an open claw (+z), over into a fist (-z) or hangs from the wrist (+x); lying
 # flat, the beckoning hand turns the back of the hand to us, as drawn, and the raised hand turns
-# its broad side to us in the back views (0-2) and the first turn (3-4), where it would show edge-on
+# its broad side to us in the back views (0-2) and the first turn (3-4), where it would show edge-on.
+# The lowered hand, stuck out from the cuff while he waves (9-10, 28), turns its palm to us, thumb
+# up: bent out flat at the wrist (flapR) it showed us only its edge, a thin yellow stick
 HAND_TURN = {
     "L": {0: (0, 0, 40), 2: (0, 0, -90), 3: (0, 0, 90), 4: (0, 0, 90), 14: (0, 0, 130), 16: (0, 0, 30), 17: (0, 0, -100), 18: (40, 0, 0)},
-    "R": {12: (0, 0, 45), 18: (0, 0, 45)},
+    "R": {9: (0, 0, -90), 10: (0, 0, -90), 12: (0, 0, 45), 18: (0, 0, 45), 28: (0, 0, -90)},
 }
 
 
@@ -939,7 +957,7 @@ def animate_hands(rig):
             src = k % n
             while src in held:  # a held frame repeats the one before it, which may itself be reused
                 src -= 1
-            src = REUSE.get(src, (src,))[0]
+            src = POSE_FROM.get(src, REUSE.get(src, (src,))[0])
             curl, claw = hand_value(CURL[side], src), hand_value(CLAW[side], src)
             if not has_claw:
                 curl = max(curl, claw)
@@ -1139,8 +1157,20 @@ def aim_head(rig):
 # extra fit offsets), measured by matching the GIF's silhouettes to each other and tracking where
 # the head went. The beckon is a ping-pong, its return beats the outgoing ones played backwards
 # (23 = 12, 22 = 14, 21 = 16, 19 = 17), and the second wave reuses the first's drawings.
-REUSE = {19: (17, 1, {}), 21: (16, 2, {}), 22: (14, 2, {}), 23: (12, 2, {}), 24: (11, 5, {}), 25: (10, 3, {}),
-         27: (9, 0, {})}
+REUSE = {19: (17, 1, {}), 21: (16, 2, {}), 22: (14, 2, {}), 23: (12, 2, {}), 24: (11, 5, {}), 27: (9, 0, {})}
+# Drawings redrawn from another frame's pose rather than reused: frame: the frame whose designed pose
+# (arms, body and the hands' turns and shapes) it starts from, its own fit doing the rest. 25 is the
+# second wave's copy of 10, but not a traced one: it matches 10 far worse than the true reuses do (wider
+# on both sides, the lowered hand lower). The timeline is between two poses there (face and up), so on
+# its own it started from a bent arm and a body turned away, too far for the fit to reach.
+POSE_FROM = {25: 10}
+# The beckon keeps his feet planted: the drawings move his arms, hands and head and leave the sandals
+# where they were (but for a small step at 18), while each beat's fitted turn and feet slid them a few
+# pixels back and forth. frame: the frame whose feet it keeps, where they stood in the world. The return
+# beats replay these through REUSE. Their hips keep that frame's turn as well (in pose_fit.json the rest
+# of each beat's fitted turn sits in the spine's twist, so the chest stays put): turned further, the
+# back leg reached across for its planted foot and poked out of the robe at the hem.
+PLANT = {14: 12, 16: 12, 17: 12}
 
 
 def source_px():
@@ -1175,6 +1205,51 @@ def apply_reuse(rig):
             for name in FIT_BONES:
                 for path in ("location", "rotation_quaternion", "scale"):
                     rig.pose.bones[name].keyframe_insert(path, frame=fk)
+    constant(rig)
+
+
+def apply_pose_from(rig):
+    """Key the POSE_FROM frames' designed pose as a copy of the frames they start from (before the fit,
+    which then adds their own offsets)."""
+    from kit import fcurves
+    for k, j in POSE_FROM.items():
+        fk, fj = remake_frame(k), remake_frame(j)
+        for fc in fcurves(rig):
+            v = fc.evaluate(fj)
+            for kp in fc.keyframe_points:
+                if abs(kp.co.x - fk) < 1e-3:
+                    kp.co.y = v
+            fc.update()
+
+
+def put_feet(rig, world):
+    """Pose both foot bones so they stand at these world matrices ({side: matrix}), wherever the rig's
+    slide and turn put it."""
+    bpy.context.view_layer.update()  # the rig's matrix_world after its location and turn were set
+    inv = rig.matrix_world.inverted()
+    for side, m in world.items():
+        rig.pose.bones[f"foot.{side}"].matrix = inv @ m
+
+
+def feet_world(rig):
+    return {side: rig.matrix_world @ rig.pose.bones[f"foot.{side}"].matrix for side in ("L", "R")}
+
+
+def plant_feet(rig):
+    """Key the feet on the PLANT frames where they stood in the world on the frames they keep (after
+    the fit, so each beat's fitted slide, turn and feet are undone for the feet alone: the legs bend to
+    reach them)."""
+    scene = bpy.context.scene
+    for k, j in PLANT.items():
+        fk, fj = remake_frame(k), remake_frame(j)
+        scene.frame_set(int(fj), subframe=fj - int(fj))
+        world = feet_world(rig)
+        scene.frame_set(int(fk), subframe=fk - int(fk))
+        put_feet(rig, world)
+        for side in ("L", "R"):
+            pb = rig.pose.bones[f"foot.{side}"]
+            pb.keyframe_insert("location", frame=fk)
+            pb.keyframe_insert("rotation_quaternion", frame=fk)
     constant(rig)
 
 
