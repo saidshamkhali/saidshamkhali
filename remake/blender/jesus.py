@@ -16,7 +16,7 @@ import bpy
 from mathutils import Euler, Vector
 
 from kit import (LAYOUT, REMAKE, add_shape, blobs, constant, cap, hitch, hold, lathe, loft, mat, merge, remake_frame, shell, slab, smooth_outline,
-                 step_frames, sweep, zsec)
+                 step_frames, sweep, toon, zsec)
 
 RIG = "Jesus_Rig"
 
@@ -391,7 +391,6 @@ def build_foot(coll, side, x):
     foot = merge(f"J_foot_{side}", coll, skin_m, parts)
     # the toes get their own colour; the skin stays the first material, which the outline and the
     # fitter go by
-    from kit import toon
     foot.data.materials.append(toon("toe", TOE))
     for poly in foot.data.polygons[body:]:
         poly.material_index = 1
@@ -399,7 +398,7 @@ def build_foot(coll, side, x):
 
 
 def build_sandal(coll, side, x):
-    """A long, thick dark sole reaching well past the toes, and a broad strap over the foot."""
+    """A long, thick dark sole reaching well past the toes, and a thin strap over the foot."""
     sole_m = mat("sandal")
     at, turn = foot_frame(x)
     sole = [(0.0, -0.09), (0.062, -0.082), (0.084, 0.0), (0.092, 0.12), (0.088, 0.22), (0.056, 0.282),
@@ -410,18 +409,18 @@ def build_sandal(coll, side, x):
     for v in s.data.vertices:
         a, depth, f = v.co.x, v.co.y, v.co.z
         v.co = Vector(at(a, f, SOLE_LIFT + SOLE / 2 + depth))
-    # the strap: a broad flat band from the sole up over the middle of the foot and down again,
-    # hugging it (just off the foot's surface), a little further back on top, so only the toes
-    # peek out in front. From the side it's a dark band on the foot, as drawn, never a hoop
-    # standing up or a slipper's puffy upper
+    # the strap: a thin flat band from the sole up over the foot just behind the toes and down
+    # again, hugging it (just off the foot's surface), so the yellow foot shows behind it and the
+    # toes in front, as drawn. From the side it's a dark band on the foot, never a hoop standing up;
+    # any broader and it covers the foot like a slipper's upper (a dark clog from the front)
     f0, z0, (rw, rl, rh) = FOOT
     band = []
     for p in (-80, -45, 0, 45, 80):
-        fs = 0.125 + 0.02 * abs(p) / 80
+        fs = 0.14 + 0.01 * abs(p) / 80
         k = math.sqrt(1 - ((fs - f0) / rl) ** 2)
         w, h = rw * k + 0.008, rh * k + 0.008
         band.append(at(w * math.sin(math.radians(p)), fs, z0 + h * math.cos(math.radians(p))))
-    strap = sweep(f"_strap_{side}", coll, sole_m, band, [0.042], n=16, ring=16, squash=0.22)
+    strap = sweep(f"_strap_{side}", coll, sole_m, band, [0.024], n=16, ring=16, squash=0.35)
     return merge(f"J_sandal_{side}", coll, sole_m, [s, strap])
 
 
@@ -460,7 +459,7 @@ def hand_mesh(coll, side, x, curl=0.0, claw=0.0):
     thumb forward. At rest it's the mitten the drawings hold up: fingers straight and side by
     side (their outlines still draw the lines between them), the thumb out. curl folds the
     fingers in towards the palm, still together, and the thumb with them: towards a fist. claw
-    droops them from the knuckles and fans them out: the beckoning "come here"."""
+    reaches them out, fanned, and hooks them at the tips: the beckoning "come here"."""
     skin_m = mat("skin")
     wx, wz = WRIST
     wx *= x
@@ -471,11 +470,12 @@ def hand_mesh(coll, side, x, curl=0.0, claw=0.0):
 
     def finger(dy, length):
         """Base, knuckle, tip: straight down at rest, folded towards the palm (-dx) by curl and claw."""
-        spread = dy * (0.1 + 0.5 * claw)
+        spread = dy * (0.1 + 0.7 * claw)
         base = (0.0, dy, -0.095)
-        # bend at the knuckle, then the tip: a droop. The claw hooks down from the knuckles but stops
-        # short of curling under the palm, which from the camera would read as a fist
-        a1, a2 = math.radians(8 + 42 * curl + 54 * claw), math.radians(16 + 58 * curl + 76 * claw)
+        # bend at the knuckle, then the tip: a droop. The claw bends little at the knuckle and a lot
+        # at the tip, so the fingers reach out of the palm before they hook, with their tips apart, as
+        # drawn; hooked at the knuckle they hang straight down out of the palm, a stubby paw
+        a1, a2 = math.radians(8 + 42 * curl + 32 * claw), math.radians(16 + 58 * curl + 84 * claw)
         l1, l2 = length * 0.55, length * 0.45
         mid = (base[0] - l1 * math.sin(a1), dy + spread * 0.6, base[2] - l1 * math.cos(a1))
         tip = (mid[0] - l2 * math.sin(a2), dy + spread, mid[2] - l2 * math.cos(a2))
@@ -499,8 +499,10 @@ def build_hand(coll, side, x):
     """The open hand, with two shape keys: "curl" folds the fingers in towards a fist, "claw"
     hooks and fans them into the beckoning claw. Both at 0 is the open hand."""
     hand = hand_mesh(coll, side, x)
-    add_shape(hand, hand_mesh(coll, side, x, curl=1.0), "curl")
-    add_shape(hand, hand_mesh(coll, side, x, claw=1.0), "claw")
+    # Blender adds a shape key at full strength: start both at 0, so a hand that nothing keys stays
+    # open (animate_hands keys only the frames and sides its tables name)
+    for key, shape in (("curl", hand_mesh(coll, side, x, curl=1.0)), ("claw", hand_mesh(coll, side, x, claw=1.0))):
+        add_shape(hand, shape, key).value = 0.0
     hand["outline_even"] = False  # folded fingers make sharp creases that spike an even outline
     return hand
 
