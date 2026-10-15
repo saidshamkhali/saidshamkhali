@@ -26,13 +26,14 @@ from mathutils import Vector
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import jesus  # noqa: E402
-from kit import (FPS, HERE, LAYOUT, LENS, LOOP, PALETTE, REMAKE, RES_X, RES_Y,  # noqa: E402
-                 SENSOR, SRC_H, SRC_W, add_outlines, empty, finish, flat, new_collection, toon)
+from kit import (FPS, HERE, LAYOUT, LENS, LINE, LOOP, OUTLINE_PX, PALETTE, REMAKE, RES_X, RES_Y,  # noqa: E402
+                 SENSOR, SRC_H, SRC_W, add_outlines, empty, finish, flat, new_collection, srgb)
 from props import BUILDERS, TURN  # noqa: E402
 
 CAM_PITCH = 20.0       # degrees below horizontal
 CAM_TARGET = Vector((0.0, 0.0, 1.05))
 TYPE_TURN = TURN
+FLOOR_Z = -0.03        # the floor plane, under the soles' outline shells
 
 
 def parse_args():
@@ -193,9 +194,13 @@ def find_font(path):
     return None
 
 
-# The source title is a heavy, wide display serif. Ultra, a touch emboldened and tracked
-# out, then fitted to the source glyph box in width and height separately, matches it.
-TITLE_BOLD = 0.012
+# The source title is a heavy, wide display serif. Ultra, emboldened and tracked out, then
+# fitted to the source glyph box in width and height separately, matches it.
+# How much the letters are thickened all round (the curve's offset, in font units): enough to
+# close the slits Ultra cuts between neighbouring serifs and strokes (the feet of m, the tops of
+# W, beside the crossbars of H and e), which the source's fatter letters don't have. 0.012 only
+# narrowed them to light hairline cracks. It gives the source's weight of ink, within 5%.
+TITLE_BOLD = 0.02
 TITLE_TRACKING = 1.12
 TITLE_WORD_SPACE = 1.2
 
@@ -263,6 +268,10 @@ def world_and_lights():
     sun_data = bpy.data.lights.new("Sun", "SUN")
     sun_data.energy = 3.0
     sun_data.angle = math.radians(6)
+    # the sun only sets the toon band (which side of a shape is in shade). The drawings cast no
+    # shadows: its cast shadows left a grey smudge beside every prop, a long smear from his feet and
+    # a grainy shade on his legs that changed with every pose
+    sun_data.use_shadow = False
     sun = bpy.data.objects.new("Sun", sun_data)
     bpy.context.scene.collection.objects.link(sun)
     direction = Vector((0.45, 0.75, -1.0))
@@ -270,11 +279,158 @@ def world_and_lights():
 
 
 def floor(coll):
-    bpy.ops.mesh.primitive_plane_add(size=400, location=(0, 60, 0))
+    """The page: flat sky blue. It sits a little below his soles (at 0), deeper than any outline
+    shell reaches: where it cut through the sandals' shells, only their spikes poked out, a comb
+    of light teeth under each sole. Nothing casts a shadow on it, so its height doesn't show."""
+    bpy.ops.mesh.primitive_plane_add(size=400, location=(0, 60, FLOOR_Z))
     obj = bpy.context.active_object
     obj.name = "Floor"
-    finish(obj, toon("floor", PALETTE["bg"], shadow=0.84, threshold=0.06, softness=0.04),
-           coll, outline=False, smooth=False)
+    finish(obj, flat("floor", PALETTE["bg"]), coll, outline=False, smooth=False)
+
+
+# A soft patch of shade on the floor right under each sandal, like concept A's soft floor shadows:
+# it stands him on the page without the sun's long cast shadow. Only he gets one; the props float.
+CONTACT_HEX = "#3F84AA"   # the shade's colour at its darkest: a deeper sky blue
+CONTACT_ALPHA = 0.65      # how much of it shows at the middle, fading to nothing at the rim
+CONTACT_PAD = (1.4, 2.0)  # the patch's size against the sole's, along the foot and across it
+CONTACT_SOFT = 0.25       # the fade starts this far out from the middle (fraction of the rim)
+CONTACT_Z = -0.02         # above the floor, below the soles' outline shells
+
+
+def contact_material():
+    """Shade colour over whatever is under it, fading out with the distance from the middle (the
+    UV map holds where each point sits on the unit disc). Blended, so where the patches of the
+    two feet overlap they darken together instead of one cutting the other off."""
+    mat = bpy.data.materials.new("ContactShadow")
+    if mat.node_tree is None and hasattr(mat, "use_nodes"):
+        mat.use_nodes = True
+    nt = mat.node_tree
+    nt.nodes.clear()
+    n, link = nt.nodes, nt.links.new
+    uv = n.new("ShaderNodeUVMap")
+    uv.uv_map = "UVMap"
+    length = n.new("ShaderNodeVectorMath")
+    length.operation = "LENGTH"
+    fade = n.new("ShaderNodeMapRange")
+    fade.interpolation_type = "SMOOTHSTEP"
+    fade.inputs["From Min"].default_value = CONTACT_SOFT
+    fade.inputs["From Max"].default_value = 1.0
+    fade.inputs["To Min"].default_value = CONTACT_ALPHA
+    fade.inputs["To Max"].default_value = 0.0
+    clear = n.new("ShaderNodeBsdfTransparent")
+    shade = n.new("ShaderNodeEmission")
+    shade.inputs["Color"].default_value = srgb(CONTACT_HEX) + (1,)
+    mix = n.new("ShaderNodeMixShader")
+    out = n.new("ShaderNodeOutputMaterial")
+    link(uv.outputs["UV"], length.inputs[0])
+    link(length.outputs["Value"], fade.inputs["Value"])
+    link(fade.outputs["Result"], mix.inputs["Fac"])
+    link(clear.outputs["BSDF"], mix.inputs[1])
+    link(shade.outputs["Emission"], mix.inputs[2])
+    link(mix.outputs["Shader"], out.inputs["Surface"])
+    if hasattr(mat, "surface_render_method"):
+        mat.surface_render_method = "BLENDED"
+    mat.diffuse_color = srgb(CONTACT_HEX) + (CONTACT_ALPHA,)
+    return mat
+
+
+def contact_shadow(rig, coll):
+    """A soft elliptical patch under each sandal, sized and turned to the sole as built (its rest
+    pose, in the rig's space) and skinned to the foot bone, so it follows the foot every frame."""
+    mat = contact_material()
+    for side in ("L", "R"):
+        sandal = bpy.data.objects.get(f"J_sandal_{side}")
+        if sandal is None:
+            continue
+        pts = [(v.co.x, v.co.y) for v in sandal.data.vertices]
+        mx = sum(p[0] for p in pts) / len(pts)
+        my = sum(p[1] for p in pts) / len(pts)
+        sxx = sum((p[0] - mx) ** 2 for p in pts)
+        syy = sum((p[1] - my) ** 2 for p in pts)
+        sxy = sum((p[0] - mx) * (p[1] - my) for p in pts)
+        ang = 0.5 * math.atan2(2 * sxy, sxx - syy)  # the sole's long axis, along the foot
+        u = Vector((math.cos(ang), math.sin(ang), 0))
+        v = Vector((-u.y, u.x, 0))
+        pu = [p[0] * u.x + p[1] * u.y for p in pts]
+        pv = [p[0] * v.x + p[1] * v.y for p in pts]
+        cu, cv = (min(pu) + max(pu)) / 2, (min(pv) + max(pv)) / 2
+        a, b = (max(pu) - min(pu)) / 2 * CONTACT_PAD[0], (max(pv) - min(pv)) / 2 * CONTACT_PAD[1]
+        centre = u * cu + v * cv
+        segs, rings = 48, 8
+        verts, uvs = [(centre.x, centre.y, CONTACT_Z)], [(0.0, 0.0)]
+        for i in range(1, rings + 1):
+            r = i / rings
+            for s in range(segs):
+                t = 2 * math.pi * s / segs
+                p = centre + u * (a * r * math.cos(t)) + v * (b * r * math.sin(t))
+                verts.append((p.x, p.y, CONTACT_Z))
+                uvs.append((r * math.cos(t), r * math.sin(t)))
+        faces = [(0, 1 + s, 1 + (s + 1) % segs) for s in range(segs)]
+        for i in range(rings - 1):
+            o0, o1 = 1 + i * segs, 1 + (i + 1) * segs
+            faces += [(o0 + s, o1 + s, o1 + (s + 1) % segs, o0 + (s + 1) % segs) for s in range(segs)]
+        mesh = bpy.data.meshes.new(f"J_contact_{side}")
+        mesh.from_pydata(verts, [], faces)
+        layer = mesh.uv_layers.new(name="UVMap")
+        for loop in mesh.loops:
+            layer.data[loop.index].uv = uvs[loop.vertex_index]
+        mesh.materials.append(mat)
+        obj = bpy.data.objects.new(f"J_contact_{side}", mesh)
+        coll.objects.link(obj)
+        obj.visible_shadow = False
+        obj["helper"] = True  # not part of his figure: the fitter leaves it out
+        jesus.skin(obj, rig, lambda co, side=side: {f"foot.{side}": 1.0}, subsurf=0)
+
+
+# The drawings line each hanging sleeve all the way down where it lies on the robe (the back views,
+# the waves, the turns). The outline shells can't draw that: the sleeve sinks a little into the
+# robe there, so its shell is buried. Line Art draws the line where a surface sinks into the robe
+# instead (their intersection): down the sleeves, and as a bonus along both edges of the V-neck
+# and under the hair. Not where the two tubes of a sleeve meet at the elbow, nor where the legs
+# cross the hem. False skips it (it about doubles the render time of a frame).
+INNER_LINES = True
+SLEEVES = ("J_sleeve_", "J_cuff_")
+BELOW_HEM = ("J_leg_", "J_foot_", "J_sandal_")
+
+
+def inner_lines(cam, rig, fig_coll, coll):
+    """A Grease Pencil Line Art object drawing where the figure's parts sink into the robe, in the
+    robe's line colour and the outline's weight. Everything else only hides lines behind it."""
+    for o in fig_coll.all_objects:
+        if o.type != "MESH":
+            continue
+        if o.hide_render or o.get("helper") or o.name.startswith(BELOW_HEM):
+            # the legs cross the robe near the hem in the turns, a broken dashed line; and below
+            # the hem they can't hide a sleeve
+            o.lineart.usage = "EXCLUDE"
+        elif o.name == "J_robe":
+            o.lineart.usage = "FORCE_INTERSECTION"  # meets the sleeves, which draw no lines of their own
+        elif o.name.startswith(SLEEVES):
+            o.lineart.usage = "NO_INTERSECTION"  # so not where the two tubes meet at the elbow
+        else:
+            o.lineart.usage = "OCCLUSION_ONLY"
+    gp = bpy.data.grease_pencils.new("InnerLines")
+    obj = bpy.data.objects.new("InnerLines", gp)
+    coll.objects.link(obj)
+    gp.layers.new("Lines").frames.new(bpy.context.scene.frame_start)
+    ink = bpy.data.materials.new("InnerInk")
+    bpy.data.materials.create_gpencil_data(ink)
+    ink.grease_pencil.color = srgb(LINE["robe"]) + (1.0,)
+    gp.materials.append(ink)
+    m = obj.modifiers.new("LineArt", "LINEART")
+    m.source_type = "COLLECTION"
+    m.source_collection = fig_coll
+    m.target_layer = "Lines"
+    m.target_material = ink
+    for kind in ("contour", "loose", "crease", "edge_mark", "material"):
+        setattr(m, f"use_{kind}", False)
+    m.use_intersection = True
+    # the stroke's radius is in world units: the outline's weight at his distance from the camera
+    fwd = cam.matrix_world.to_3x3() @ Vector((0, 0, -1))
+    depth = (rig.matrix_world.translation + Vector((0, 0, 1.0)) - cam.matrix_world.translation).dot(fwd)
+    m.radius = 0.5 * OUTLINE_PX * 2 * depth * (SENSOR / 2 / LENS) / RES_X
+    # render only: the fitter and every frame change in the UI would otherwise recompute it
+    m.show_viewport = False
 
 
 def render_settings(percent):
@@ -295,6 +451,9 @@ def render_settings(percent):
     scene.render.image_settings.file_format = "PNG"
     scene.view_settings.view_transform = "Standard"
     scene.view_settings.look = "None"
+    # flat fills and no long gradients that could band: dithering would only sprinkle +-1 noise over
+    # every colour, which makes the GIF and WebP bigger
+    scene.render.dither_intensity = 0.0
     ee = scene.eevee
     ee.taa_render_samples = 32
     if hasattr(ee, "use_raytracing"):
@@ -320,12 +479,15 @@ def build(opts):
         place_prop(cam, root, p["box"], p.get("turn", TYPE_TURN.get(p["type"], 0.0)))
 
     rig = jesus.build(fig_coll)
+    contact_shadow(rig, fig_coll)
     feet = on_plane(cam, *LAYOUT["figure"]["feet"], 0.0)
     rig.location = (feet.x, feet.y, 0.0)
     jesus.animate(rig)
 
     add_outlines(cam)
     bpy.context.scene.frame_set(1)
+    if INNER_LINES:
+        inner_lines(cam, rig, fig_coll, set_coll)
     tweaks_json = os.path.join(HERE, "tweaks.json")  # hand edits exported from the .blend
     if os.path.exists(tweaks_json) and not os.environ.get("REMAKE_NO_TWEAKS"):  # set by tweaks.py export
         from tweaks import apply_tweaks
