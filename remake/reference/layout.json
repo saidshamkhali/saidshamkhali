@@ -76,6 +76,6 @@
     {"id": "bell_l",     "type": "bell",        "box": [76, 226, 95, 249], "phase": 0.0},
     {"id": "toaster_b",  "type": "toaster",     "box": [325, 241, 369, 275], "phase": 0.5},
     {"id": "clock_br",   "type": "alarm_clock", "box": [410, 259, 431, 286], "phase": 0.25},
-    {"id": "worm_b",     "type": "worm",        "box": [54, 301, 86, 306],  "phase": 0.25}
+    {"id": "worm_b",     "type": "worm",        "box": [54, 300, 86, 305],  "phase": 0.25}
   ]
 }
