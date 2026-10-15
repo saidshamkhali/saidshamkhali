@@ -209,6 +209,8 @@ class Fitter:
         self.right = jesus.screen_right()
         self.reanimate_without_fit()
         self.renders = 0
+        self.prior = jesus.load_fit()
+        self.planted = None
 
     def reanimate_without_fit(self):
         saved = jesus.FIT_FILE
@@ -261,9 +263,30 @@ class Fitter:
             pb = rig.pose.bones[name]
             pb.location, pb.rotation_quaternion, pb.scale = l, q, s
         jesus.apply_offsets(rig, params, self.right)
+        if self.planted:  # the build keeps these feet where they stood on another frame (jesus.PLANT)
+            jesus.put_feet(rig, self.planted)
         if self.k in jesus.HEAD_YAW:
             jesus.face_to(rig, jesus.HEAD_YAW[self.k])
         jesus.apply_head_offsets(rig, params, self.k)
+
+    def plant(self, k):
+        """Where the feet stand in the world on the frame frame k keeps them from (jesus.PLANT), posed
+        with that frame's fitted offsets, or None."""
+        self.planted = None
+        j = jesus.PLANT.get(k)
+        if j is None:
+            return
+        self.capture(j)
+        anim = self.rig.animation_data
+        act, slot = anim.action, anim.action_slot
+        anim.action = None
+        try:
+            self.pose(self.prior.get(j, {}))
+            bpy.context.view_layer.update()
+            self.planted = jesus.feet_world(self.rig)
+        finally:
+            anim.action = act
+            anim.action_slot = slot
 
     def render(self):
         bpy.ops.render.render(write_still=True)
@@ -323,6 +346,7 @@ class Fitter:
         return ious
 
     def fit(self, k, guess, iters, fix):
+        self.plant(k)
         self.capture(k)
         anim = self.rig.animation_data
         act, slot = anim.action, anim.action_slot
