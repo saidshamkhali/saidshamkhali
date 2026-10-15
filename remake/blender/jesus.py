@@ -215,8 +215,9 @@ def flat_hem(robe):
     """Flatten the hem as the camera sees it: drawn, it's one straight line with square corners, but
     an ellipse seen from above sags in the middle. A Geometry Nodes modifier after the body (so it
     works whichever way he faces and however the fit squashes him) drops each hem point by how far it
-    lies behind the hem's point nearest the camera, times the slope of the camera's view, so the
-    whole hem projects onto one line."""
+    lies behind the hem's point nearest the camera, times the slope of the camera's view (less the
+    tilt the pose already gives the hem), so the whole hem projects onto one line. It also marks the
+    front half of the hem's ring for Line Art, which draws the hem's line."""
     cam = bpy.context.scene.camera
     if cam is None:
         return
@@ -265,27 +266,75 @@ def flat_hem(robe):
     info.inputs["Object"].default_value = cam
     cam_flat, cam_z = ground(info.outputs["Location"])
     slope = math_node("DIVIDE", math_node("SUBTRACT", cam_z, HEM_Z), vec_node("LENGTH", cam_flat))
-    pos_flat, _ = ground(n.new("GeometryNodeInputPosition").outputs["Position"])
+    pos_flat, pos_z = ground(n.new("GeometryNodeInputPosition").outputs["Position"])
     toward = vec_node("DOT_PRODUCT", pos_flat, vec_node("NORMALIZE", cam_flat))
     hem = n.new("FunctionNodeCompare")  # the hem's own row
     hem.data_type = "FLOAT"
     hem.operation = "LESS_THAN"
     link(rest.outputs["Attribute"], hem.inputs["A"])
     hem.inputs["B"].default_value = HEM_Z + 0.005
-    front = n.new("GeometryNodeAttributeStatistic")
-    front.data_type = "FLOAT"
-    front.domain = "POINT"
-    link(gin.outputs["Geometry"], front.inputs["Geometry"])
-    link(hem.outputs["Result"], front.inputs["Selection"])
-    link(toward, front.inputs["Attribute"])
+
+    def stat(field):  # over the hem's row
+        s = n.new("GeometryNodeAttributeStatistic")
+        s.data_type, s.domain = "FLOAT", "POINT"
+        link(gin.outputs["Geometry"], s.inputs["Geometry"])
+        link(hem.outputs["Result"], s.inputs["Selection"])
+        link(field, s.inputs["Attribute"])
+        return s
+
+    front = stat(toward)
     behind = math_node("SUBTRACT", front.outputs["Max"], toward, clamp=True)
-    drop = math_node("MULTIPLY", math_node("MULTIPLY", behind, slope), weight.outputs["Result"])
+    # The pose already tips the hem: leaning, the hips thrust or the skirt swung, its back can sit lower
+    # (or higher) than its front. Drop each point only by what's left to bring it onto the front's line:
+    # the camera's slope less the hem's own tilt towards the camera (a least-squares fit of its height
+    # against `toward`). Dropped by the full slope, the back of a tipped hem overshot and showed its
+    # underside below the front's line, a pale strip with a second hem line under it
+    mt, mz = front.outputs["Mean"], stat(pos_z).outputs["Mean"]
+    tilt = math_node("DIVIDE",
+                     math_node("SUBTRACT", stat(math_node("MULTIPLY", toward, pos_z)).outputs["Mean"],
+                               math_node("MULTIPLY", mt, mz)),
+                     math_node("SUBTRACT", stat(math_node("MULTIPLY", toward, toward)).outputs["Mean"],
+                               math_node("MULTIPLY", mt, mt)))
+    drop = math_node("MULTIPLY", math_node("MULTIPLY", behind, math_node("SUBTRACT", slope, tilt)),
+                     weight.outputs["Result"])
     offset = n.new("ShaderNodeCombineXYZ")
     link(math_node("MULTIPLY", drop, -1.0), offset.inputs["Z"])
     setpos = n.new("GeometryNodeSetPosition")
     link(gin.outputs["Geometry"], setpos.inputs["Geometry"])
     link(offset.outputs["Vector"], setpos.inputs["Offset"])
-    link(setpos.outputs["Geometry"], gout.inputs["Geometry"])
+    # The hem's line. Flattened, the robe's bottom cap is edge-on to the camera, so its outline shell
+    # shows no line across the legs, as drawn; the only hem line left was the back wall's shell, behind
+    # the legs. Mark the front half of the hem's ring instead (an edge mark, which Line Art draws:
+    # build_scene.inner_lines), recomputed every frame, so it follows him as he turns. Not the cap's
+    # spokes: they meet at its hub, the one point of the hem's row with more than four neighbours
+    def compare(op, a, b):
+        c = n.new("FunctionNodeCompare")
+        c.data_type, c.operation = "FLOAT", op
+        for sock, v in zip((c.inputs["A"], c.inputs["B"]), (a, b)):
+            if isinstance(v, (int, float)):
+                sock.default_value = v
+            else:
+                link(v, sock)
+        return c.outputs["Result"]
+
+    def both(a, b):
+        m = n.new("FunctionNodeBooleanMath")
+        m.operation = "AND"
+        link(a, m.inputs[0])
+        link(b, m.inputs[1])
+        return m.outputs[0]
+
+    half = math_node("MULTIPLY", math_node("SUBTRACT", front.outputs["Max"], front.outputs["Min"]), 0.5)
+    count = n.new("GeometryNodeFieldOnDomain")  # neighbours are counted per point, then averaged along each edge
+    count.data_type, count.domain = "INT", "POINT"
+    link(n.new("GeometryNodeInputMeshVertexNeighbors").outputs["Vertex Count"], count.inputs[0])
+    rim = compare("LESS_THAN", count.outputs[0], 8)
+    mark = n.new("GeometryNodeStoreNamedAttribute")
+    mark.data_type, mark.domain = "BOOLEAN", "EDGE"
+    mark.inputs["Name"].default_value = "freestyle_edge"
+    link(setpos.outputs["Geometry"], mark.inputs["Geometry"])
+    link(both(both(hem.outputs["Result"], rim), compare("LESS_THAN", behind, half)), mark.inputs["Value"])
+    link(mark.outputs["Geometry"], gout.inputs["Geometry"])
     mod = robe.modifiers.new("FlatHem", "NODES")
     mod.node_group = nt
     robe.modifiers.move(len(robe.modifiers) - 1, robe.modifiers.find("Body") + 1)
@@ -446,8 +495,15 @@ def build_arms(coll, rig):
         lower = [zsec(ez, er, er, cx=ex * x), zsec(ez - 0.13, 0.058, 0.058, cx=(ex + 0.009) * x),
                  zsec(wz + 0.03, 0.06, 0.06, cx=(wx - 0.003) * x), zsec(wz, 0.064, 0.064, cx=wx * x),
                  zsec(wz - 0.004, 0.05, 0.05, cx=wx * x)]
-        skin(loft(f"J_cuff_{side}", coll, robe_m, dome(ex * x, ez, er, False)[::-1] + lower, ring=24),
-             rig, rigid(f"forearm.{side}"))
+        cuff = loft(f"J_cuff_{side}", coll, robe_m, dome(ex * x, ez, er, False)[::-1] + lower, ring=24)
+        # the drawings line every sleeve's end where the hand comes out, but the cuff's shell there is
+        # hidden behind the hand: an edge mark on the rim (the ring at the wrist) lets Line Art draw it
+        # (build_scene.inner_lines). The sleeve and the hand hide what's behind them: from the side only
+        # the near half shows, a line across the wrist; with the forearm towards the camera, the opening
+        rim = {v.index for v in cuff.data.vertices if abs(v.co.z - wz) < 1e-5}
+        marks = cuff.data.attributes.new("freestyle_edge", "BOOLEAN", "EDGE")
+        marks.data.foreach_set("value", [e.vertices[0] in rim and e.vertices[1] in rim for e in cuff.data.edges])
+        skin(cuff, rig, rigid(f"forearm.{side}"))
         skin(build_hand(coll, side, x), rig, rigid(f"hand.{side}"))
 
 
