@@ -348,8 +348,8 @@ def build_body(coll, rig):
         # hem, where it never shows, it slims, so a leg angled back can't poke out through the cloth
         leg = loft(f"J_leg_{side}", coll, skin_m, [
             zsec(z, r, r * 0.95, cx=LEG_X * x) for z, r in
-            ((0.02, 0.045), (0.05, 0.062), (0.12, 0.068), (0.24, 0.074), (0.38, 0.075), (0.44, 0.074), (0.52, 0.058),
-             (0.62, 0.052), (0.75, 0.052), (0.9, 0.052))],
+            ((0.02, 0.045), (0.05, 0.062), (0.12, 0.068), (0.24, 0.074), (0.38, 0.075), (0.445, 0.074), (0.485, 0.056),
+             (0.56, 0.05), (0.75, 0.05), (0.9, 0.05))],
             ring=20)
         skin(leg, rig, blend(f"shin.{side}", f"thigh.{side}", KNEE_Z - 0.06, KNEE_Z + 0.06))
         skin(build_foot(coll, side, x), rig, rigid(f"foot.{side}"))
