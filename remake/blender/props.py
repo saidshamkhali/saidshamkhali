@@ -9,8 +9,13 @@ import json
 import math
 import os
 
-from kit import (LAYOUT, LOOP, REMAKE, SRC_FRAMES, add_shape, bake, box, constant, cycles_per_loop, cylinder, empty, hitch,
-                 inflate, keep_world, lathe, mat, saw, slab, smooth_outline, sphere, step_frames, sweep, toon, unrle, wave)
+import bmesh
+import bpy
+from mathutils import Matrix, Vector
+
+from kit import (LAYOUT, LOOP, REMAKE, SRC_FRAMES, add_shape, bake, box, constant, cycles_per_loop, cylinder, empty, finish,
+                 hitch, inflate, keep_world, lathe, mat, saw, slab, smooth_outline, sphere, step_frames, sweep, toon, unrle,
+                 wave)
 
 # Cartoon timing, like the figure (jesus.STEPPED): the props are keyed once per source frame
 # and hold each pose, as the 10 fps original does. False = keyed on every frame, smooth.
@@ -191,12 +196,14 @@ MOUTH_R = [0.055, 0.07, 0.072, 0.065, 0.05, 0.05, 0.065, 0.072, 0.058]
 
 
 DRAWINGS_FILE = os.path.join(REMAKE, "reference", "prop_drawings.json")
-DRAWING_PX = 1 / 40  # units per GIF pixel for traced drawings (place_prop scales the prop to its box anyway)
+DRAWING_PX = 1 / 40  # units per GIF pixel for traced drawings (place_prop scales them to the frame anyway)
 # how a traced part is inflated: (depth behind the drawing's front, radius, shadow). The ink (the
 # whole drawing, its dark line-art) sits just behind the coloured parts and shows between them,
-# so it draws the lines: only it gets a (thin) outline, round the whole drawing.
-INK = (0.05, 0.03, 0.8)
-COLOUR = (0.0, 0.07, 0.72)
+# so it draws the lines: only it gets a (thin) outline, round the whole drawing. The drawings'
+# colours are flat, so the shade is barely darker than the light: a deeper one lays a dark
+# crescent along one side of every part, which reads as dirt and as a heavier line.
+INK = (0.05, 0.03, 0.95)
+COLOUR = (0.0, 0.07, 0.92)
 INK_OUTLINE_PX = 0.8
 
 
@@ -225,7 +232,15 @@ def build_traced(root, coll, data, spec):
                         outline=name == "ink")
             if name == "ink":
                 o["outline_px"] = INK_OUTLINE_PX
-            o.location.x = -w * cell / 2
+            else:
+                # a modifier that moves nothing, after the subdivision: with the Subdivision last in
+                # its stack Blender subdivides on the GPU, except on the first render after the file
+                # loads, so that frame's rims came out a shade off the rest and a held frame didn't
+                # hold. A modifier after it keeps the subdivision on the CPU on every frame. (It
+                # displaces by strength * (1 - mid level) = 0; at strength 0 Blender would skip it.)
+                hold = o.modifiers.new("Hold", "DISPLACE")
+                hold.strength, hold.mid_level = 1.0, 1.0
+            o.location.x, o.location.z = -w * cell / 2, -h * cell / 2  # the grid's centre on the root
             keep_world(o, root)
             parts.append(o)
         drawings.append(parts)
@@ -237,8 +252,13 @@ def build_traced(root, coll, data, spec):
         for o in parts:
             animate_value(o, "hide_render", lambda t, i=i: drawing(t) != i)
             animate_value(o, "hide_viewport", lambda t, i=i: drawing(t) != i)
-    root["face_camera"] = True  # flat drawings: face the camera square on, its tilt included
-    root["fit_axis"] = "x"      # the traced width is the drawing's own; heights include the line-art
+    # flat drawings: build_scene.place_drawing puts the grid back where it was traced, parallel to
+    # the image plane, from where it lay in the GIF (its top-left corner and size, in GIF pixels)
+    # and the units one GIF pixel covers here
+    root["face_camera"] = True
+    root["grid_origin_px"] = spec["origin"]
+    root["grid_px"] = (w / data["cell"], h / data["cell"])
+    root["px_units"] = DRAWING_PX
 
 
 def traced_or(build):
@@ -329,15 +349,25 @@ def build_lips(root, coll, phase):
 
 
 WORM_LENGTH = 1.1
-WORM_LOOP = 0.7      # share of the body that curls up into the loop
-WORM_CURL = 1.5      # radians the body turns at the loop's sides: an arch with a small hole under it
-WORM_SPREAD = 0.2    # cartoon cheat: at the top of the loop the ends pull in less than they should
+WORM_LOOP = (0.45, 0.85)  # share of the body that curls up into the loop, starting out and curled all
+                          # the way: the drawings' worm first humps its middle, then arches most of itself
+WORM_CURL = 1.85     # radians the body turns at the loop's sides: past upright, so curled all the way
+                     # the sides lean out into the drawings' Omega, with a hole under the arch
+WORM_SPREAD = 0.7    # cartoon cheats: as the loop closes the ends pull in less than they should (so
+WORM_LIFT = 0.25     # the arch keeps its hole), and the loop stands a little taller than the body allows
+WORM_R = 0.09        # one smooth tube, as drawn
+WORM_CURLS = (0.0, 0.25, 0.5, 0.75, 1.0)  # the body is built at these curls and blends between them
+WORM_STRIPE = "#5A5464"  # mid-dark slate: the drawings' worms have no black in them
+WORM_STRIPE_W = 0.035    # about a GIF pixel
+# where the stripes sit along the body (share of its length) and how far each one leans off
+# square to it, in degrees: irregular, like the drawn ones
+WORM_STRIPES = [(0.1, 12), (0.2, -8), (0.3, 18), (0.4, 4), (0.5, -14), (0.6, 10), (0.7, -6), (0.8, 16), (0.9, -10)]
 
 
 def worm_curve(a, samples):
     """Centre line of the worm, its body length kept, with the middle curled into a loop by
     a (0 flat .. 1 tall loop). Returns (x, z, slope) at each arc length in samples."""
-    loop = WORM_LOOP * WORM_LENGTH
+    loop = (WORM_LOOP[0] + (WORM_LOOP[1] - WORM_LOOP[0]) * a) * WORM_LENGTH
     start = (WORM_LENGTH - loop) / 2
     steps = 400
     ds = WORM_LENGTH / steps
@@ -351,58 +381,76 @@ def worm_curve(a, samples):
         zs.append(zs[-1] + math.sin(th) * ds)
         ths.append(th)
     mid = xs[steps // 2]
-    stretch = 1 + WORM_SPREAD * a
+    stretch = 1 + WORM_SPREAD * a * a  # mostly near the top: a half-curled worm keeps its length
+    lift = 1 + WORM_LIFT * a
     out = []
     for s in samples:
         k = min(steps, round(s / ds))
         th = ths[min(steps, max(1, k))]
-        out.append(((xs[k] - mid) * stretch, zs[k], math.atan2(math.sin(th), stretch * math.cos(th))))
+        out.append(((xs[k] - mid) * stretch, zs[k] * lift, math.atan2(lift * math.sin(th), stretch * math.cos(th))))
     return out
+
+
+def worm_stripes(name, coll, material, centre):
+    """The stripes round a worm whose centre line runs through `centre` (points evenly spaced
+    along it): short tubes just proud of the body, each leaning a little off square to it."""
+    bm = bmesh.new()
+    n, ring = len(centre) - 1, 16
+    for u, lean in WORM_STRIPES:
+        k = min(n - 1, int(u * n))
+        c = centre[k].lerp(centre[k + 1], u * n - k)
+        axis = Matrix.Rotation(math.radians(lean), 3, "Y") @ (centre[k + 1] - centre[k]).normalized()
+        side = Vector((0, 1, 0))
+        up = axis.cross(side).normalized()
+        ends = [[bm.verts.new(c + axis * d + (side * math.cos(2 * math.pi * j / ring) + up * math.sin(2 * math.pi * j / ring))
+                              * WORM_R * 1.04) for j in range(ring)] for d in (-WORM_STRIPE_W / 2, WORM_STRIPE_W / 2)]
+        for j in range(ring):
+            bm.faces.new((ends[0][j], ends[0][(j + 1) % ring], ends[1][(j + 1) % ring], ends[1][j]))
+        bm.faces.new(ends[0])
+        bm.faces.new(ends[1][::-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    mesh = bpy.data.meshes.new(name)
+    bm.to_mesh(mesh)
+    bm.free()
+    obj = bpy.data.objects.new(name, mesh)
+    coll.objects.link(obj)
+    return finish(obj, material, coll, outline=False)
 
 
 def build_worm(root, coll, phase):
     """Inchworm, as in the source: it stays put while the middle of its body curls up into a
-    tight loop and flattens out again, about once a second. A row of fat overlapping ring
-    segments, each one tilted along the body, with a dark band between each two (the stripes)."""
+    tall arch and flattens out again, about once a second. One smooth tube with round ends,
+    ringed by slate stripes; both are built at each of WORM_CURLS and blend between them (shape
+    keys), following the curl measured off the GIF."""
     c = cycles_per_loop(LAYOUT["cycles_s"]["worm"])
-    n = 13
-    spacing = WORM_LENGTH / (n - 1)
-    segs = []
-    for i in range(n):
-        u = i / (n - 1)
-        r = 0.1 + 0.02 * math.sin(math.pi * min(1.0, u * 1.15)) ** 0.6 + (0.015 if i == n - 1 else 0.0)  # chunky, as drawn
-        sx = max(0.7, 1.3 * spacing / (2 * r))  # fat rings that overlap, even stretched
-        seg = sphere(f"{root.name}_seg{i}", coll, mat("worm"), (-WORM_LENGTH / 2 + WORM_LENGTH * u, 0, r),
-                     scale=(sx if i < n - 1 else 1.1, 1.0, 1.0), r=r)
-        keep_world(seg, root)
-        segs.append((seg, u, r))
-    bands = []
-    for i in range(n - 1):  # thin dark discs between the segments, across the body
-        u = (i + 0.5) / (n - 1)
-        r = (segs[i][2] + segs[i + 1][2]) / 2 * 1.04
-        band = cylinder(f"{root.name}_band{i}", coll, mat("black"), (-WORM_LENGTH / 2 + WORM_LENGTH * u, 0, r), r, 0.03,
-                        rot=(0, math.pi / 2, 0), outline=False)
-        keep_world(band, root)
-        bands.append((band, u, r))
+    samples = [WORM_LENGTH * i / 32 for i in range(33)]
+
+    def centre(a):
+        return [Vector((x, 0.0, z + WORM_R)) for x, z, _ in worm_curve(a, samples)]
+
+    def body(a):  # up: the rings face the camera, so they don't twist as the body bends
+        return sweep(f"{root.name}_body", coll, mat("worm"), centre(a), [WORM_R], n=64, ring=16, up=(0, -1, 0))
+
+    stripe_mat = toon(f"{root.name}_stripe", WORM_STRIPE, 0.85)
+    parts = [body(0.0), worm_stripes(f"{root.name}_stripes", coll, stripe_mat, centre(0.0))]
+    for k, a in enumerate(WORM_CURLS[1:], 1):
+        add_shape(parts[0], body(a), f"curl{k}")
+        add_shape(parts[1], worm_stripes(f"{root.name}_stripes", coll, stripe_mat, centre(a)), f"curl{k}")
+    parts[0]["outline_even"] = False  # an even outline spikes where the arch bends the tube tight
+    for p in parts:
+        keep_world(p, root)
 
     def loop(t):  # flat for a moment, then up into the loop and back down
         x = saw(t, c, phase)
         return (0.5 - 0.5 * math.cos(2 * math.pi * x)) ** 1.3
     curl = track(root, "curl", loop)
-
-    cache = {}
-
-    def pose(t):
-        if t not in cache:
-            cache[t] = worm_curve(curl(t), [u * WORM_LENGTH for _, u, _ in segs + bands])
-        return cache[t]
-
-    for i, (part, _, r) in enumerate(segs + bands):
-        turn = math.pi / 2 if i >= len(segs) else 0.0  # the bands' discs stand across the body
-        animate(part, "location", 0, lambda t, i=i: pose(t)[i][0])
-        animate(part, "location", 2, lambda t, i=i, r=r: pose(t)[i][1] + r)
-        animate(part, "rotation_euler", 1, lambda t, i=i, turn=turn: turn - pose(t)[i][2])
+    step = WORM_CURLS[1] - WORM_CURLS[0]
+    for p in parts:  # each built curl weighs in as the curl passes it, so the body blends from one to the next
+        for k, a in enumerate(WORM_CURLS[1:], 1):
+            animate_value(p.data.shape_keys.key_blocks[f"curl{k}"], "value",
+                          lambda t, a=a: max(0.0, 1 - abs(curl(t) - a) / step))
     root["fit_axis"] = "x"  # a flat worm's box is a few pixels tall: size it by its length
+    root["level"] = True    # along the camera's horizontal: turned to face the camera, one off to the side slants
     if not load_tracks().get(root.name):  # untracked: size it in its box when flat, whatever its phase
         root["fit_frame"] = 1 + ((-phase) % 1.0) / c * (len(step_frames()) - 1)
 
