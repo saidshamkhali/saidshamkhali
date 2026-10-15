@@ -400,7 +400,7 @@ EYE_Y = -0.118  # half out of the face, as Simpsons eyes are
 HANG_Z = 1.7    # below this the hair hangs straight instead of following the head
 MUZZLE = 0.045  # how far the Simpsons muzzle (moustache, lip, chin) juts out of the face
 HAIR_TOP = 0.02  # hair thickness on the crown
-HALO = (0.165, 0.013, 0.006)  # the halo's radius, and its band's half width and half thickness
+HALO = (0.165, 0.014, 0.012)  # the halo's radius, and its band's half width and half thickness
 SIDEBURN = 1.715  # the hair at the sides comes down over where the ears would be, onto the beard
 # The beard below the jaw, (z, rx, ry, cy) sections: round the neck from the jaw into the collar,
 # then the point hanging in front of it down to the top of the V-neck.
@@ -682,7 +682,7 @@ def animate(rig):
 # How far the halo tips towards the camera, per source frame, in degrees. The camera looks down on him
 # from 20 degrees, so a level halo reads as an open ellipse, as it does while he beckons (11-24);
 # whenever his arm is up the drawings show it almost edge-on.
-HALO_TILT = {k: 0.0 if 11 <= k <= 24 else 13.0 for k in range(41)}
+HALO_TILT = {k: 0.0 if 11 <= k <= 24 else 12.0 for k in range(41)}
 
 
 def animate_halo(rig):
