@@ -181,11 +181,15 @@ PALETTE = {
     "mouth": "#1E0B0E",
     "tongue": "#C8303F",
     "worm": "#B4AFC0",
+    "collar": "#4E3212",  # the V-neck's edge, drawn in the skin's line colour
 }
 
 
-def mat(key, shadow=0.72):
-    return toon(key, PALETTE[key], shadow)
+SHADE = {"skin": 0.88}  # a fainter toon band where the drawings are flat: no dark stripe down his legs
+
+
+def mat(key, shadow=None):
+    return toon(key, PALETTE[key], SHADE.get(key, 0.72) if shadow is None else shadow)
 
 
 # --------------------------------------------------------------------------- meshes

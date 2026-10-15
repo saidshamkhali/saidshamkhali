@@ -335,7 +335,7 @@ def build_body(coll, rig):
 
     skin(shell("J_vneck", coll, skin_m, vneck_surf(), 8, 12, lambda u, v: 0.006, inner=0.006, outline=False),
          rig, rigid("chest"), subsurf=0)
-    skin(shell("J_collar", coll, mat("black"), vneck_surf(0.008, 0.012), 8, 12, lambda u, v: 0.0035, inner=0.005,
+    skin(shell("J_collar", coll, mat("collar"), vneck_surf(0.008, 0.003), 8, 12, lambda u, v: 0.0035, inner=0.005,
                outline=False), rig, rigid("chest"), subsurf=0)
     # the neck rising out of the collar, under the beard
     skin(loft("J_neck", coll, skin_m, [zsec(1.4, 0.082, 0.074, cy=0.0), zsec(1.52, 0.084, 0.076, cy=-0.005),
@@ -348,8 +348,8 @@ def build_body(coll, rig):
         # hem, where it never shows, it slims, so a leg angled back can't poke out through the cloth
         leg = loft(f"J_leg_{side}", coll, skin_m, [
             zsec(z, r, r * 0.95, cx=LEG_X * x) for z, r in
-            ((0.02, 0.045), (0.05, 0.062), (0.12, 0.068), (0.24, 0.074), (0.38, 0.075), (0.445, 0.074), (0.485, 0.056),
-             (0.56, 0.05), (0.75, 0.05), (0.9, 0.05))],
+            ((0.02, 0.045), (0.05, 0.062), (0.12, 0.068), (0.24, 0.074), (0.38, 0.075), (0.425, 0.074), (0.46, 0.054),
+             (0.485, 0.05), (0.56, 0.05), (0.75, 0.05), (0.9, 0.05))],
             ring=20)
         skin(leg, rig, blend(f"shin.{side}", f"thigh.{side}", KNEE_Z - 0.06, KNEE_Z + 0.06))
         skin(build_foot(coll, side, x), rig, rigid(f"foot.{side}"))
@@ -529,7 +529,7 @@ MUZZLE = 0.045  # how far the Simpsons muzzle (moustache, lip, chin) juts out of
 HAIR_TOP = 0.02  # hair thickness on the crown
 HALO = (0.165, 0.014, 0.012)  # the halo's radius, and its band's half width and half thickness
 SIDEBURN = 1.715  # the hair at the sides comes down the temples onto the beard
-EAR_TH, EAR_Z, EAR_OUT = 102, 1.73, 0.058  # where the ear pokes through the side hair (degrees round from the face)
+EAR_TH, EAR_Z, EAR_OUT = 102, 1.73, 0.052  # where the ear pokes through the side hair (degrees round from the face)
 EAR = (0.02, 0.014, 0.032)  # its half sizes: narrow, thin (outwards) and tall
 # The beard below the jaw, (z, rx, ry, cy) sections: round the neck from the jaw into the collar,
 # then the point hanging in front of it down to the top of the V-neck.
@@ -609,7 +609,7 @@ def build_head(coll, rig):
         c = Vector((EYE_X * x, EYE_Y, EYE_Z))
         eyes.append((c, (EYE_R,) * 3, (0, 0, 0)))
         d = Vector((0.06 * -x, -math.cos(look), -math.sin(look))).normalized()  # a touch cross-eyed, as drawn
-        pupils.append((c + d * EYE_R * 0.98, (PUPIL, 0.004, PUPIL), (look, 0, 0)))
+        pupils.append((c + d * EYE_R * 0.96, (PUPIL, 0.0075, PUPIL), (look, 0, 0)))  # deep enough to show side-on
     eyeballs = blobs("J_eyes", coll, mat("white", 0.93), eyes)
     eyeballs["outline_px"] = 1.0  # a full-weight line rings the near eye like a monocle; the lid draws the strong line
     skin(eyeballs, rig, head)
@@ -620,8 +620,9 @@ def build_head(coll, rig):
         c = Vector((EYE_X * x, EYE_Y, EYE_Z))
         skin(cap(f"J_lid_{side}", coll, skin_m, c, EYE_R * 1.07, LID_CUT, rot=(math.radians(-LID_TILT), 0, 0)), rig, head)
 
-    # nose: the long Simpsons sausage from between the eyes, forward and down, its tip just above the moustache
-    skin(sweep("J_nose", coll, skin_m, [(0, -0.12, 1.79), (0, -0.17, 1.762), (0, -0.2, 1.722)],
+    # nose: the long Simpsons sausage from between the eyes, forward and a little down, a gap between its
+    # tip and the moustache (pointing further down, in profile it merges with the muzzle into a beak)
+    skin(sweep("J_nose", coll, skin_m, [(0, -0.12, 1.79), (0, -0.177, 1.786), (0, -0.221, 1.762)],
                [0.017, 0.018, 0.021], n=12, ring=20), rig, head)
 
     # moustache: one straight bar across the muzzle, jutting out past the nose in profile (the source
@@ -838,8 +839,8 @@ HALO_TILT = {k: 7.0 if 12 <= k <= 23 else 10.0 if k in (11, 24) else 12.0 for k 
 
 
 def animate_halo(rig):
-    """Key the halo bone on every source frame: level in the world (whatever the head does), then
-    tipped about the screen's horizontal by HALO_TILT, its front edge up."""
+    """Key the halo bone on every source frame: right above his neck and level in the world (whatever the
+    head does), then tipped about the screen's horizontal by HALO_TILT, its front edge up."""
     from mathutils import Matrix
     scene = bpy.context.scene
     pb = rig.pose.bones.get("halo")
@@ -852,7 +853,9 @@ def animate_halo(rig):
         scene.frame_set(int(f), subframe=f - int(f))
         level = rig.matrix_world.to_3x3().normalized() @ pb.bone.matrix_local.to_3x3().normalized()
         world = (Matrix.Rotation(math.radians(-HALO_TILT.get(k % n, 0.0)), 3, right) @ level).to_4x4()
-        world.translation = (rig.matrix_world @ pb.matrix).translation
+        head = rig.pose.bones["head"]
+        rise = (pb.bone.head_local - head.bone.head_local).length * rig.matrix_world.to_scale().z
+        world.translation = (rig.matrix_world @ head.head) + Vector((0, 0, rise))
         pb.matrix = rig.matrix_world.inverted() @ world
         pb.keyframe_insert("rotation_quaternion", frame=f)
         pb.keyframe_insert("scale", frame=f)
@@ -868,7 +871,7 @@ def animate_halo(rig):
 # frame they repeat.
 CURL = {
     "R": {0: 0.2, 3: 0.8, 4: 0.2, 8: 0.8, 9: 0.1, 11: 0.8, 12: 0.5, 14: 0.0, 28: 0.8, 30: 0.6, 33: 0.9, 37: 0.8, 40: 0.2},
-    "L": {0: 0.0, 3: 0.3, 5: 0.0, 10: 0.5, 11: 0.15, 12: 0.15, 14: 0.0, 17: 1.0, 18: 0.4, 28: 0.0, 29: 0.8, 30: 0.3,
+    "L": {0: 0.0, 3: 0.3, 5: 0.0, 10: 0.5, 11: 0.9, 12: 0.15, 14: 0.0, 17: 1.0, 18: 0.4, 28: 0.0, 29: 0.8, 30: 0.3,
           31: 0.5, 33: 0.3, 34: 0.0},
 }
 CLAW = {
@@ -879,9 +882,9 @@ FLICK = 30  # degrees the beckoning wrist drops (about the rest pose's X) as the
 # the hands' own turns per source frame (rest-pose axes, degrees), on top of the poses: the belly
 # hand turns up into an open claw (+z), over into a fist (-z) or hangs from the wrist (+x); lying
 # flat, the beckoning hand turns the back of the hand to us, as drawn, and the raised hand turns
-# its broad side to us in the back views (0-2), where it would show edge-on
+# its broad side to us in the back views (0-2) and the first turn (3-4), where it would show edge-on
 HAND_TURN = {
-    "L": {0: (0, 0, 40), 2: (0, 0, -90), 14: (0, 0, 130), 16: (0, 0, 30), 17: (0, 0, -100), 18: (40, 0, 0)},
+    "L": {0: (0, 0, 40), 2: (0, 0, -90), 3: (0, 0, 90), 4: (0, 0, 90), 14: (0, 0, 130), 16: (0, 0, 30), 17: (0, 0, -100), 18: (40, 0, 0)},
     "R": {12: (0, 0, 45), 18: (0, 0, 45)},
 }
 

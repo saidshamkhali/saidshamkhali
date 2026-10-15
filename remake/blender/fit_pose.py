@@ -74,7 +74,7 @@ CLASSES = {1: "skin", 2: "dark", 3: "robe"}
 COLOURS = {1: (1, 0, 0, 1), 2: (0, 1, 0, 1), 3: (0, 0, 1, 1)}
 HAND_COLOURS = {"L": (1, 0, 0.15, 1), "R": (1, 0.15, 0, 1)}  # skin, each hand told apart by a touch of another colour
 HAND_WEIGHT = 0.5  # each visible hand's term, against 1 for each region
-MATERIAL_CLASS = {"skin": 1, "white": 1, "black": 1, "hair": 2, "sandal": 2, "robe": 3}  # eyes read as skin, as drawn
+MATERIAL_CLASS = {"skin": 1, "white": 1, "black": 1, "collar": 1, "hair": 2, "sandal": 2, "robe": 3}  # eyes read as skin, as drawn
 
 
 def parse_args():
